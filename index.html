@@ -8,16 +8,16 @@
     />
     <title>BLANCO Clothing – Offline Orders</title>
 
-    <!-- PWA / iOS bits -->
+    <!-- iOS PWA bits -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta name="apple-mobile-web-app-title" content="BLANCO Clothing" />
     <link rel="apple-touch-icon" href="/icons/icon-192.png" />
 
-    <!-- Simple black & white styling -->
+    <!-- Minimal black & white styling -->
     <style>
       :root {
-        color-scheme: light dark;
+        color-scheme: dark;
       }
 
       * {
@@ -37,10 +37,10 @@
 
       .app {
         width: 100%;
-        max-width: 900px;
+        max-width: 1000px;
         background: #111;
         border-radius: 16px;
-        padding: 20px;
+        padding: 18px;
         border: 1px solid #333;
         box-shadow: 0 18px 40px rgba(0, 0, 0, 0.5);
       }
@@ -50,7 +50,7 @@
         justify-content: space-between;
         gap: 12px;
         align-items: baseline;
-        margin-bottom: 20px;
+        margin-bottom: 18px;
         border-bottom: 1px solid #333;
         padding-bottom: 10px;
       }
@@ -67,11 +67,30 @@
         color: #b3b3b3;
       }
 
-      form {
+      .grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-        gap: 12px;
-        margin-bottom: 18px;
+        grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.1fr);
+        gap: 16px;
+      }
+
+      @media (max-width: 800px) {
+        .grid {
+          grid-template-columns: minmax(0, 1fr);
+        }
+      }
+
+      h2 {
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin: 0 0 10px 0;
+      }
+
+      section {
+        border-radius: 12px;
+        border: 1px solid #333;
+        padding: 12px;
+        background: #050505;
       }
 
       label {
@@ -87,7 +106,7 @@
       textarea,
       select {
         width: 100%;
-        padding: 8px 10px;
+        padding: 7px 9px;
         border-radius: 8px;
         border: 1px solid #333;
         background: #000;
@@ -107,8 +126,15 @@
         min-height: 60px;
       }
 
+      .field-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+
       .field-full {
-        grid-column: 1 / -1;
+        margin-bottom: 10px;
       }
 
       .actions {
@@ -117,16 +143,16 @@
         gap: 8px;
         justify-content: flex-end;
         margin-top: 8px;
-        margin-bottom: 16px;
+        margin-bottom: 8px;
       }
 
       button {
         border-radius: 999px;
-        padding: 8px 16px;
+        padding: 7px 14px;
         border: 1px solid #333;
         background: #f5f5f5;
         color: #000;
-        font-size: 13px;
+        font-size: 12px;
         text-transform: uppercase;
         letter-spacing: 0.08em;
         cursor: pointer;
@@ -141,6 +167,11 @@
         background: #ff4d4f;
         color: #000;
         border-color: #ff4d4f;
+      }
+
+      button.small {
+        font-size: 11px;
+        padding: 4px 10px;
       }
 
       button:active {
@@ -172,6 +203,37 @@
         background: #facc15;
       }
 
+      .hint {
+        font-size: 11px;
+        color: #999;
+        margin-top: 4px;
+      }
+
+      .sizes-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+        gap: 8px;
+        margin-top: 6px;
+      }
+
+      .size-chip {
+        background: #000;
+        border-radius: 10px;
+        padding: 6px 8px;
+        border: 1px solid #333;
+        font-size: 12px;
+      }
+
+      .size-chip label {
+        font-size: 10px;
+        margin-bottom: 2px;
+      }
+
+      .size-chip input {
+        font-size: 12px;
+        padding: 4px 6px;
+      }
+
       .orders {
         border-radius: 12px;
         border: 1px solid #333;
@@ -190,9 +252,6 @@
       }
 
       .orders-header h2 {
-        font-size: 13px;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
         margin: 0;
       }
 
@@ -224,20 +283,48 @@
         font-size: 12px;
         color: #777;
         text-align: center;
-        padding: 20px 0;
+        padding: 18px 0;
       }
 
-      @media (max-width: 600px) {
-        body {
-          padding: 10px;
-        }
-        .app {
-          padding: 14px;
-        }
-        header {
-          flex-direction: column;
-          align-items: flex-start;
-        }
+      .catalog-info {
+        font-size: 11px;
+        color: #b3b3b3;
+        margin-bottom: 6px;
+      }
+
+      .catalog-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+        font-size: 11px;
+        color: #999;
+        margin-bottom: 8px;
+      }
+
+      .catalog-table-wrapper {
+        margin-top: 8px;
+        max-height: 180px;
+        overflow: auto;
+        border-radius: 8px;
+        border: 1px solid #222;
+      }
+
+      .catalog-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 11px;
+      }
+
+      .catalog-table th,
+      .catalog-table td {
+        padding: 4px 6px;
+        border-bottom: 1px solid #222;
+      }
+
+      .catalog-table input {
+        font-size: 11px;
+        padding: 3px 4px;
       }
     </style>
   </head>
@@ -254,146 +341,244 @@
 
       <div class="status-bar">
         <div style="display: flex; align-items: center;">
-          <span
-            id="online-indicator-dot"
-            class="status-dot"
-          ></span>
-          <span id="online-indicator-text">Checking connection…</span>
+          <span id="online-dot" class="status-dot"></span>
+          <span id="online-text">Checking connection…</span>
         </div>
-        <span>Orders are stored securely on this device only.</span>
+        <span>Orders & catalog are stored only on this device.</span>
       </div>
 
-      <form id="order-form">
-        <div class="field-full">
-          <label for="customerName">Customer</label>
-          <input
-            id="customerName"
-            name="customerName"
-            placeholder="Name"
-            required
-          />
-        </div>
+      <div class="grid">
+        <!-- LEFT: ORDER FORM -->
+        <section>
+          <h2>Order Details</h2>
 
-        <div>
-          <label for="customerEmail">Email</label>
-          <input
-            id="customerEmail"
-            name="customerEmail"
-            type="email"
-            placeholder="customer@email.com"
-          />
-        </div>
+          <div class="field-row">
+            <div>
+              <label for="customerName">Customer</label>
+              <input
+                id="customerName"
+                placeholder="Name"
+                autocomplete="off"
+              />
+            </div>
+            <div>
+              <label for="customerEmail">Email</label>
+              <input
+                id="customerEmail"
+                type="email"
+                placeholder="customer@email.com"
+                autocomplete="off"
+              />
+            </div>
+            <div>
+              <label for="customerPhone">Phone</label>
+              <input
+                id="customerPhone"
+                placeholder="+1 (555) 123-4567"
+                autocomplete="off"
+              />
+            </div>
+          </div>
 
-        <div>
-          <label for="customerPhone">Phone</label>
-          <input
-            id="customerPhone"
-            name="customerPhone"
-            placeholder="+1 (555) 123-4567"
-          />
-        </div>
+          <div class="field-row">
+            <div>
+              <label for="styleSelect">Style</label>
+              <select id="styleSelect">
+                <option value="">Select style</option>
+              </select>
+            </div>
+            <div>
+              <label for="colorSelect">Color</label>
+              <select id="colorSelect" disabled>
+                <option value="">Select color</option>
+              </select>
+            </div>
+          </div>
 
-        <div>
-          <label for="productCode">Product / SKU</label>
-          <input
-            id="productCode"
-            name="productCode"
-            placeholder="e.g. BL1413 – Golf Polo"
-            required
-          />
-        </div>
+          <div class="field-full">
+            <label>Sizes & Quantities</label>
+            <div id="sizesContainer" class="sizes-grid">
+              <!-- Dynamically populated -->
+            </div>
+            <div class="hint">
+              Choose a style & color to see available sizes. Enter qty per size.
+            </div>
+          </div>
 
-        <div>
-          <label for="size">Size</label>
-          <input id="size" name="size" placeholder="M / L / 32x30…" />
-        </div>
+          <div class="field-full">
+            <label for="notes">Notes</label>
+            <textarea
+              id="notes"
+              placeholder="Fit notes, ship window, wholesale vs DTC, etc."
+            ></textarea>
+          </div>
 
-        <div>
-          <label for="color">Color</label>
-          <input id="color" name="color" placeholder="Black, Sand, Sky…" />
-        </div>
-
-        <div>
-          <label for="qty">Qty</label>
-          <input
-            id="qty"
-            name="qty"
-            type="number"
-            min="1"
-            step="1"
-            value="1"
-            required
-          />
-        </div>
-
-        <div class="field-full">
-          <label for="notes">Notes</label>
-          <textarea
-            id="notes"
-            name="notes"
-            placeholder="Fit notes, ship window, wholesale vs DTC, etc."
-          ></textarea>
-        </div>
-      </form>
-
-      <div class="actions">
-        <button type="button" id="clear-form" class="secondary">
-          Clear form
-        </button>
-        <button type="button" id="save-order">
-          Save offline order
-        </button>
-      </div>
-
-      <div class="orders">
-        <div class="orders-header">
-          <h2>Saved Offline Orders</h2>
-          <div style="display: flex; gap: 6px;">
-            <button type="button" id="export-csv" class="secondary">
-              Export CSV
+          <div class="actions">
+            <button type="button" id="clear-form" class="secondary">
+              Clear form
             </button>
-            <button type="button" id="clear-orders" class="danger">
-              Clear all
+            <button type="button" id="save-order">
+              Save offline order
             </button>
           </div>
+        </section>
+
+        <!-- RIGHT: PRODUCT CATALOG -->
+        <section>
+          <h2>Product Catalog</h2>
+          <p class="catalog-info">
+            Import your BLANCO product file from Excel (as CSV) and use it for
+            style → color → size selection.
+          </p>
+
+          <div class="field-full">
+            <label for="productFile">Upload product CSV</label>
+            <input id="productFile" type="file" accept=".csv" />
+            <div class="hint">
+              Excel → Save As → <strong>CSV (Comma delimited)</strong>. Required
+              headers:
+              <code>style_code, style_name, color, size</code>
+            </div>
+          </div>
+
+          <div class="actions" style="justify-content: flex-start;">
+            <button type="button" id="import-products" class="secondary small">
+              Import / replace catalog
+            </button>
+            <button type="button" id="export-products" class="secondary small">
+              Export catalog CSV
+            </button>
+            <button type="button" id="toggle-catalog" class="small">
+              Edit catalog
+            </button>
+          </div>
+
+          <div class="catalog-meta">
+            <span id="catalog-summary">No products loaded</span>
+            <span id="catalog-updated"></span>
+          </div>
+
+          <div
+            id="catalog-editor"
+            style="display:none; margin-top: 4px;"
+          >
+            <div class="actions" style="justify-content: flex-end;">
+              <button type="button" id="add-catalog-row" class="secondary small">
+                Add row
+              </button>
+              <button type="button" id="save-catalog" class="small">
+                Save changes
+              </button>
+            </div>
+
+            <div class="catalog-table-wrapper">
+              <table class="catalog-table">
+                <thead>
+                  <tr>
+                    <th>Style code</th>
+                    <th>Style name</th>
+                    <th>Color</th>
+                    <th>Size</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="catalog-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ORDERS LIST -->
+      <div style="margin-top: 14px;">
+        <div class="orders">
+          <div class="orders-header">
+            <h2>Saved Offline Orders</h2>
+            <div style="display:flex; gap:6px;">
+              <button type="button" id="export-csv" class="secondary small">
+                Export orders CSV
+              </button>
+              <button type="button" id="clear-orders" class="danger small">
+                Clear all
+              </button>
+            </div>
+          </div>
+
+          <div id="orders-empty" class="empty">
+            No orders yet. Saved orders will appear here.
+          </div>
+          <table id="orders-table" style="display:none;">
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Customer</th>
+                <th>Style</th>
+                <th>Color</th>
+                <th>Size</th>
+                <th>Qty</th>
+              </tr>
+            </thead>
+            <tbody id="orders-tbody"></tbody>
+          </table>
         </div>
-        <div id="orders-empty" class="empty">
-          No orders yet. Saved orders will appear here.
-        </div>
-        <table id="orders-table" style="display:none;">
-          <thead>
-            <tr>
-              <th>Time</th>
-              <th>Customer</th>
-              <th>Product</th>
-              <th>Qty</th>
-              <th>Size</th>
-              <th>Color</th>
-            </tr>
-          </thead>
-          <tbody id="orders-tbody"></tbody>
-        </table>
       </div>
     </div>
 
     <script>
-      const STORAGE_KEY = "blanco_offline_orders_v1";
+      // STORAGE KEYS
+      const ORDERS_KEY = "blanco_offline_orders_v2";
+      const CATALOG_KEY = "blanco_product_catalog_v1";
 
-      const form = document.getElementById("order-form");
-      const saveBtn = document.getElementById("save-order");
-      const clearFormBtn = document.getElementById("clear-form");
-      const clearOrdersBtn = document.getElementById("clear-orders");
-      const exportCsvBtn = document.getElementById("export-csv");
-      const tbody = document.getElementById("orders-tbody");
-      const table = document.getElementById("orders-table");
-      const emptyState = document.getElementById("orders-empty");
+      // DOM elements
+      const onlineDot = document.getElementById("online-dot");
+      const onlineText = document.getElementById("online-text");
       const lastSync = document.getElementById("last-sync");
-      const onlineDot = document.getElementById("online-indicator-dot");
-      const onlineText = document.getElementById("online-indicator-text");
+
+      const customerName = document.getElementById("customerName");
+      const customerEmail = document.getElementById("customerEmail");
+      const customerPhone = document.getElementById("customerPhone");
+      const styleSelect = document.getElementById("styleSelect");
+      const colorSelect = document.getElementById("colorSelect");
+      const sizesContainer = document.getElementById("sizesContainer");
+      const notesEl = document.getElementById("notes");
+
+      const clearFormBtn = document.getElementById("clear-form");
+      const saveOrderBtn = document.getElementById("save-order");
+      const clearOrdersBtn = document.getElementById("clear-orders");
+      const exportOrdersBtn = document.getElementById("export-csv");
+
+      const ordersEmpty = document.getElementById("orders-empty");
+      const ordersTable = document.getElementById("orders-table");
+      const ordersTbody = document.getElementById("orders-tbody");
+
+      // Catalog elements
+      const productFileInput = document.getElementById("productFile");
+      const importProductsBtn = document.getElementById("import-products");
+      const exportProductsBtn = document.getElementById("export-products");
+      const toggleCatalogBtn = document.getElementById("toggle-catalog");
+      const catalogEditor = document.getElementById("catalog-editor");
+      const catalogSummary = document.getElementById("catalog-summary");
+      const catalogUpdated = document.getElementById("catalog-updated");
+      const catalogTbody = document.getElementById("catalog-tbody");
+      const addCatalogRowBtn = document.getElementById("add-catalog-row");
+      const saveCatalogBtn = document.getElementById("save-catalog");
+
+      // --- UTILITIES ---
+
+      function updateOnlineStatus() {
+        const online = navigator.onLine;
+        onlineDot.classList.toggle("online", online);
+        onlineDot.classList.toggle("offline", !online);
+        onlineText.textContent = online ? "Online" : "Offline mode";
+      }
+
+      window.addEventListener("online", updateOnlineStatus);
+      window.addEventListener("offline", updateOnlineStatus);
+      updateOnlineStatus();
 
       function getOrders() {
         try {
-          const raw = localStorage.getItem(STORAGE_KEY);
+          const raw = localStorage.getItem(ORDERS_KEY);
           return raw ? JSON.parse(raw) : [];
         } catch (e) {
           console.error("Failed to read orders", e);
@@ -402,7 +587,7 @@
       }
 
       function saveOrders(orders) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(orders));
+        localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
         if (orders.length) {
           const last = orders[orders.length - 1];
           lastSync.textContent =
@@ -415,16 +600,16 @@
 
       function renderOrders() {
         const orders = getOrders();
-        tbody.innerHTML = "";
+        ordersTbody.innerHTML = "";
 
         if (!orders.length) {
-          table.style.display = "none";
-          emptyState.style.display = "block";
+          ordersTable.style.display = "none";
+          ordersEmpty.style.display = "block";
           return;
         }
 
-        table.style.display = "table";
-        emptyState.style.display = "none";
+        ordersTable.style.display = "table";
+        ordersEmpty.style.display = "none";
 
         for (const order of orders) {
           const tr = document.createElement("tr");
@@ -435,47 +620,459 @@
               minute: "2-digit",
             })}</td>
             <td>${order.customerName || ""}</td>
-            <td>${order.productCode || ""}</td>
-            <td>${order.qty || ""}</td>
-            <td>${order.size || ""}</td>
+            <td>${order.styleName || order.styleCode || ""}</td>
             <td>${order.color || ""}</td>
+            <td>${order.size || ""}</td>
+            <td>${order.qty || ""}</td>
           `;
 
-          tbody.appendChild(tr);
+          ordersTbody.appendChild(tr);
         }
       }
 
       function clearForm() {
-        form.reset();
-        document.getElementById("qty").value = 1;
+        customerName.value = "";
+        customerEmail.value = "";
+        customerPhone.value = "";
+        styleSelect.value = "";
+        colorSelect.innerHTML = '<option value="">Select color</option>';
+        colorSelect.disabled = true;
+        sizesContainer.innerHTML = "";
+        notesEl.value = "";
       }
 
-      function handleSave() {
-        const formData = new FormData(form);
-        const order = Object.fromEntries(formData.entries());
-        order.qty = Number(order.qty || 1);
-        order.createdAt = new Date().toISOString();
+      // --- CATALOG MANAGEMENT ---
 
-        if (!order.customerName || !order.productCode) {
-          alert("Customer and Product / SKU are required.");
+      function getCatalog() {
+        try {
+          const raw = localStorage.getItem(CATALOG_KEY);
+          return raw ? JSON.parse(raw) : [];
+        } catch (e) {
+          console.error("Failed to read catalog", e);
+          return [];
+        }
+      }
+
+      function saveCatalog(catalog) {
+        localStorage.setItem(CATALOG_KEY, JSON.stringify(catalog));
+        const now = new Date();
+        catalogUpdated.textContent =
+          "Updated " +
+          now.toLocaleDateString() +
+          " " +
+          now.toLocaleTimeString();
+        updateCatalogSummary(catalog);
+        populateStyleSelect(catalog);
+        renderCatalogTable(catalog);
+      }
+
+      function updateCatalogSummary(catalog) {
+        if (!catalog.length) {
+          catalogSummary.textContent = "No products loaded";
+          return;
+        }
+        const styleSet = new Set(
+          catalog.map((p) => (p.style_code || "").trim())
+        );
+        catalogSummary.textContent =
+          catalog.length +
+          " rows • " +
+          styleSet.size +
+          " styles";
+      }
+
+      function populateStyleSelect(catalog) {
+        const prev = styleSelect.value;
+        styleSelect.innerHTML =
+          '<option value="">Select style</option>';
+
+        const styleMap = new Map();
+        for (const row of catalog) {
+          const code = (row.style_code || "").trim();
+          const name = (row.style_name || "").trim();
+          const key = code || name;
+          if (!key) continue;
+          if (!styleMap.has(key)) {
+            styleMap.set(key, { code, name });
+          }
+        }
+
+        for (const [key, value] of styleMap.entries()) {
+          const opt = document.createElement("option");
+          opt.value = value.code || value.name;
+          opt.textContent = value.code
+            ? value.code + (value.name ? " – " + value.name : "")
+            : value.name;
+          opt.dataset.styleCode = value.code || "";
+          opt.dataset.styleName = value.name || "";
+          styleSelect.appendChild(opt);
+        }
+
+        // Try to restore previous selection
+        if (prev) {
+          styleSelect.value = prev;
+          handleStyleChange();
+        }
+      }
+
+      function handleStyleChange() {
+        const catalog = getCatalog();
+        const styleValue = styleSelect.value;
+        colorSelect.innerHTML =
+          '<option value="">Select color</option>';
+        sizesContainer.innerHTML = "";
+        colorSelect.disabled = true;
+
+        if (!styleValue) return;
+
+        const colors = new Set();
+        for (const row of catalog) {
+          const code = (row.style_code || "").trim();
+          const name = (row.style_name || "").trim();
+          const key = code || name;
+          if (key !== styleValue) continue;
+          const color = (row.color || "").trim();
+          if (color) colors.add(color);
+        }
+
+        if (!colors.size) return;
+
+        for (const color of colors) {
+          const opt = document.createElement("option");
+          opt.value = color;
+          opt.textContent = color;
+          colorSelect.appendChild(opt);
+        }
+
+        colorSelect.disabled = false;
+      }
+
+      function handleColorChange() {
+        const catalog = getCatalog();
+        const styleValue = styleSelect.value;
+        const colorValue = colorSelect.value;
+        sizesContainer.innerHTML = "";
+
+        if (!styleValue || !colorValue) return;
+
+        const sizes = new Set();
+        for (const row of catalog) {
+          const code = (row.style_code || "").trim();
+          const name = (row.style_name || "").trim();
+          const key = code || name;
+          const color = (row.color || "").trim();
+          const size = (row.size || "").trim();
+          if (key === styleValue && color === colorValue && size) {
+            sizes.add(size);
+          }
+        }
+
+        if (!sizes.size) {
+          sizesContainer.innerHTML =
+            '<div class="hint">No sizes found for this style + color.</div>';
           return;
         }
 
+        const sortedSizes = Array.from(sizes).sort((a, b) =>
+          a.localeCompare(b, undefined, { numeric: true })
+        );
+
+        for (const size of sortedSizes) {
+          const wrapper = document.createElement("div");
+          wrapper.className = "size-chip";
+
+          const label = document.createElement("label");
+          label.textContent = size;
+
+          const input = document.createElement("input");
+          input.type = "number";
+          input.min = "0";
+          input.step = "1";
+          input.value = "";
+          input.dataset.size = size;
+
+          wrapper.appendChild(label);
+          wrapper.appendChild(input);
+          sizesContainer.appendChild(wrapper);
+        }
+      }
+
+      function renderCatalogTable(catalog) {
+        catalogTbody.innerHTML = "";
+        if (!catalog.length) return;
+        catalog.forEach((row, index) => {
+          const tr = document.createElement("tr");
+
+          tr.innerHTML = `
+            <td><input data-field="style_code" data-index="${index}" value="${(row.style_code || "").replace(/"/g,"&quot;")}"></td>
+            <td><input data-field="style_name" data-index="${index}" value="${(row.style_name || "").replace(/"/g,"&quot;")}"></td>
+            <td><input data-field="color" data-index="${index}" value="${(row.color || "").replace(/"/g,"&quot;")}"></td>
+            <td><input data-field="size" data-index="${index}" value="${(row.size || "").replace(/"/g,"&quot;")}"></td>
+            <td><button type="button" class="danger small" data-delete-index="${index}">X</button></td>
+          `;
+
+          catalogTbody.appendChild(tr);
+        });
+      }
+
+      function handleCatalogInputChange(e) {
+        const input = e.target;
+        if (!(input instanceof HTMLInputElement)) return;
+        const index = input.dataset.index;
+        const field = input.dataset.field;
+        if (index == null || !field) return;
+
+        const catalog = getCatalog();
+        if (!catalog[index]) return;
+        catalog[index][field] = input.value;
+        localStorage.setItem(CATALOG_KEY, JSON.stringify(catalog));
+        updateCatalogSummary(catalog);
+      }
+
+      function handleCatalogDeleteClick(e) {
+        const btn = e.target;
+        const idx = btn.dataset.deleteIndex;
+        if (idx == null) return;
+        const catalog = getCatalog();
+        catalog.splice(Number(idx), 1);
+        saveCatalog(catalog);
+      }
+
+      function handleAddCatalogRow() {
+        const catalog = getCatalog();
+        catalog.push({
+          style_code: "",
+          style_name: "",
+          color: "",
+          size: "",
+        });
+        saveCatalog(catalog);
+      }
+
+      function handleSaveCatalogExplicit() {
+        const catalog = getCatalog();
+        saveCatalog(catalog);
+        alert("Catalog changes saved on this device.");
+      }
+
+      // Simple CSV parser (no commas inside fields please)
+      function parseCsv(text) {
+        const lines = text
+          .split(/\r?\n/)
+          .map((l) => l.trim())
+          .filter((l) => l.length > 0);
+        if (!lines.length) return [];
+
+        const header = lines[0]
+          .split(",")
+          .map((h) => h.trim().toLowerCase());
+        const rows = [];
+
+        for (let i = 1; i < lines.length; i++) {
+          const cols = lines[i].split(",");
+          const obj = {};
+          header.forEach((key, idx) => {
+            obj[key] = (cols[idx] || "").trim();
+          });
+          rows.push(obj);
+        }
+        return rows;
+      }
+
+      function handleImportProducts() {
+        const file = productFileInput.files?.[0];
+        if (!file) {
+          alert("Choose a CSV file exported from Excel first.");
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const text = e.target.result;
+          const rows = parseCsv(text);
+
+          if (!rows.length) {
+            alert("No data found in CSV.");
+            return;
+          }
+
+          const first = rows[0];
+          const required = ["style_code", "style_name", "color", "size"];
+          const missing = required.filter(
+            (key) => !(key in first)
+          );
+          if (missing.length) {
+            alert(
+              "Missing required columns: " +
+                missing.join(", ") +
+                "\n\nMake sure your header row is: style_code, style_name, color, size"
+            );
+            return;
+          }
+
+          const catalog = rows.map((r) => ({
+            style_code: r.style_code || "",
+            style_name: r.style_name || "",
+            color: r.color || "",
+            size: r.size || "",
+          }));
+
+          saveCatalog(catalog);
+          alert(
+            "Imported " +
+              catalog.length +
+              " catalog rows. Style dropdown updated."
+          );
+        };
+        reader.readAsText(file);
+      }
+
+      function handleExportProducts() {
+        const catalog = getCatalog();
+        if (!catalog.length) {
+          alert("No catalog to export.");
+          return;
+        }
+
+        const headers = [
+          "style_code",
+          "style_name",
+          "color",
+          "size",
+        ];
+        const rows = catalog.map((r) => [
+          r.style_code || "",
+          r.style_name || "",
+          r.color || "",
+          r.size || "",
+        ]);
+
+        const csv =
+          [headers, ...rows]
+            .map((row) =>
+              row
+                .map((cell) => `"${String(cell).replace(/"/g, '""')}"`)
+                .join(",")
+            )
+            .join("\n");
+
+        const blob = new Blob([csv], {
+          type: "text/csv;charset=utf-8;",
+        });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download =
+          "blanco_catalog_" +
+          new Date().toISOString().slice(0, 10) +
+          ".csv";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+
+      // --- SAVE ORDER ---
+
+      function handleSaveOrder() {
+        const catalog = getCatalog();
+        if (!catalog.length) {
+          alert(
+            "No product catalog loaded.\n\nUpload a CSV with style_code, style_name, color, size first."
+          );
+          return;
+        }
+
+        const custName = customerName.value.trim();
+        const styleValue = styleSelect.value;
+        const colorValue = colorSelect.value;
+
+        if (!custName) {
+          alert("Customer is required.");
+          return;
+        }
+        if (!styleValue) {
+          alert("Choose a style.");
+          return;
+        }
+        if (!colorValue) {
+          alert("Choose a color.");
+          return;
+        }
+
+        const sizeInputs = sizesContainer.querySelectorAll(
+          "input[data-size]"
+        );
+        const lines = [];
+        sizeInputs.forEach((input) => {
+          const qty = Number(input.value || 0);
+          if (qty > 0) {
+            lines.push({
+              size: input.dataset.size,
+              qty,
+            });
+          }
+        });
+
+        if (!lines.length) {
+          alert(
+            "Enter a quantity for at least one size before saving."
+          );
+          return;
+        }
+
+        // find style name / code from catalog
+        let styleCode = "";
+        let styleName = "";
+        for (const row of catalog) {
+          const code = (row.style_code || "").trim();
+          const name = (row.style_name || "").trim();
+          const key = code || name;
+          if (key === styleValue) {
+            styleCode = code;
+            styleName = name;
+            break;
+          }
+        }
+
         const orders = getOrders();
-        orders.push(order);
+        const baseOrder = {
+          createdAt: new Date().toISOString(),
+          customerName: custName,
+          customerEmail: customerEmail.value.trim(),
+          customerPhone: customerPhone.value.trim(),
+          styleCode,
+          styleName,
+          color: colorValue,
+          notes: notesEl.value.trim(),
+        };
+
+        for (const line of lines) {
+          orders.push({
+            ...baseOrder,
+            size: line.size,
+            qty: line.qty,
+          });
+        }
+
         saveOrders(orders);
         renderOrders();
         clearForm();
       }
 
       function handleClearOrders() {
-        if (!confirm("Delete all saved orders on this device?")) return;
-        localStorage.removeItem(STORAGE_KEY);
+        if (
+          !confirm(
+            "Delete all saved orders on this device? This cannot be undone."
+          )
+        )
+          return;
+        localStorage.removeItem(ORDERS_KEY);
         renderOrders();
         lastSync.textContent = "No orders yet";
       }
 
-      function handleExportCsv() {
+      function handleExportOrders() {
         const orders = getOrders();
         if (!orders.length) {
           alert("No orders to export.");
@@ -483,15 +1080,16 @@
         }
 
         const headers = [
-          "Created At",
-          "Customer",
-          "Email",
-          "Phone",
-          "Product / SKU",
-          "Size",
-          "Color",
-          "Qty",
-          "Notes",
+          "created_at",
+          "customer_name",
+          "customer_email",
+          "customer_phone",
+          "style_code",
+          "style_name",
+          "color",
+          "size",
+          "qty",
+          "notes",
         ];
 
         const rows = orders.map((o) => [
@@ -499,9 +1097,10 @@
           o.customerName || "",
           o.customerEmail || "",
           o.customerPhone || "",
-          o.productCode || "",
-          o.size || "",
+          o.styleCode || "",
+          o.styleName || "",
           o.color || "",
+          o.size || "",
           o.qty || "",
           (o.notes || "").replace(/\n/g, " "),
         ]);
@@ -515,7 +1114,9 @@
             )
             .join("\n");
 
-        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+        const blob = new Blob([csv], {
+          type: "text/csv;charset=utf-8;",
+        });
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
@@ -529,32 +1130,59 @@
         URL.revokeObjectURL(url);
       }
 
-      function updateOnlineStatus() {
-        const online = navigator.onLine;
-        onlineDot.classList.toggle("online", online);
-        onlineDot.classList.toggle("offline", !online);
-        onlineText.textContent = online ? "Online" : "Offline mode";
-      }
+      // --- EVENT WIRING ---
 
-      // Event wiring
-      saveBtn.addEventListener("click", handleSave);
+      styleSelect.addEventListener("change", handleStyleChange);
+      colorSelect.addEventListener("change", handleColorChange);
       clearFormBtn.addEventListener("click", clearForm);
+      saveOrderBtn.addEventListener("click", handleSaveOrder);
       clearOrdersBtn.addEventListener("click", handleClearOrders);
-      exportCsvBtn.addEventListener("click", handleExportCsv);
+      exportOrdersBtn.addEventListener("click", handleExportOrders);
 
-      window.addEventListener("online", updateOnlineStatus);
-      window.addEventListener("offline", updateOnlineStatus);
+      importProductsBtn.addEventListener("click", handleImportProducts);
+      exportProductsBtn.addEventListener("click", handleExportProducts);
+      toggleCatalogBtn.addEventListener("click", () => {
+        catalogEditor.style.display =
+          catalogEditor.style.display === "none"
+            ? "block"
+            : "none";
+      });
+      addCatalogRowBtn.addEventListener(
+        "click",
+        handleAddCatalogRow
+      );
+      saveCatalogBtn.addEventListener(
+        "click",
+        handleSaveCatalogExplicit
+      );
 
-      // Initial render
-      updateOnlineStatus();
-      renderOrders();
-      const existing = getOrders();
-      if (existing.length) {
-        const last = existing[existing.length - 1];
-        lastSync.textContent =
-          "Last order: " +
-          new Date(last.createdAt).toLocaleString();
-      }
+      catalogTbody.addEventListener("input", handleCatalogInputChange);
+      catalogTbody.addEventListener(
+        "click",
+        function (e) {
+          const btn = e.target;
+          if (btn.dataset && btn.dataset.deleteIndex != null) {
+            handleCatalogDeleteClick(e);
+          }
+        }
+      );
+
+      // INITIAL LOAD
+      (function init() {
+        const catalog = getCatalog();
+        updateCatalogSummary(catalog);
+        renderCatalogTable(catalog);
+        populateStyleSelect(catalog);
+
+        const orders = getOrders();
+        if (orders.length) {
+          const last = orders[orders.length - 1];
+          lastSync.textContent =
+            "Last order: " +
+            new Date(last.createdAt).toLocaleString();
+        }
+        renderOrders();
+      })();
     </script>
   </body>
 </html>
