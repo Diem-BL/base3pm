@@ -11,7 +11,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta name="apple-mobile-web-app-title" content="BLANCO Orders" />
     <link rel="apple-touch-icon" href="/icons/icon-192.png" />
-
+    
     <style>
       * {
         box-sizing: border-box;
@@ -32,6 +32,161 @@
         border: 1px solid #e5e7eb;
         box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
         padding: 12px 16px 16px;
+        .products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.product-card {
+  background: #f9fafb;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.product-image {
+  width: 100%;
+  padding-bottom: 100%;
+  border-radius: 10px;
+  background: #e5e7eb;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: #6b7280;
+}
+
+.product-image img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.product-name {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.product-code {
+  font-size: 11px;
+  color: #6b7280;
+}
+
+.product-summary {
+  font-size: 11px;
+  color: #6b7280;
+}
+
+.product-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+/* chips */
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 7px;
+  border-radius: 999px;
+  border: 1px solid #d1d5db;
+  font-size: 11px;
+  background: #ffffff;
+}
+.chip button {
+  border: none;
+  background: transparent;
+  padding: 0;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+/* modal */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  z-index: 40;
+}
+
+.modal-sheet {
+  width: 100%;
+  max-width: 720px;
+  background: #ffffff;
+  border-radius: 16px 16px 0 0;
+  border-top: 1px solid #e5e7eb;
+  box-shadow: 0 -18px 40px rgba(15, 23, 42, 0.25);
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px 6px;
+  border-bottom: 1px solid #e5e7eb;
+}
+.modal-title {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.modal-body {
+  padding: 10px 12px;
+  overflow-y: auto;
+}
+.modal-footer {
+  padding: 8px 12px 10px;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.image-row {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+.image-preview {
+  width: 120px;
+  height: 120px;
+  border-radius: 12px;
+  border: 1px dashed #d1d5db;
+  background: #f9fafb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: #9ca3af;
+  overflow: hidden;
+}
+.image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
       }
 
       header {
@@ -549,54 +704,161 @@
         </section>
       </div>
 
-      <!-- PRODUCTS -->
-      <div id="view-products" class="view">
-        <section class="card">
-          <h2>Products</h2>
-          <p class="subtext">
-            Upload or edit your product catalog. The + Order flow reads styles,
-            colors and sizes from this table.
-          </p>
-          <div class="field-full">
-            <label for="catalogFile">Upload CSV</label>
-            <input id="catalogFile" type="file" accept=".csv" />
-            <div class="subtext">
-              Required columns:
-              <code>style_code, style_name, color, size</code> (optional:
-              <code>price</code>). Export from Excel as CSV.
+<!-- PRODUCTS -->
+<div id="view-products" class="view">
+  <section class="card">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;">
+      <div>
+        <h2>Products</h2>
+        <p class="subtext">
+          Manage styles used in the + Order flow. Data is stored offline on
+          this device.
+        </p>
+      </div>
+      <button id="addStyleBtn" class="small">+ Add style</button>
+    </div>
+
+    <div id="productsEmpty" class="empty">
+      No styles yet – tap “+ Add style” or import a catalog CSV from another
+      device.
+    </div>
+
+    <div id="productsGrid" class="products-grid"></div>
+
+    <div class="actions" style="justify-content:flex-start;margin-top:8px;">
+      <input id="catalogFile" type="file" accept=".csv" />
+      <button id="importCatalog" class="secondary small">
+        Import CSV
+      </button>
+      <button id="exportCatalog" class="secondary small">
+        Export CSV
+      </button>
+    </div>
+  </section>
+
+  <!-- Slide-up modal editor -->
+  <div id="styleModal" class="modal-backdrop" style="display:none;">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <div id="modalTitle" class="modal-title">New style</div>
+        <button
+          type="button"
+          id="modalCloseBtn"
+          class="secondary small"
+          style="border-radius:999px;width:26px;height:26px;padding:0;"
+        >
+          ✕
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="field-row">
+          <div>
+            <label for="modalStyleName">Style name</label>
+            <input id="modalStyleName" placeholder="polo" />
+          </div>
+          <div>
+            <label for="modalStyleCode">Style code</label>
+            <input id="modalStyleCode" placeholder="1416-sup" />
+          </div>
+        </div>
+
+        <div class="field-full">
+          <label for="modalDescription">Description</label>
+          <textarea
+            id="modalDescription"
+            placeholder="Enter description (optional)"
+          ></textarea>
+        </div>
+
+        <div class="field-row">
+          <div>
+            <label for="modalPrice">Price (per piece)</label>
+            <input id="modalPrice" type="number" min="0" step="0.01" />
+          </div>
+          <div>
+            <label for="modalCategory">Category</label>
+            <input
+              id="modalCategory"
+              placeholder="polo, hoodie, outerwear…"
+            />
+          </div>
+        </div>
+
+        <!-- colors -->
+        <div class="field-full">
+          <label>Available colors</label>
+          <div
+            style="display:flex;gap:6px;align-items:center;margin-bottom:4px;"
+          >
+            <input
+              id="modalColorInput"
+              placeholder="Add color (enter, then +)"
+            />
+            <button id="addColorBtn" class="secondary small">+</button>
+          </div>
+          <div id="modalColorsRow" class="chip-row"></div>
+        </div>
+
+        <!-- sizes -->
+        <div class="field-full">
+          <label>Available sizes</label>
+          <div
+            style="display:flex;gap:6px;align-items:center;margin-bottom:4px;"
+          >
+            <input
+              id="modalSizeInput"
+              placeholder="Add size (S, M, L, XL, 32, 34…)"
+            />
+            <button id="addSizeBtn" class="secondary small">+</button>
+          </div>
+          <div id="modalSizesRow" class="chip-row"></div>
+        </div>
+
+        <!-- image -->
+        <div class="field-full">
+          <label>Product image</label>
+          <div class="image-row">
+            <div id="modalImagePreview" class="image-preview">
+              <span>Tap to upload</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:4px;">
+              <input
+                id="modalImageFile"
+                type="file"
+                accept="image/*"
+                style="font-size:11px;"
+              />
+              <small class="subtext">
+                Images are stored locally on this device (not in CSV).
+              </small>
             </div>
           </div>
-          <div class="actions" style="justify-content:flex-start">
-            <button id="importCatalog" class="secondary small">
-              Import / replace
-            </button>
-            <button id="exportCatalog" class="secondary small">
-              Export CSV
-            </button>
-            <button id="addCatalogRow" class="small">Add row</button>
-            <button id="saveCatalog" class="small">Save</button>
-          </div>
-          <div class="subtext" id="catalogSummary">No products loaded.</div>
-          <div class="subtext" id="catalogUpdated"></div>
+        </div>
 
-          <div class="catalog-table-wrapper">
-            <table class="catalog-table">
-              <thead>
-                <tr>
-                  <th>Style code</th>
-                  <th>Style name</th>
-                  <th>Color</th>
-                  <th>Size</th>
-                  <th>Price</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody id="catalogBody"></tbody>
-            </table>
-          </div>
-        </section>
+        <div
+          class="field-full"
+          style="display:flex;align-items:center;gap:6px;margin-top:4px;"
+        >
+          <input
+            id="modalInStock"
+            type="checkbox"
+            style="width:auto;margin:0;"
+          />
+          <span style="font-size:12px;">In stock</span>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button id="modalCancelBtn" class="secondary small">
+          Cancel
+        </button>
+        <button id="modalSaveBtn" class="small">Save style</button>
       </div>
     </div>
+  </div>
+</div>
+
 
     <script>
       // SIMPLE, OLDER-SAFARI-FRIENDLY JS (no arrow functions, no fancy syntax)
@@ -1244,248 +1506,547 @@
         URL.revokeObjectURL(url);
       }
 
-      // ---------- CATALOG VIEW ----------
-      var catalogBody = $("catalogBody");
+// ---------- CATALOG VIEW (cards + modal) ----------
+var STYLE_META_KEY = "blanco_style_meta_v1";
+var styleMeta = {}; // styleKey -> {desc, category, imageDataUrl, in_stock}
 
-      function renderCatalog() {
-        catalogBody.innerHTML = "";
-        for (var i = 0; i < catalog.length; i++) {
-          var row = catalog[i];
-          var tr = document.createElement("tr");
-          tr.innerHTML =
-            "<td><input data-i='" +
-            i +
-            "' data-f='style_code' value='" +
-            (row.style_code || "").replace(/"/g, "&quot;") +
-            "'></td>" +
-            "<td><input data-i='" +
-            i +
-            "' data-f='style_name' value='" +
-            (row.style_name || "").replace(/"/g, "&quot;") +
-            "'></td>" +
-            "<td><input data-i='" +
-            i +
-            "' data-f='color' value='" +
-            (row.color || "").replace(/"/g, "&quot;") +
-            "'></td>" +
-            "<td><input data-i='" +
-            i +
-            "' data-f='size' value='" +
-            (row.size || "").replace(/"/g, "&quot;") +
-            "'></td>" +
-            "<td><input data-i='" +
-            i +
-            "' data-f='price' value='" +
-            (row.price || "").replace(/"/g, "&quot;") +
-            "'></td>" +
-            "<td><button class='secondary small' data-dup='" +
-            i +
-            "'>Dup</button> <button class='danger small' data-del='" +
-            i +
-            "'>X</button></td>";
-          catalogBody.appendChild(tr);
-        }
+function loadStyleMeta() {
+  try {
+    var raw = localStorage.getItem(STYLE_META_KEY);
+    styleMeta = raw ? JSON.parse(raw) : {};
+  } catch (e) {
+    styleMeta = {};
+  }
+}
+function saveStyleMeta() {
+  try {
+    localStorage.setItem(STYLE_META_KEY, JSON.stringify(styleMeta));
+  } catch (e) {}
+}
 
-        var styleCountMap = {};
-        for (var k = 0; k < catalog.length; k++) {
-          var code = (catalog[k].style_code || "").trim();
-          if (code) styleCountMap[code] = true;
-        }
-        var styleCount = 0;
-        for (var key in styleCountMap) {
-          if (styleCountMap.hasOwnProperty(key)) styleCount++;
-        }
+function styleKeyFromParts(code, name) {
+  return (code || "").trim() + "::" + (name || "").trim();
+}
 
-        $("catalogSummary").innerHTML =
-          catalog.length + " rows • " + styleCount + " styles";
+// build index from flat catalog rows (same as used by +Order)
+function buildStylesIndexForProducts() {
+  var map = {};
+  for (var i = 0; i < catalog.length; i++) {
+    var row = catalog[i];
+    var code = (row.style_code || "").trim();
+    var name = (row.style_name || "").trim();
+    var key = styleKeyFromParts(code, name);
+    if (!key) continue;
+    if (!map[key]) {
+      map[key] = {
+        key: key,
+        code: code,
+        name: name,
+        price: row.price || "",
+        colors: {},
+      };
+    }
+    var color = (row.color || "").trim();
+    var size = (row.size || "").trim();
+    if (color) {
+      if (!map[key].colors[color]) {
+        map[key].colors[color] = [];
       }
-
-      catalogBody.oninput = function (e) {
-        var t = e.target || e.srcElement;
-        if (t.tagName.toLowerCase() !== "input") return;
-        var i = Number(t.getAttribute("data-i"));
-        var f = t.getAttribute("data-f");
-        catalog[i][f] = t.value;
-        saveCatalog(catalog);
-        updateDashboard();
-      };
-
-      catalogBody.onclick = function (e) {
-        var t = e.target || e.srcElement;
-        if (t.tagName.toLowerCase() !== "button") return;
-        var del = t.getAttribute("data-del");
-        var dup = t.getAttribute("data-dup");
-        if (del != null) {
-          catalog.splice(Number(del), 1);
-          saveCatalog(catalog);
-          renderCatalog();
-          updateDashboard();
-        } else if (dup != null) {
-          var row = catalog[Number(dup)];
-          catalog.splice(Number(dup) + 1, 0, {
-            style_code: row.style_code,
-            style_name: row.style_name,
-            color: row.color,
-            size: row.size,
-            price: row.price,
-          });
-          saveCatalog(catalog);
-          renderCatalog();
-          updateDashboard();
-        }
-      };
-
-      $("addCatalogRow").onclick = function () {
-        catalog.push({
-          style_code: "",
-          style_name: "",
-          color: "",
-          size: "",
-          price: "",
-        });
-        saveCatalog(catalog);
-        renderCatalog();
-        updateDashboard();
-      };
-
-      $("saveCatalog").onclick = function () {
-        saveCatalog(catalog);
-        $("catalogUpdated").innerHTML =
-          "Saved " + new Date().toLocaleString();
-        updateDashboard();
-      };
-
-      $("importCatalog").onclick = function () {
-        var fileInput = $("catalogFile");
-        var file =
-          fileInput && fileInput.files && fileInput.files[0];
-        if (!file) {
-          alert("Choose a CSV file first.");
-          return;
-        }
-        var reader = new FileReader();
-        reader.onload = function (e) {
-          var text = e.target.result;
-          var rows = parseCsv(text);
-          if (!rows.length) {
-            alert("No rows in CSV.");
-            return;
-          }
-          var first = rows[0];
-          var req = [
-            "style_code",
-            "style_name",
-            "color",
-            "size",
-          ];
-          var missing = [];
-          for (var i = 0; i < req.length; i++) {
-            if (!first.hasOwnProperty(req[i])) missing.push(req[i]);
-          }
-          if (missing.length) {
-            alert(
-              "Missing columns: " +
-                missing.join(", ") +
-                ". CSV must have style_code, style_name, color, size."
-            );
-            return;
-          }
-          catalog = [];
-          for (var j = 0; j < rows.length; j++) {
-            catalog.push({
-              style_code: rows[j].style_code || "",
-              style_name: rows[j].style_name || "",
-              color: rows[j].color || "",
-              size: rows[j].size || "",
-              price: rows[j].price || "",
-            });
-          }
-          saveCatalog(catalog);
-          renderCatalog();
-          updateDashboard();
-          alert("Catalog imported.");
-        };
-        reader.readAsText(file);
-      };
-
-      $("exportCatalog").onclick = function () {
-        if (!catalog.length) {
-          alert("No catalog to export.");
-          return;
-        }
-        var headers = [
-          "style_code",
-          "style_name",
-          "color",
-          "size",
-          "price",
-        ];
-        var rows = [headers];
-        for (var i = 0; i < catalog.length; i++) {
-          var r = catalog[i];
-          rows.push([
-            r.style_code || "",
-            r.style_name || "",
-            r.color || "",
-            r.size || "",
-            r.price || "",
-          ]);
-        }
-        var lines = [];
-        for (var rowIdx = 0; rowIdx < rows.length; rowIdx++) {
-          var row = rows[rowIdx];
-          for (var c = 0; c < row.length; c++) {
-            row[c] =
-              '"' + String(row[c]).replace(/"/g, '""') + '"';
-          }
-          lines.push(row.join(","));
-        }
-        var csv = lines.join("\n");
-        var blob = new Blob([csv], {
-          type: "text/csv;charset=utf-8;",
-        });
-        var url = URL.createObjectURL(blob);
-        var a = document.createElement("a");
-        a.href = url;
-        a.download =
-          "blanco_catalog_" +
-          new Date().toISOString().slice(0, 10) +
-          ".csv";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-      };
-
-      function parseCsv(text) {
-        var lines = text.split(/\r?\n/);
-        var out = [];
-        if (!lines.length) return out;
-        var header = lines[0].split(",");
-        for (var i = 0; i < header.length; i++) {
-          header[i] = header[i].trim().toLowerCase();
-        }
-        for (var r = 1; r < lines.length; r++) {
-          var line = lines[r];
-          if (!line) continue;
-          var cols = line.split(",");
-          var obj = {};
-          for (var c = 0; c < header.length; c++) {
-            obj[header[c]] = (cols[c] || "").replace(/^"|"$/g, "");
-          }
-          out.push(obj);
-        }
-        return out;
+      if (size && map[key].colors[color].indexOf(size) === -1) {
+        map[key].colors[color].push(size);
       }
+    }
+    if (row.price && !map[key].price) map[key].price = row.price;
+  }
+  return map;
+}
+
+// render card grid
+function renderProductsGrid() {
+  var grid = $("productsGrid");
+  var empty = $("productsEmpty");
+  grid.innerHTML = "";
+
+  var stylesMap = buildStylesIndexForProducts();
+  var any = false;
+
+  for (var key in stylesMap) {
+    if (!stylesMap.hasOwnProperty(key)) continue;
+    any = true;
+    var meta = stylesMap[key];
+
+    var metaExtra = styleMeta[key] || {};
+    var imgData = metaExtra.imageDataUrl || "";
+
+    var colorCount = 0;
+    var sizeCount = 0;
+    for (var c in meta.colors) {
+      if (!meta.colors.hasOwnProperty(c)) continue;
+      colorCount++;
+      sizeCount += meta.colors[c].length;
+    }
+
+    var card = document.createElement("div");
+    card.className = "product-card";
+
+    var imgDiv = document.createElement("div");
+    imgDiv.className = "product-image";
+    if (imgData) {
+      var img = document.createElement("img");
+      img.src = imgData;
+      imgDiv.appendChild(img);
+    } else {
+      imgDiv.innerHTML = "<span>Photo</span>";
+    }
+    card.appendChild(imgDiv);
+
+    var nameDiv = document.createElement("div");
+    nameDiv.className = "product-name";
+    nameDiv.innerHTML = meta.name || meta.code || "Unnamed style";
+    card.appendChild(nameDiv);
+
+    var codeDiv = document.createElement("div");
+    codeDiv.className = "product-code";
+    codeDiv.innerHTML = meta.code || meta.name || "";
+    card.appendChild(codeDiv);
+
+    var summary = document.createElement("div");
+    summary.className = "product-summary";
+    summary.innerHTML =
+      colorCount +
+      " colors • " +
+      sizeCount +
+      " sizes" +
+      (meta.price ? " • $" + meta.price : "");
+    card.appendChild(summary);
+
+    var actions = document.createElement("div");
+    actions.className = "product-actions";
+
+    var editBtn = document.createElement("button");
+    editBtn.className = "secondary small";
+    editBtn.innerHTML = "Edit";
+    editBtn.setAttribute("data-style-key", key);
+    actions.appendChild(editBtn);
+
+    var delBtn = document.createElement("button");
+    delBtn.className = "danger small";
+    delBtn.innerHTML = "Delete";
+    delBtn.setAttribute("data-style-key", key);
+    actions.appendChild(delBtn);
+
+    card.appendChild(actions);
+    grid.appendChild(card);
+  }
+
+  empty.style.display = any ? "none" : "block";
+}
+
+// --- modal state ---
+var editingStyleKey = null; // old key when editing
+var modalColors = [];
+var modalSizes = [];
+var modalImageDataUrl = "";
+
+function openStyleModal(styleKey) {
+  var stylesMap = buildStylesIndexForProducts();
+  editingStyleKey = styleKey || null;
+  modalColors = [];
+  modalSizes = [];
+  modalImageDataUrl = "";
+
+  if (styleKey && stylesMap[styleKey]) {
+    // editing existing style
+    var s = stylesMap[styleKey];
+    $("modalTitle").innerHTML = "Edit style";
+
+    $("modalStyleName").value = s.name || "";
+    $("modalStyleCode").value = s.code || "";
+    $("modalPrice").value = s.price || "";
+    $("modalDescription").value =
+      (styleMeta[styleKey] && styleMeta[styleKey].description) || "";
+    $("modalCategory").value =
+      (styleMeta[styleKey] && styleMeta[styleKey].category) || "";
+
+    var extra = styleMeta[styleKey] || {};
+    modalImageDataUrl = extra.imageDataUrl || "";
+    $("modalInStock").checked =
+      extra.hasOwnProperty("in_stock") ? !!extra.in_stock : true;
+
+    // colors / sizes from catalog
+    var cMap = s.colors;
+    var c;
+    for (c in cMap) {
+      if (!cMap.hasOwnProperty(c)) continue;
+      if (modalColors.indexOf(c) === -1) modalColors.push(c);
+      var szs = cMap[c];
+      for (var i = 0; i < szs.length; i++) {
+        var size = szs[i];
+        if (modalSizes.indexOf(size) === -1) modalSizes.push(size);
+      }
+    }
+  } else {
+    // new style
+    $("modalTitle").innerHTML = "New style";
+    $("modalStyleName").value = "";
+    $("modalStyleCode").value = "";
+    $("modalPrice").value = "";
+    $("modalDescription").value = "";
+    $("modalCategory").value = "";
+    $("modalInStock").checked = true;
+  }
+
+  renderModalChips();
+  renderModalImagePreview();
+
+  $("styleModal").style.display = "flex";
+}
+
+function closeStyleModal() {
+  $("styleModal").style.display = "none";
+}
+
+function renderModalChips() {
+  var colorsRow = $("modalColorsRow");
+  var sizesRow = $("modalSizesRow");
+  colorsRow.innerHTML = "";
+  sizesRow.innerHTML = "";
+
+  var i;
+  for (i = 0; i < modalColors.length; i++) {
+    (function (idx) {
+      var chip = document.createElement("span");
+      chip.className = "chip";
+      chip.innerHTML =
+        modalColors[idx] +
+        ' <button type="button" data-type="color" data-idx="' +
+        idx +
+        '">×</button>';
+      colorsRow.appendChild(chip);
+    })(i);
+  }
+
+  for (i = 0; i < modalSizes.length; i++) {
+    (function (idx2) {
+      var chip = document.createElement("span");
+      chip.className = "chip";
+      chip.innerHTML =
+        modalSizes[idx2] +
+        ' <button type="button" data-type="size" data-idx="' +
+        idx2 +
+        '">×</button>';
+      sizesRow.appendChild(chip);
+    })(i);
+  }
+}
+
+$("modalColorsRow").onclick = function (e) {
+  var t = e.target || e.srcElement;
+  if (t.tagName.toLowerCase() !== "button") return;
+  var type = t.getAttribute("data-type");
+  var idx = Number(t.getAttribute("data-idx"));
+  if (type === "color") {
+    modalColors.splice(idx, 1);
+  } else if (type === "size") {
+    modalSizes.splice(idx, 1);
+  }
+  renderModalChips();
+};
+
+$("modalSizesRow").onclick = $("modalColorsRow").onclick;
+
+$("addColorBtn").onclick = function () {
+  var v = $("modalColorInput").value.replace(/\s+$/, "");
+  if (!v) return;
+  if (modalColors.indexOf(v) === -1) modalColors.push(v);
+  $("modalColorInput").value = "";
+  renderModalChips();
+};
+$("modalColorInput").onkeypress = function (e) {
+  if ((e.key || e.which) === "Enter" || e.which === 13) {
+    $("addColorBtn").onclick();
+    e.preventDefault();
+  }
+};
+
+$("addSizeBtn").onclick = function () {
+  var v = $("modalSizeInput").value.replace(/\s+$/, "");
+  if (!v) return;
+  if (modalSizes.indexOf(v) === -1) modalSizes.push(v);
+  $("modalSizeInput").value = "";
+  renderModalChips();
+};
+$("modalSizeInput").onkeypress = function (e) {
+  if ((e.key || e.which) === "Enter" || e.which === 13) {
+    $("addSizeBtn").onclick();
+    e.preventDefault();
+  }
+};
+
+function renderModalImagePreview() {
+  var box = $("modalImagePreview");
+  box.innerHTML = "";
+  if (modalImageDataUrl) {
+    var img = document.createElement("img");
+    img.src = modalImageDataUrl;
+    box.appendChild(img);
+  } else {
+    box.innerHTML = "<span>Tap to upload</span>";
+  }
+}
+
+$("modalImageFile").onchange = function () {
+  var file =
+    this && this.files && this.files[0] ? this.files[0] : null;
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function (e) {
+    modalImageDataUrl = e.target.result;
+    renderModalImagePreview();
+  };
+  reader.readAsDataURL(file);
+};
+
+$("modalImagePreview").onclick = function () {
+  $("modalImageFile").click();
+};
+
+$("modalCloseBtn").onclick = closeStyleModal;
+$("modalCancelBtn").onclick = closeStyleModal;
+
+// save style (rebuilds underlying flat catalog entries)
+$("modalSaveBtn").onclick = function () {
+  var name = $("modalStyleName").value.replace(/\s+$/, "");
+  var code = $("modalStyleCode").value.replace(/\s+$/, "");
+  var price = $("modalPrice").value;
+  var desc = $("modalDescription").value;
+  var cat = $("modalCategory").value;
+  var inStock = $("modalInStock").checked;
+
+  if (!name && !code) {
+    alert("Enter at least a style name or style code.");
+    return;
+  }
+  if (!modalColors.length) {
+    alert("Add at least one color.");
+    return;
+  }
+  if (!modalSizes.length) {
+    alert("Add at least one size.");
+    return;
+  }
+
+  var newKey = styleKeyFromParts(code, name);
+
+  // remove old rows for this style if editing
+  var newCatalog = [];
+  var i;
+  for (i = 0; i < catalog.length; i++) {
+    var row = catalog[i];
+    var rKey = styleKeyFromParts(
+      row.style_code || "",
+      row.style_name || ""
+    );
+    if (editingStyleKey && rKey === editingStyleKey) {
+      continue;
+    }
+    newCatalog.push(row);
+  }
+
+  // add all color x size combinations
+  for (var c = 0; c < modalColors.length; c++) {
+    for (var s = 0; s < modalSizes.length; s++) {
+      newCatalog.push({
+        style_code: code,
+        style_name: name,
+        color: modalColors[c],
+        size: modalSizes[s],
+        price: price || "",
+      });
+    }
+  }
+
+  catalog = newCatalog;
+  saveCatalog(catalog);
+  saveStyleMetaEntry(newKey, desc, cat, inStock, modalImageDataUrl);
+
+  renderProductsGrid();
+  renderStylesGrid(); // update +Order styles
+  updateDashboard();
+  closeStyleModal();
+  alert("Style saved.");
+};
+
+function saveStyleMetaEntry(key, desc, cat, inStock, imageDataUrl) {
+  if (!key) return;
+  if (!styleMeta[key]) styleMeta[key] = {};
+  styleMeta[key].description = desc || "";
+  styleMeta[key].category = cat || "";
+  styleMeta[key].in_stock = !!inStock;
+  if (imageDataUrl) styleMeta[key].imageDataUrl = imageDataUrl;
+  saveStyleMeta();
+}
+
+// events for grid + import/export
+$("addStyleBtn").onclick = function () {
+  openStyleModal(null);
+};
+
+$("productsGrid").onclick = function (e) {
+  var t = e.target || e.srcElement;
+  if (t.tagName.toLowerCase() !== "button") return;
+  var key = t.getAttribute("data-style-key");
+  if (!key) return;
+
+  if (t.innerHTML.indexOf("Edit") !== -1) {
+    openStyleModal(key);
+  } else if (t.innerHTML.indexOf("Delete") !== -1) {
+    if (!confirm("Delete this style from catalog?")) return;
+    // remove catalog rows
+    var newCatalog = [];
+    for (var i = 0; i < catalog.length; i++) {
+      var row = catalog[i];
+      var rKey = styleKeyFromParts(
+        row.style_code || "",
+        row.style_name || ""
+      );
+      if (rKey === key) continue;
+      newCatalog.push(row);
+    }
+    catalog = newCatalog;
+    saveCatalog(catalog);
+    // remove meta
+    delete styleMeta[key];
+    saveStyleMeta();
+    renderProductsGrid();
+    renderStylesGrid();
+    updateDashboard();
+  }
+};
+
+// CSV import / export (same columns as before)
+$("importCatalog").onclick = function () {
+  var fileInput = $("catalogFile");
+  var file =
+    fileInput && fileInput.files && fileInput.files[0]
+      ? fileInput.files[0]
+      : null;
+  if (!file) {
+    alert("Choose a CSV file first.");
+    return;
+  }
+  var reader = new FileReader();
+  reader.onload = function (e) {
+    var text = e.target.result;
+    var rows = parseCsv(text);
+    if (!rows.length) {
+      alert("No rows in CSV.");
+      return;
+    }
+    var first = rows[0];
+    var req = ["style_code", "style_name", "color", "size"];
+    var missing = [];
+    for (var i = 0; i < req.length; i++) {
+      if (!first.hasOwnProperty(req[i])) missing.push(req[i]);
+    }
+    if (missing.length) {
+      alert(
+        "Missing columns: " +
+          missing.join(", ") +
+          ". CSV must have style_code, style_name, color, size."
+      );
+      return;
+    }
+    catalog = [];
+    for (var j = 0; j < rows.length; j++) {
+      catalog.push({
+        style_code: rows[j].style_code || "",
+        style_name: rows[j].style_name || "",
+        color: rows[j].color || "",
+        size: rows[j].size || "",
+        price: rows[j].price || "",
+      });
+    }
+    saveCatalog(catalog);
+    renderProductsGrid();
+    renderStylesGrid();
+    updateDashboard();
+    alert("Catalog imported.");
+  };
+  reader.readAsText(file);
+};
+
+$("exportCatalog").onclick = function () {
+  if (!catalog.length) {
+    alert("No catalog to export.");
+    return;
+  }
+  var headers = ["style_code", "style_name", "color", "size", "price"];
+  var rows = [headers];
+  for (var i = 0; i < catalog.length; i++) {
+    var r = catalog[i];
+    rows.push([
+      r.style_code || "",
+      r.style_name || "",
+      r.color || "",
+      r.size || "",
+      r.price || "",
+    ]);
+  }
+  var lines = [];
+  for (var rowIdx = 0; rowIdx < rows.length; rowIdx++) {
+    var row = rows[rowIdx];
+    for (var c = 0; c < row.length; c++) {
+      row[c] = '"' + String(row[c]).replace(/"/g, '""') + '"';
+    }
+    lines.push(row.join(","));
+  }
+  var csv = lines.join("\n");
+  var blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement("a");
+  a.href = url;
+  a.download =
+    "blanco_catalog_" + new Date().toISOString().slice(0, 10) + ".csv";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+};
+
+// simple CSV parser (header row -> objects)
+function parseCsv(text) {
+  var lines = text.split(/\r?\n/);
+  var out = [];
+  if (!lines.length) return out;
+  var header = lines[0].split(",");
+  var i;
+  for (i = 0; i < header.length; i++) {
+    header[i] = header[i].trim().toLowerCase();
+  }
+  for (var r = 1; r < lines.length; r++) {
+    var line = lines[r];
+    if (!line) continue;
+    var cols = line.split(",");
+    var obj = {};
+    for (var c = 0; c < header.length; c++) {
+      obj[header[c]] = (cols[c] || "").replace(/^"|"$/g, "");
+    }
+    out.push(obj);
+  }
+  return out;
+}
 
       // ---------- INIT ----------
-      (function init() {
-        catalog = getCatalog();
-        renderCatalog();
-        renderStylesGrid();
-        updateDashboard();
-        renderOrders();
-      })();
+    (function init() {
+  catalog = getCatalog();
+  loadStyleMeta();
+  renderProductsGrid();
+  renderStylesGrid();
+  updateDashboard();
+  renderOrders();
+})();
+
     </script>
   </body>
 </html>
