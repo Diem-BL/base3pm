@@ -2,19 +2,559 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="https://base44.com/logo_v2.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Base44 APP</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>BLANCO Clothing – Offline Orders</title>
+
+    <!-- PWA / iOS bits -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-title" content="BLANCO Clothing" />
+    <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+
+    <!-- Simple black & white styling -->
+    <style>
+      :root {
+        color-scheme: light dark;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        background: #000;
+        color: #f5f5f5;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        padding: 16px;
+      }
+
+      .app {
+        width: 100%;
+        max-width: 900px;
+        background: #111;
+        border-radius: 16px;
+        padding: 20px;
+        border: 1px solid #333;
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.5);
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: baseline;
+        margin-bottom: 20px;
+        border-bottom: 1px solid #333;
+        padding-bottom: 10px;
+      }
+
+      header h1 {
+        font-size: 20px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin: 0;
+      }
+
+      header span {
+        font-size: 12px;
+        color: #b3b3b3;
+      }
+
+      form {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 12px;
+        margin-bottom: 18px;
+      }
+
+      label {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #b3b3b3;
+        display: block;
+        margin-bottom: 4px;
+      }
+
+      input,
+      textarea,
+      select {
+        width: 100%;
+        padding: 8px 10px;
+        border-radius: 8px;
+        border: 1px solid #333;
+        background: #000;
+        color: #f5f5f5;
+        font-size: 13px;
+      }
+
+      input:focus,
+      textarea:focus,
+      select:focus {
+        outline: none;
+        border-color: #fff;
+      }
+
+      textarea {
+        resize: vertical;
+        min-height: 60px;
+      }
+
+      .field-full {
+        grid-column: 1 / -1;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: flex-end;
+        margin-top: 8px;
+        margin-bottom: 16px;
+      }
+
+      button {
+        border-radius: 999px;
+        padding: 8px 16px;
+        border: 1px solid #333;
+        background: #f5f5f5;
+        color: #000;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        cursor: pointer;
+      }
+
+      button.secondary {
+        background: #000;
+        color: #f5f5f5;
+      }
+
+      button.danger {
+        background: #ff4d4f;
+        color: #000;
+        border-color: #ff4d4f;
+      }
+
+      button:active {
+        transform: translateY(1px);
+      }
+
+      .status-bar {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+        margin-bottom: 10px;
+        font-size: 11px;
+        color: #b3b3b3;
+      }
+
+      .status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        margin-right: 6px;
+      }
+
+      .status-dot.online {
+        background: #4ade80;
+      }
+
+      .status-dot.offline {
+        background: #facc15;
+      }
+
+      .orders {
+        border-radius: 12px;
+        border: 1px solid #333;
+        padding: 10px;
+        max-height: 260px;
+        overflow: auto;
+        background: #050505;
+      }
+
+      .orders-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+
+      .orders-header h2 {
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin: 0;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 11px;
+      }
+
+      th,
+      td {
+        padding: 6px 4px;
+        border-bottom: 1px solid #222;
+        text-align: left;
+      }
+
+      th {
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #b3b3b3;
+        font-weight: 500;
+      }
+
+      tr:last-child td {
+        border-bottom: none;
+      }
+
+      .empty {
+        font-size: 12px;
+        color: #777;
+        text-align: center;
+        padding: 20px 0;
+      }
+
+      @media (max-width: 600px) {
+        body {
+          padding: 10px;
+        }
+        .app {
+          padding: 14px;
+        }
+        header {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+      }
+    </style>
   </head>
 
-
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta name="apple-mobile-web-app-title" content="Base44">
-<link rel="apple-touch-icon" href="/icons/icon-192.png">
-
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+    <div class="app">
+      <header>
+        <div>
+          <h1>BLANCO Clothing</h1>
+          <span>Offline Order Capture</span>
+        </div>
+        <span id="last-sync">No orders yet</span>
+      </header>
+
+      <div class="status-bar">
+        <div style="display: flex; align-items: center;">
+          <span
+            id="online-indicator-dot"
+            class="status-dot"
+          ></span>
+          <span id="online-indicator-text">Checking connection…</span>
+        </div>
+        <span>Orders are stored securely on this device only.</span>
+      </div>
+
+      <form id="order-form">
+        <div class="field-full">
+          <label for="customerName">Customer</label>
+          <input
+            id="customerName"
+            name="customerName"
+            placeholder="Name"
+            required
+          />
+        </div>
+
+        <div>
+          <label for="customerEmail">Email</label>
+          <input
+            id="customerEmail"
+            name="customerEmail"
+            type="email"
+            placeholder="customer@email.com"
+          />
+        </div>
+
+        <div>
+          <label for="customerPhone">Phone</label>
+          <input
+            id="customerPhone"
+            name="customerPhone"
+            placeholder="+1 (555) 123-4567"
+          />
+        </div>
+
+        <div>
+          <label for="productCode">Product / SKU</label>
+          <input
+            id="productCode"
+            name="productCode"
+            placeholder="e.g. BL1413 – Golf Polo"
+            required
+          />
+        </div>
+
+        <div>
+          <label for="size">Size</label>
+          <input id="size" name="size" placeholder="M / L / 32x30…" />
+        </div>
+
+        <div>
+          <label for="color">Color</label>
+          <input id="color" name="color" placeholder="Black, Sand, Sky…" />
+        </div>
+
+        <div>
+          <label for="qty">Qty</label>
+          <input
+            id="qty"
+            name="qty"
+            type="number"
+            min="1"
+            step="1"
+            value="1"
+            required
+          />
+        </div>
+
+        <div class="field-full">
+          <label for="notes">Notes</label>
+          <textarea
+            id="notes"
+            name="notes"
+            placeholder="Fit notes, ship window, wholesale vs DTC, etc."
+          ></textarea>
+        </div>
+      </form>
+
+      <div class="actions">
+        <button type="button" id="clear-form" class="secondary">
+          Clear form
+        </button>
+        <button type="button" id="save-order">
+          Save offline order
+        </button>
+      </div>
+
+      <div class="orders">
+        <div class="orders-header">
+          <h2>Saved Offline Orders</h2>
+          <div style="display: flex; gap: 6px;">
+            <button type="button" id="export-csv" class="secondary">
+              Export CSV
+            </button>
+            <button type="button" id="clear-orders" class="danger">
+              Clear all
+            </button>
+          </div>
+        </div>
+        <div id="orders-empty" class="empty">
+          No orders yet. Saved orders will appear here.
+        </div>
+        <table id="orders-table" style="display:none;">
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Customer</th>
+              <th>Product</th>
+              <th>Qty</th>
+              <th>Size</th>
+              <th>Color</th>
+            </tr>
+          </thead>
+          <tbody id="orders-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <script>
+      const STORAGE_KEY = "blanco_offline_orders_v1";
+
+      const form = document.getElementById("order-form");
+      const saveBtn = document.getElementById("save-order");
+      const clearFormBtn = document.getElementById("clear-form");
+      const clearOrdersBtn = document.getElementById("clear-orders");
+      const exportCsvBtn = document.getElementById("export-csv");
+      const tbody = document.getElementById("orders-tbody");
+      const table = document.getElementById("orders-table");
+      const emptyState = document.getElementById("orders-empty");
+      const lastSync = document.getElementById("last-sync");
+      const onlineDot = document.getElementById("online-indicator-dot");
+      const onlineText = document.getElementById("online-indicator-text");
+
+      function getOrders() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          return raw ? JSON.parse(raw) : [];
+        } catch (e) {
+          console.error("Failed to read orders", e);
+          return [];
+        }
+      }
+
+      function saveOrders(orders) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(orders));
+        if (orders.length) {
+          const last = orders[orders.length - 1];
+          lastSync.textContent =
+            "Last order: " +
+            new Date(last.createdAt).toLocaleString();
+        } else {
+          lastSync.textContent = "No orders yet";
+        }
+      }
+
+      function renderOrders() {
+        const orders = getOrders();
+        tbody.innerHTML = "";
+
+        if (!orders.length) {
+          table.style.display = "none";
+          emptyState.style.display = "block";
+          return;
+        }
+
+        table.style.display = "table";
+        emptyState.style.display = "none";
+
+        for (const order of orders) {
+          const tr = document.createElement("tr");
+
+          tr.innerHTML = `
+            <td>${new Date(order.createdAt).toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}</td>
+            <td>${order.customerName || ""}</td>
+            <td>${order.productCode || ""}</td>
+            <td>${order.qty || ""}</td>
+            <td>${order.size || ""}</td>
+            <td>${order.color || ""}</td>
+          `;
+
+          tbody.appendChild(tr);
+        }
+      }
+
+      function clearForm() {
+        form.reset();
+        document.getElementById("qty").value = 1;
+      }
+
+      function handleSave() {
+        const formData = new FormData(form);
+        const order = Object.fromEntries(formData.entries());
+        order.qty = Number(order.qty || 1);
+        order.createdAt = new Date().toISOString();
+
+        if (!order.customerName || !order.productCode) {
+          alert("Customer and Product / SKU are required.");
+          return;
+        }
+
+        const orders = getOrders();
+        orders.push(order);
+        saveOrders(orders);
+        renderOrders();
+        clearForm();
+      }
+
+      function handleClearOrders() {
+        if (!confirm("Delete all saved orders on this device?")) return;
+        localStorage.removeItem(STORAGE_KEY);
+        renderOrders();
+        lastSync.textContent = "No orders yet";
+      }
+
+      function handleExportCsv() {
+        const orders = getOrders();
+        if (!orders.length) {
+          alert("No orders to export.");
+          return;
+        }
+
+        const headers = [
+          "Created At",
+          "Customer",
+          "Email",
+          "Phone",
+          "Product / SKU",
+          "Size",
+          "Color",
+          "Qty",
+          "Notes",
+        ];
+
+        const rows = orders.map((o) => [
+          o.createdAt,
+          o.customerName || "",
+          o.customerEmail || "",
+          o.customerPhone || "",
+          o.productCode || "",
+          o.size || "",
+          o.color || "",
+          o.qty || "",
+          (o.notes || "").replace(/\n/g, " "),
+        ]);
+
+        const csv =
+          [headers, ...rows]
+            .map((row) =>
+              row
+                .map((cell) => `"${String(cell).replace(/"/g, '""')}"`)
+                .join(",")
+            )
+            .join("\n");
+
+        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download =
+          "blanco_offline_orders_" +
+          new Date().toISOString().slice(0, 10) +
+          ".csv";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+
+      function updateOnlineStatus() {
+        const online = navigator.onLine;
+        onlineDot.classList.toggle("online", online);
+        onlineDot.classList.toggle("offline", !online);
+        onlineText.textContent = online ? "Online" : "Offline mode";
+      }
+
+      // Event wiring
+      saveBtn.addEventListener("click", handleSave);
+      clearFormBtn.addEventListener("click", clearForm);
+      clearOrdersBtn.addEventListener("click", handleClearOrders);
+      exportCsvBtn.addEventListener("click", handleExportCsv);
+
+      window.addEventListener("online", updateOnlineStatus);
+      window.addEventListener("offline", updateOnlineStatus);
+
+      // Initial render
+      updateOnlineStatus();
+      renderOrders();
+      const existing = getOrders();
+      if (existing.length) {
+        const last = existing[existing.length - 1];
+        lastSync.textContent =
+          "Last order: " +
+          new Date(last.createdAt).toLocaleString();
+      }
+    </script>
   </body>
 </html>
