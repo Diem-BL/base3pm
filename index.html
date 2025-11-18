@@ -359,10 +359,12 @@
         margin-bottom: 2px;
       }
 
-      .size-chip select {
-        font-size: 12px;
-        padding: 3px 6px;
-      }
+   .size-chip input,
+.size-chip select {
+  font-size: 12px;
+  padding: 3px 6px;
+}
+
 
       .orders {
         border-radius: 12px;
@@ -962,21 +964,24 @@
         const styleOption = styleSelect.options[styleSelect.selectedIndex];
         const styleLabel = styleOption ? styleOption.textContent : styleValue;
 
-        const sizeInputs = sizesContainer.querySelectorAll(
-          "select[data-size]"
+       const sizeInputs = sizesContainer.querySelectorAll("input[data-size]");
+
         );
         let added = 0;
-        sizeInputs.forEach((select) => {
-          const qty = Number(select.value || 0);
-          if (qty > 0) {
-            currentOrderLines.push({
-              styleKey: styleValue,
-              styleLabel,
-              color: colorValue,
-              size: select.dataset.size,
-              qty,
-            });
-            added++;
+        sizeInputs.forEach((input) => {
+  const qty = Number(input.value || 0);
+  if (qty > 0) {
+    currentOrderLines.push({
+      styleKey: styleValue,
+      styleLabel,
+      color: colorValue,
+      size: input.dataset.size,
+      qty,
+    });
+    added++;
+  }
+});
+
           }
         });
 
@@ -1142,17 +1147,15 @@
           const label = document.createElement("label");
           label.textContent = size;
 
-          const select = document.createElement("select");
-          select.dataset.size = size;
-          for (let i = 0; i <= 20; i++) {
-            const opt = document.createElement("option");
-            opt.value = String(i);
-            opt.textContent = String(i);
-            select.appendChild(opt);
-          }
+          const input = document.createElement("input");
+input.type = "number";
+input.min = "0";
+input.step = "1";
+input.value = "";
+input.dataset.size = size;
 
-          wrapper.appendChild(label);
-          wrapper.appendChild(select);
+wrapper.appendChild(input);
+
           sizesContainer.appendChild(wrapper);
         }
       }
