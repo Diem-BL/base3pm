@@ -600,44 +600,50 @@
   <body>
     <div class="app">
       <!-- MENU -->
-      <div id="menuOverlay" class="menu-overlay">
-        <div class="menu-panel">
+    <div
+  id="menuOverlay"
+  class="menu-overlay"
+  onclick="if (event.target === this) this.classList.remove('open')"
+>
+  <div class="menu-panel">
+    ...
+
           <div class="menu-header-row">
             <div class="menu-title">BLANCO Menu</div>
-            <button type="button" id="menuClose" class="menu-close">
-              Close
-            </button>
+           <button
+  type="button"
+  id="menuClose"
+  class="menu-close"
+  onclick="document.getElementById('menuOverlay').classList.remove('open')"
+>
+  Close
+</button>
+
           </div>
-          <ul class="menu-list">
-            <li class="menu-item" data-view="dashboard-view">
-              <span class="bullet"></span>
-              Dashboard
-            </li>
-            <li
-              class="menu-item menu-item-primary"
-              data-view="order-view"
-            >
-              <span class="bullet"></span>
-              + Order
-            </li>
-            <li class="menu-item" data-view="orders-view">
-              <span class="bullet"></span>
-              Orders
-            </li>
-            <li class="menu-item" data-view="products-view">
-              <span class="bullet"></span>
-              Products
-            </li>
-          </ul>
+      <li
+  class="menu-item menu-item-primary"
+  data-view="order-view"
+  onclick="document.getElementById('menuOverlay').classList.remove('open')"
+>
+  <span class="bullet"></span>
+  + Order
+</li>
+
         </div>
       </div>
 
       <!-- TOP BAR -->
       <div class="top-bar">
-        <button type="button" id="menuButton" class="menu-button">
-          <span class="menu-icon"></span>
-          Menu
-        </button>
+   <button
+  type="button"
+  id="menuButton"
+  class="menu-button"
+  onclick="document.getElementById('menuOverlay').classList.add('open')"
+>
+  <span class="menu-icon"></span>
+  Menu
+</button>
+
         <div class="top-brand">
           <span>BLANCO / Offline OrderFlow</span>
           <span id="topTimestamp"></span>
