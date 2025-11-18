@@ -7,6 +7,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: "autoUpdate",
+      injectRegister: "auto", // <-- this makes Vite auto-register the SW
       workbox: {
         // cache all built JS/CSS/HTML/icons
         globPatterns: ["**/*.{js,css,html,ico,png,svg}"],
