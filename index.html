@@ -981,34 +981,44 @@
       updateTimestamp();
       setInterval(updateTimestamp, 60000);
 
-      // STORAGE HELPERS
-      function getOrders() {
-        try {
-          const raw = localStorage.getItem(ORDERS_KEY);
-          return raw ? JSON.parse(raw) : [];
-        } catch {
-          return [];
-        }
-      }
-      function saveOrders(orders) {
-        localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
-        if (orders.length) {
-          const last = orders[orders.length - 1];
-          lastSync.textContent =
-            "Last order: " + new Date(last.createdAt).toLocaleString();
-        } else {
-          lastSync.textContent = "No orders yet";
-        }
-        updateDashboardStats();
-      }
-      function getCatalog() {
-        try {
-          const raw = localStorage.getItem(CATALOG_KEY);
-          return raw ? JSON.parse(raw) : [];
-        } catch {
-          return [];
-        }
-      }
+// STORAGE HELPERS
+function getOrders() {
+  try {
+    const raw = localStorage.getItem(ORDERS_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) {
+    console.error("getOrders error", e);
+    return [];
+  }
+}
+
+function saveOrders(orders) {
+  try {
+    localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
+  } catch (e) {
+    console.error("saveOrders error", e);
+  }
+
+  if (orders.length) {
+    const last = orders[orders.length - 1];
+    lastSync.textContent =
+      "Last order: " + new Date(last.createdAt).toLocaleString();
+  } else {
+    lastSync.textContent = "No orders yet";
+  }
+  updateDashboardStats();
+}
+
+function getCatalog() {
+  try {
+    const raw = localStorage.getItem(CATALOG_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) {
+    console.error("getCatalog error", e);
+    return [];
+  }
+}
+
       function saveCatalogData(list) {
         localStorage.setItem(CATALOG_KEY, JSON.stringify(list));
         catalogCache = list;
@@ -1019,21 +1029,40 @@
         updateDashboardStats();
       }
 
-      // DASHBOARD
-      function updateDashboardStats() {
-        const orders = getOrders();
-        const uniqueStyles = new Set(
-          catalogCache.map((r) => (r.style_code || "").trim())
-        );
-        $("stat-orders").textContent = orders.length;
-        $("stat-styles").textContent = uniqueStyles.size;
-        $("stat-last").textContent =
-          orders.length === 0
-            ? "—"
-            : new Date(
-                orders[orders.length - 1].createdAt
-              ).toLocaleString();
-      }
+   // DASHBOARD
+function updateDashboardStats() {
+  var orders = getOrders();
+
+  // Count unique style codes without using Set
+  var styleMap = {};
+  var i;
+  for (i = 0; i < catalogCache.length; i++) {
+    var code = (catalogCache[i].style_code || "").trim();
+    if (code) {
+      styleMap[code] = true;
+    }
+  }
+  var uniqueCount = 0;
+  for (var key in styleMap) {
+    if (styleMap.hasOwnProperty(key)) {
+      uniqueCount++;
+    }
+  }
+
+  document.getElementById("stat-orders").textContent = String(
+    orders.length
+  );
+  document.getElementById("stat-styles").textContent = String(
+    uniqueCount
+  );
+  document.getElementById("stat-last").textContent =
+    orders.length === 0
+      ? "—"
+      : new Date(
+          orders[orders.length - 1].createdAt
+        ).toLocaleString();
+}
+
 
       // VIEWS
       function setView(viewId) {
@@ -1746,21 +1775,54 @@
         return rows;
       }
 
- importProductsBtn.addEventListener("click", () => {
-        const file =
-          productFileInput &&
-          productFileInput.files &&
-          productFileInput.files[0];
+importProductsBtn.addEventListener("click", () => {
+  const file =
+    productFileInput &&
+    productFileInput.files &&
+    productFileInput.files[0];
 
-        if (!file) {
-          alert("Choose a CSV file from Excel first.");
-          return;
-        }
+  if (!file) {
+    alert("Choose a CSV file from Excel first.");
+    return;
+  }
 
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const text = e.target.result;
-          const rows = parseCsv(text);
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const text = e.target.result;
+    const rows = parseCsv(text);
+    if (!rows.length) {
+      alert("No data found in CSV.");
+      return;
+    }
+    const first = rows[0];
+    const required = ["style_code", "style_name", "color", "size"];
+    const missing = required.filter((k) => !(k in first));
+    if (missing.length) {
+      alert(
+        "Missing required columns: " +
+          missing.join(", ") +
+          "\n\nHeader row must include: style_code, style_name, color, size"
+      );
+      return;
+    }
+    const list = rows.map((r) => ({
+      style_code: r.style_code || "",
+      style_name: r.style_name || "",
+      color: r.color || "",
+      size: r.size || "",
+      price: r.price || "",
+    }));
+    saveCatalogData(list);
+    alert(
+      "Imported " +
+        list.length +
+        " catalog rows. Styles in + Order updated."
+    );
+  };
+  reader.readAsText(file);
+});
+
+          
           if (!rows.length) {
             alert("No data found in CSV.");
             return;
