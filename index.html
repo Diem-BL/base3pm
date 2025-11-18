@@ -1746,16 +1746,53 @@
         return rows;
       }
 
-      importProductsBtn.addEventListener("click", () => {
-        const file = productFileInput.files?.[0];
+ importProductsBtn.addEventListener("click", () => {
+        const file =
+          productFileInput &&
+          productFileInput.files &&
+          productFileInput.files[0];
+
         if (!file) {
           alert("Choose a CSV file from Excel first.");
           return;
         }
+
         const reader = new FileReader();
         reader.onload = (e) => {
           const text = e.target.result;
           const rows = parseCsv(text);
+          if (!rows.length) {
+            alert("No data found in CSV.");
+            return;
+          }
+          const first = rows[0];
+          const required = ["style_code", "style_name", "color", "size"];
+          const missing = required.filter((k) => !(k in first));
+          if (missing.length) {
+            alert(
+              "Missing required columns: " +
+                missing.join(", ") +
+                "\n\nHeader row must include: style_code, style_name, color, size"
+            );
+            return;
+          }
+          const list = rows.map((r) => ({
+            style_code: r.style_code || "",
+            style_name: r.style_name || "",
+            color: r.color || "",
+            size: r.size || "",
+            price: r.price || "",
+          }));
+          saveCatalogData(list);
+          alert(
+            "Imported " +
+              list.length +
+              " catalog rows. Styles in + Order updated."
+          );
+        };
+        reader.readAsText(file);
+      });
+
           if (!rows.length) {
             alert("No data found in CSV.");
             return;
