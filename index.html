@@ -353,27 +353,41 @@ select:focus {
         margin-bottom: 8px;
       }
 
- button {
+/* DEFAULT BUTTON (black with white text) */
+button {
   border-radius: 999px;
   padding: 6px 12px;
   border: 1px solid #f9fafb;
   background: #000000;
-  color: #f9fafb;
+  color: #ffffff;
   font-size: 12px;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   cursor: pointer;
 }
+
+/* SECONDARY BUTTON (outline) */
 button.secondary {
   background: #000000;
   color: #e5e7eb;
   border-color: #4b5563;
 }
+
+/* DANGER BUTTON (red) */
 button.danger {
   background: #ef4444;
   border-color: #ef4444;
   color: #ffffff;
 }
+
+/* SELECTED BUTTON = white with black text */
+button.selected,
+button.active {
+  background: #ffffff !important;
+  color: #000000 !important;
+  border-color: #ffffff !important;
+}
+
 
       button.small {
         font-size: 11px;
@@ -934,7 +948,8 @@ th {
         }
         updateDashboard();
       }
-
+btn.classList.add("selected");
+      
       function getCatalog() {
         try {
           var raw = localStorage.getItem(CATALOG_KEY);
