@@ -1378,61 +1378,154 @@
         alert("Order saved on this device.");
       };
 
-      // ---------- ORDERS VIEW ----------
-      function renderOrders() {
-        var orders = getOrders();
-        var table = $("ordersTable");
-        var body = $("ordersBody");
-        var empty = $("ordersEmpty");
-        body.innerHTML = "";
+    function renderOrders() {
+  var orders = getOrders();
+  var table = $("ordersTable");
+  var body = $("ordersBody");
+  var empty = $("ordersEmpty");
+  body.innerHTML = "";
 
-        if (!orders.length) {
-          table.style.display = "none";
-          empty.style.display = "block";
-          return;
-        }
-        table.style.display = "table";
-        empty.style.display = "none";
+  if (!orders.length) {
+    table.style.display = "none";
+    empty.style.display = "block";
+    return;
+  }
+  table.style.display = "table";
+  empty.style.display = "none";
 
-        for (var i = 0; i < orders.length; i++) {
-          var o = orders[i];
-          var tr = document.createElement("tr");
-          var time = new Date(o.created_at).toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          });
-
-          tr.innerHTML =
-            "<td>" +
-            time +
-            "</td><td>" +
-            (o.customer_name || "") +
-            "</td><td>" +
-            (o.style_name || o.style_code || "") +
-            "</td><td>" +
-            (o.color || "") +
-            "</td><td>" +
-            (o.size || "") +
-            "</td><td>" +
-            (o.qty || "") +
-            "</td><td><button class='secondary small' data-idx='" +
-            i +
-            "'>Export</button></td>";
-
-          body.appendChild(tr);
-        }
-      }
-
-      $("ordersBody").onclick = function (e) {
-        var t = e.target || e.srcElement;
-        if (!t || t.tagName.toLowerCase() !== "button") return;
-        var idx = t.getAttribute("data-idx");
-        if (idx == null) return;
-        var orders = getOrders();
-        var o = orders[Number(idx)];
-        if (!o) return;
-        downloadCSV([o], "blanco_order_" + (o.customer_name || "") + ".csv");
+  // Group by created_at (each order saved once shares the same timestamp)
+  var groups = {};
+  var keys = [];
+  var i;
+  for (i = 0; i < orders.length; i++) {
+    var o = orders[i];
+    var key = o.created_at;
+    if (!groups[key]) {
+      groups[key] = {
+        created_at: o.created_at,
+        customer_name: o.customer_name,
+        customer_email: o.customer_email,
+        customer_phone: o.customer_phone,
+        notes: o.notes,
+        lines: [],
+        total_qty: 0,
+        styles: {},
+        colors: {},
+        sizes: {},
       };
+      keys.push(key);
+    }
+    var g = groups[key];
+    g.lines.push(o);
+    g.total_qty += Number(o.qty || 0);
+
+    var sName = o.style_name || o.style_code || "";
+    if (sName) g.styles[sName] = true;
+    if (o.color) g.colors[o.color] = true;
+    if (o.size) g.sizes[o.size] = true;
+  }
+
+  // Sort by timestamp (oldest -> newest)
+  keys.sort();
+
+  for (var kIdx = 0; kIdx < keys.length; kIdx++) {
+    var gKey = keys[kIdx];
+    var g = groups[gKey];
+
+    // Build summaries
+    var styleCount = 0,
+      firstStyle = "";
+    var colorCount = 0,
+      firstColor = "";
+    var sizeCount = 0;
+
+    var s;
+    for (s in g.styles) {
+      if (!g.styles.hasOwnProperty(s)) continue;
+      if (!firstStyle) firstStyle = s;
+      styleCount++;
+    }
+    var c;
+    for (c in g.colors) {
+      if (!g.colors.hasOwnProperty(c)) continue;
+      if (!firstColor) firstColor = c;
+      colorCount++;
+    }
+    var z;
+    for (z in g.sizes) {
+      if (!g.sizes.hasOwnProperty(z)) continue;
+      sizeCount++;
+    }
+
+    var styleLabel =
+      styleCount === 0
+        ? ""
+        : styleCount === 1
+        ? firstStyle
+        : "Multiple (" + styleCount + ")";
+    var colorLabel =
+      colorCount === 0
+        ? ""
+        : colorCount === 1
+        ? firstColor
+        : "Multiple (" + colorCount + ")";
+    var sizeLabel =
+      sizeCount === 0
+        ? ""
+        : sizeCount === 1
+        ? "1 size"
+        : sizeCount + " sizes";
+
+    var tr = document.createElement("tr");
+    var time = new Date(g.created_at).toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
+    tr.innerHTML =
+      "<td>" +
+      time +
+      "</td><td>" +
+      (g.customer_name || "") +
+      "</td><td>" +
+      styleLabel +
+      "</td><td>" +
+      colorLabel +
+      "</td><td>" +
+      sizeLabel +
+      "</td><td>" +
+      g.total_qty +
+      "</td><td><button class='secondary small' data-ts='" +
+      g.created_at +
+      "'>Export</button></td>";
+
+    body.appendChild(tr);
+  }
+}
+
+
+ $("ordersBody").onclick = function (e) {
+  var t = e.target || e.srcElement;
+  if (!t || t.tagName.toLowerCase() !== "button") return;
+
+  // we stored created_at on the button as data-ts
+  var ts = t.getAttribute("data-ts");
+  if (!ts) return;
+
+  var orders = getOrders();
+  var lines = [];
+  var i;
+  for (i = 0; i < orders.length; i++) {
+    if (orders[i].created_at === ts) {
+      lines.push(orders[i]);
+    }
+  }
+  if (!lines.length) return;
+
+  var name = lines[0].customer_name || "";
+  downloadCSV(lines, "blanco_order_" + name + ".csv");
+};
+
 
       $("exportOrders").onclick = function () {
         var orders = getOrders();
