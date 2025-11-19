@@ -234,21 +234,25 @@
         gap: 6px;
         margin-bottom: 10px;
       }
-      .nav button {
-        border-radius: 999px;
-        padding: 6px 12px;
-        border: 1px solid #d1d5db;
-        background: #f9fafb;
-        font-size: 12px;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        cursor: pointer;
-      }
-      .nav button.active {
-        background: #111827;
-        border-color: #111827;
-        color: #f9fafb;
-      }
+     /* NAV TABS – black default, white when selected */
+.nav button {
+  border-radius: 999px;
+  padding: 6px 12px;
+  border: 1px solid #f9fafb;
+  background: #000000;
+  color: #ffffff;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+}
+
+.nav button.active {
+  background: #ffffff;
+  border-color: #ffffff;
+  color: #000000;
+}
+
 
       .view {
         display: none;
@@ -401,35 +405,67 @@ button.active {
         margin-top: 8px;
       }
 
-      .styles-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-        gap: 8px;
-      }
-      .style-card {
-        border-radius: 12px;
-        border: 1px solid #e5e7eb;
-        padding: 8px;
-        background: #ffffff;
-        cursor: pointer;
-      }
-      .style-card.selected {
-        border-color: #111827;
-        box-shadow: 0 8px 20px rgba(15, 23, 42, 0.1);
-      }
-      .style-name {
-        font-size: 13px;
-        font-weight: 600;
-      }
-      .style-code {
-        font-size: 11px;
-        color: #6b7280;
-      }
-      .style-meta {
-        font-size: 11px;
-        color: #6b7280;
-        margin-top: 4px;
-      }
+/* ORDER FLOW – STYLES GRID (small icon layout like Products) */
+.styles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 10px;
+}
+
+/* Individual style cards */
+.style-card {
+  background: #020617;
+  border-radius: 10px;
+  border: 1px solid #1f2937;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: 0.15s ease;
+}
+
+/* Selected state */
+.style-card.selected {
+  border-color: #ffffff;
+  box-shadow: 0 0 0 2px #ffffff inset;
+}
+
+/* Optional image in future (placeholder square) */
+.style-card::before {
+  content: "";
+  width: 100%;
+  padding-bottom: 100%;
+  background: #111827;
+  border: 1px solid #1f2937;
+  border-radius: 8px;
+  display: block;
+  margin-bottom: 4px;
+}
+
+/* Style name */
+.style-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: #ffffff;
+  text-align: center;
+}
+
+/* Style code */
+.style-code {
+  font-size: 10px;
+  color: #9ca3af;
+  text-align: center;
+}
+
+/* small text under */
+.style-meta {
+  font-size: 10px;
+  color: #6b7280;
+  text-align: center;
+}
+
 
       .stepper {
         display: flex;
@@ -948,7 +984,7 @@ th {
         }
         updateDashboard();
       }
-btn.classList.add("selected");
+
       
       function getCatalog() {
         try {
