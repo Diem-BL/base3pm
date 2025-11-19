@@ -53,14 +53,20 @@
         text-transform: uppercase;
       }
 
-      header span,
-      .subtext,
-      .stat-label,
-      .style-code,
-      .style-meta,
-      .product-code,
-      .product-summary {
+      header span {
+        font-size: 11px;
         color: #9ca3af;
+      }
+
+      #viewLabel {
+        display: block;
+        margin-top: 2px;
+      }
+
+      .subtext {
+        font-size: 12px;
+        color: #9ca3af;
+        margin-bottom: 8px;
       }
 
       /* NAV */
@@ -92,6 +98,7 @@
       .view {
         display: none;
       }
+
       .view.active {
         display: block;
       }
@@ -110,12 +117,6 @@
         margin: 0 0 4px;
         font-size: 16px;
         color: #ffffff;
-      }
-
-      .subtext {
-        font-size: 12px;
-        color: #9ca3af;
-        margin-bottom: 8px;
       }
 
       .stats-row {
@@ -220,16 +221,17 @@
         color: #ffffff;
       }
 
+      button.small {
+        font-size: 11px;
+        padding: 4px 9px;
+      }
+
+      /* Selected buttons (including nav, chips, etc.) */
       button.selected,
       button.active {
         background: #ffffff !important;
         color: #000000 !important;
         border-color: #ffffff !important;
-      }
-
-      button.small {
-        font-size: 11px;
-        padding: 4px 9px;
       }
 
       .actions {
@@ -380,7 +382,7 @@
         color: #000000;
       }
 
-      /* STEP 3 – SIZE & QTY */
+      /* STEP 3 – SIZES & QTY */
       .qty-card {
         border-radius: 12px;
         border: 1px solid #1f2937;
@@ -461,41 +463,11 @@
         border-bottom: none;
       }
 
-      #ordersTable tbody tr {
-        cursor: pointer;
-      }
-
       .empty {
         font-size: 12px;
         text-align: center;
         color: #9ca3af;
         padding: 12px 0;
-      }
-
-      .catalog-table-wrapper {
-        margin-top: 6px;
-        max-height: 260px;
-        overflow: auto;
-        border-radius: 8px;
-        border: 1px solid #1f2937;
-      }
-
-      .catalog-table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 11px;
-      }
-
-      .catalog-table th,
-      .catalog-table td {
-        padding: 4px 5px;
-        border-bottom: 1px solid #1f2937;
-      }
-
-      .catalog-table input {
-        width: 100%;
-        padding: 3px 4px;
-        font-size: 11px;
       }
 
       /* PRODUCTS GRID – small tiles */
@@ -559,6 +531,7 @@
         margin-top: 4px;
       }
 
+      /* chips row */
       .chip-row {
         display: flex;
         flex-wrap: wrap;
@@ -580,7 +553,7 @@
         border: none;
         background: transparent;
         padding: 0;
-        margin: 0;
+        margin: 0 0 0 4px;
         font-size: 10px;
         line-height: 1;
         cursor: pointer;
@@ -591,11 +564,11 @@
         color: #f9fafb;
       }
 
-      /* MODALS */
+      /* MODALS (used for style editor + order details) */
       .modal-backdrop {
         position: fixed;
         inset: 0;
-        background: rgba(0, 0, 0, 0.7);
+        background: rgba(15, 23, 42, 0.7);
         display: flex;
         justify-content: center;
         align-items: flex-end;
@@ -605,7 +578,8 @@
       .modal-sheet {
         width: 100%;
         max-width: 720px;
-        background: #000000;
+        background: #020617;
+        color: #f9fafb;
         border-radius: 16px 16px 0 0;
         border-top: 1px solid #1f2937;
         box-shadow: 0 -18px 40px rgba(0, 0, 0, 0.8);
@@ -665,6 +639,33 @@
         height: 100%;
         object-fit: cover;
       }
+
+      /* Catalog table (CSV style) */
+      .catalog-table-wrapper {
+        margin-top: 6px;
+        max-height: 260px;
+        overflow: auto;
+        border-radius: 8px;
+        border: 1px solid #1f2937;
+      }
+
+      .catalog-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 11px;
+      }
+
+      .catalog-table th,
+      .catalog-table td {
+        padding: 4px 5px;
+        border-bottom: 1px solid #1f2937;
+      }
+
+      .catalog-table input {
+        width: 100%;
+        padding: 3px 4px;
+        font-size: 11px;
+      }
     </style>
   </head>
   <body>
@@ -688,7 +689,9 @@
       <div id="view-dashboard" class="view active">
         <section class="card">
           <h2>Snapshot</h2>
-          <p class="subtext">Overview of offline activity on this device only.</p>
+          <p class="subtext">
+            Overview of offline activity on this device only.
+          </p>
           <div class="stats-row">
             <div class="stat-card">
               <div class="stat-label">Offline orders</div>
@@ -700,12 +703,16 @@
             </div>
             <div class="stat-card">
               <div class="stat-label">Last activity</div>
-              <div id="stat-last" class="stat-value" style="font-size:13px">—</div>
+              <div id="stat-last" class="stat-value" style="font-size:13px">
+                —
+              </div>
             </div>
           </div>
           <div class="actions" style="justify-content:flex-start;margin-top:8px">
             <button id="dash-new-order">+ New order</button>
-            <button id="dash-orders" class="secondary small">View orders</button>
+            <button id="dash-orders" class="secondary small">
+              View orders
+            </button>
             <button id="dash-products" class="secondary small">
               Manage products
             </button>
@@ -755,19 +762,27 @@
               />
             </div>
             <div id="stylesGrid" class="styles-grid"></div>
-            <div id="stylesEmpty" class="subtext">No styles yet – add products first.</div>
+            <div id="stylesEmpty" class="subtext">
+              No styles yet – add products first.
+            </div>
             <div class="actions">
-              <button id="step1-next" class="secondary">Continue to colors ›</button>
+              <button id="step1-next" class="secondary">
+                Continue to colors ›
+              </button>
             </div>
           </div>
 
           <!-- step 2 -->
           <div id="order-step-2" style="display:none">
             <h2>Choose Colors</h2>
-            <p class="subtext">For each selected style, pick one or more colors.</p>
+            <p class="subtext">
+              For each selected style, pick one or more colors.
+            </p>
             <div id="colorsContainer"></div>
             <div class="actions" style="justify-content:space-between">
-              <button id="step2-back" class="secondary">‹ Back to styles</button>
+              <button id="step2-back" class="secondary">
+                ‹ Back to styles
+              </button>
               <button id="step2-next">Continue to sizes & qty ›</button>
             </div>
           </div>
@@ -776,8 +791,8 @@
           <div id="order-step-3" style="display:none">
             <h2>Sizes & Quantities</h2>
             <p class="subtext">
-              Enter quantities for each style, color and size. Leave at 0 for sizes
-              you don’t need.
+              Enter quantities for each style, color and size. Leave at 0 for
+              sizes you don’t need.
             </p>
             <div id="qtyContainer"></div>
             <div class="field-full">
@@ -788,7 +803,9 @@
               ></textarea>
             </div>
             <div class="actions" style="justify-content:space-between">
-              <button id="step3-back" class="secondary">‹ Back to colors</button>
+              <button id="step3-back" class="secondary">
+                ‹ Back to colors
+              </button>
               <div style="display:flex;gap:6px">
                 <button id="clearOrder" class="secondary small">Clear</button>
                 <button id="saveOrder">Save order</button>
@@ -803,12 +820,14 @@
         <section class="card">
           <h2>Orders</h2>
           <p class="subtext">
-            Orders are stored locally on this device. Tap a row to view details or
-            export to CSV for Excel.
+            Orders are stored locally on this device. Export to CSV for Excel.
+            Tap a row to view full details.
           </p>
           <div class="actions" style="justify-content:flex-start">
-            <button id="exportOrders" class="secondary small">Export all CSV</button>
-            <button id="clearOrders" class="danger small">Clear all</button>
+            <button id="exportOrders" class="secondary small">
+              Export all CSV
+            </button>
+            <!-- Clear all button removed -->
           </div>
           <div id="ordersEmpty" class="empty">
             No orders yet – create one from the + Order tab.
@@ -828,6 +847,47 @@
             <tbody id="ordersBody"></tbody>
           </table>
         </section>
+
+        <!-- ORDER DETAILS MODAL -->
+        <div id="orderModal" class="modal-backdrop" style="display:none;">
+          <div class="modal-sheet">
+            <div class="modal-header">
+              <div class="modal-title">Order details</div>
+              <button
+                type="button"
+                id="orderModalClose"
+                class="secondary small"
+                style="border-radius:999px;width:26px;height:26px;padding:0;"
+              >
+                ✕
+              </button>
+            </div>
+            <div class="modal-body">
+              <div id="orderModalSummary" class="subtext"></div>
+              <table style="width:100%;margin-top:6px;">
+                <thead>
+                  <tr>
+                    <th>Style</th>
+                    <th>Color</th>
+                    <th>Size</th>
+                    <th>Qty</th>
+                  </tr>
+                </thead>
+                <tbody id="orderModalBody"></tbody>
+              </table>
+              <div
+                id="orderModalNotes"
+                class="subtext"
+                style="margin-top:8px;"
+              ></div>
+            </div>
+            <div class="modal-footer">
+              <button id="orderModalCloseFooter" class="secondary small">
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- PRODUCTS -->
@@ -839,28 +899,35 @@
             <div>
               <h2>Products</h2>
               <p class="subtext">
-                Manage styles used in the + Order flow. Data is stored offline on
-                this device.
+                Manage styles used in the + Order flow. Data is stored offline
+                on this device.
               </p>
             </div>
             <button id="addStyleBtn" class="small">+ Add style</button>
           </div>
 
           <div id="productsEmpty" class="empty">
-            No styles yet – tap “+ Add style” or import a catalog CSV from another
-            device.
+            No styles yet – tap “+ Add style” or import a catalog CSV from
+            another device.
           </div>
 
           <div id="productsGrid" class="products-grid"></div>
 
-          <div class="actions" style="justify-content:flex-start;margin-top:8px;">
+          <div
+            class="actions"
+            style="justify-content:flex-start;margin-top:8px;"
+          >
             <input id="catalogFile" type="file" accept=".csv" />
-            <button id="importCatalog" class="secondary small">Import CSV</button>
-            <button id="exportCatalog" class="secondary small">Export CSV</button>
+            <button id="importCatalog" class="secondary small">
+              Import CSV
+            </button>
+            <button id="exportCatalog" class="secondary small">
+              Export CSV
+            </button>
           </div>
         </section>
 
-        <!-- Style modal -->
+        <!-- Style editor modal -->
         <div id="styleModal" class="modal-backdrop" style="display:none;">
           <div class="modal-sheet">
             <div class="modal-header">
@@ -974,48 +1041,28 @@
             </div>
 
             <div class="modal-footer">
-              <button id="modalCancelBtn" class="secondary small">Cancel</button>
+              <button id="modalCancelBtn" class="secondary small">
+                Cancel
+              </button>
               <button id="modalSaveBtn" class="small">Save style</button>
             </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ORDER DETAIL MODAL -->
-      <div id="orderDetailModal" class="modal-backdrop" style="display:none;">
-        <div class="modal-sheet">
-          <div class="modal-header">
-            <div id="orderDetailTitle" class="modal-title">Order details</div>
-            <button
-              type="button"
-              id="orderDetailClose"
-              class="secondary small"
-              style="border-radius:999px;width:26px;height:26px;padding:0;"
-            >
-              ✕
-            </button>
-          </div>
-          <div id="orderDetailBody" class="modal-body"></div>
-          <div class="modal-footer">
-            <button id="orderDetailCloseFooter" class="small">Close</button>
           </div>
         </div>
       </div>
     </div>
 
     <script>
-      // SIMPLE, OLDER-SAFARI-FRIENDLY JS
+      // SIMPLE, OLDER-SAFARI-FRIENDLY JS (no arrow functions, etc.)
       var ORDERS_KEY = "blanco_orders_v1";
       var CATALOG_KEY = "blanco_catalog_v1";
       var STYLE_META_KEY = "blanco_style_meta_v1";
 
       var catalog = [];
-      var styleMeta = {}; // styleKey -> {desc, category, imageDataUrl, in_stock}
-
       var selectedStyles = []; // array of styleKeys
       var selectedColors = {}; // styleKey -> { color: true }
       var currentStep = 1;
-      var currentDetailTs = null;
+
+      var styleMeta = {}; // styleKey -> {desc, category, imageDataUrl, in_stock}
 
       function $(id) {
         return document.getElementById(id);
@@ -1027,6 +1074,7 @@
           var raw = localStorage.getItem(ORDERS_KEY);
           return raw ? JSON.parse(raw) : [];
         } catch (e) {
+          console.log("getOrders error", e);
           return [];
         }
       }
@@ -1034,7 +1082,9 @@
       function saveOrdersList(list) {
         try {
           localStorage.setItem(ORDERS_KEY, JSON.stringify(list));
-        } catch (e) {}
+        } catch (e) {
+          console.log("saveOrders error", e);
+        }
         updateDashboard();
       }
 
@@ -1043,6 +1093,7 @@
           var raw = localStorage.getItem(CATALOG_KEY);
           return raw ? JSON.parse(raw) : [];
         } catch (e) {
+          console.log("getCatalog error", e);
           return [];
         }
       }
@@ -1050,7 +1101,9 @@
       function saveCatalog(list) {
         try {
           localStorage.setItem(CATALOG_KEY, JSON.stringify(list));
-        } catch (e) {}
+        } catch (e) {
+          console.log("saveCatalog error", e);
+        }
       }
 
       function loadStyleMeta() {
@@ -1093,15 +1146,14 @@
           var b = $(navButtons[j]);
           b.className = b.className.replace("active", "");
         }
-        if (viewId === "view-dashboard") $("nav-dashboard").className +=
-          " active";
+        if (viewId === "view-dashboard")
+          $("nav-dashboard").className += " active";
         if (viewId === "view-order") $("nav-order").className += " active";
         if (viewId === "view-orders") $("nav-orders").className += " active";
-        if (viewId === "view-products") $("nav-products").className +=
-          " active";
+        if (viewId === "view-products")
+          $("nav-products").className += " active";
 
-        if (viewId === "view-dashboard") $("viewLabel").innerHTML =
-          "Dashboard";
+        if (viewId === "view-dashboard") $("viewLabel").innerHTML = "Dashboard";
         if (viewId === "view-order") $("viewLabel").innerHTML = "+ Order";
         if (viewId === "view-orders") $("viewLabel").innerHTML = "Orders";
         if (viewId === "view-products") $("viewLabel").innerHTML = "Products";
@@ -1168,7 +1220,7 @@
       }
 
       function buildStylesIndex() {
-        var map = {};
+        var map = {}; // styleKey -> {name, code, price, colors:{ color: {sizes:[]}}}
         for (var i = 0; i < catalog.length; i++) {
           var row = catalog[i];
           var key = getStyleKey(row);
@@ -1188,10 +1240,7 @@
             if (!map[key].colors[color]) {
               map[key].colors[color] = { sizes: [] };
             }
-            if (
-              size &&
-              map[key].colors[color].sizes.indexOf(size) === -1
-            ) {
+            if (size && map[key].colors[color].sizes.indexOf(size) === -1) {
               map[key].colors[color].sizes.push(size);
             }
           }
@@ -1239,7 +1288,9 @@
           if (!stylesMap.hasOwnProperty(key)) continue;
           var meta = stylesMap[key];
           var label = (meta.code || "") + " " + (meta.name || "");
-          if (search && label.toLowerCase().indexOf(search) === -1) continue;
+          if (search && label.toLowerCase().indexOf(search) === -1) {
+            continue;
+          }
           any = true;
 
           var card = document.createElement("div");
@@ -1260,8 +1311,7 @@
           metaDiv.className = "style-meta";
           var colorCount = 0;
           var sizeCount = 0;
-          var c;
-          for (c in meta.colors) {
+          for (var c in meta.colors) {
             if (!meta.colors.hasOwnProperty(c)) continue;
             colorCount++;
             sizeCount += meta.colors[c].sizes.length;
@@ -1306,18 +1356,15 @@
       };
       $("step2-next").onclick = function () {
         var any = false;
-        var s;
-        for (s in selectedColors) {
+        for (var s in selectedColors) {
           if (!selectedColors.hasOwnProperty(s)) continue;
           var colors = selectedColors[s];
-          var c;
-          for (c in colors) {
+          for (var c in colors) {
             if (colors.hasOwnProperty(c) && colors[c]) {
               any = true;
               break;
             }
           }
-          if (any) break;
         }
         if (!any) {
           alert("Select at least one color.");
@@ -1338,8 +1385,7 @@
         var container = $("colorsContainer");
         container.innerHTML = "";
 
-        var i;
-        for (i = 0; i < selectedStyles.length; i++) {
+        for (var i = 0; i < selectedStyles.length; i++) {
           var key = selectedStyles[i];
           var meta = stylesMap[key];
           if (!meta) continue;
@@ -1369,8 +1415,7 @@
           var list = document.createElement("div");
           list.className = "color-list";
 
-          var color;
-          for (color in meta.colors) {
+          for (var color in meta.colors) {
             if (!meta.colors.hasOwnProperty(color)) continue;
 
             var chip = document.createElement("div");
@@ -1409,19 +1454,14 @@
         var container = $("qtyContainer");
         container.innerHTML = "";
 
-        var i;
-        for (i = 0; i < selectedStyles.length; i++) {
+        for (var i = 0; i < selectedStyles.length; i++) {
           var key = selectedStyles[i];
           var meta = stylesMap[key];
           if (!meta) continue;
           var colorsMap = selectedColors[key] || {};
-          var color;
-          for (color in colorsMap) {
-            if (
-              !colorsMap.hasOwnProperty(color) ||
-              !colorsMap[color]
-            )
-              continue;
+
+          for (var color in colorsMap) {
+            if (!colorsMap.hasOwnProperty(color) || !colorsMap[color]) continue;
 
             var sizesInfo = meta.colors[color];
             if (!sizesInfo) continue;
@@ -1449,8 +1489,7 @@
               return a.localeCompare(b, undefined, { numeric: true });
             });
 
-            var s;
-            for (s = 0; s < sizes.length; s++) {
+            for (var s = 0; s < sizes.length; s++) {
               var size = sizes[s];
               var chip = document.createElement("div");
               chip.className = "size-chip";
@@ -1495,8 +1534,7 @@
 
         var inputs = $("qtyContainer").getElementsByTagName("input");
         var lines = [];
-        var i;
-        for (i = 0; i < inputs.length; i++) {
+        for (var i = 0; i < inputs.length; i++) {
           var el = inputs[i];
           if (!el.getAttribute("data-size")) continue;
           var qty = Number(el.value || 0);
@@ -1517,8 +1555,7 @@
         var nowIso = new Date().toISOString();
         var orders = getOrders();
 
-        var j;
-        for (j = 0; j < lines.length; j++) {
+        for (var j = 0; j < lines.length; j++) {
           var ln = lines[j];
           var meta = stylesMap[ln.styleKey] || {};
           orders.push({
@@ -1557,6 +1594,7 @@
         table.style.display = "table";
         empty.style.display = "none";
 
+        // Group by created_at (each order saved once shares the same timestamp)
         var groups = {};
         var keys = [];
         var i;
@@ -1588,13 +1626,14 @@
           if (o.size) g.sizes[o.size] = true;
         }
 
+        // Sort by timestamp (oldest -> newest)
         keys.sort();
 
-        var kIdx;
-        for (kIdx = 0; kIdx < keys.length; kIdx++) {
+        for (var kIdx = 0; kIdx < keys.length; kIdx++) {
           var gKey = keys[kIdx];
           var g = groups[gKey];
 
+          // Build summaries
           var styleCount = 0,
             firstStyle = "";
           var colorCount = 0,
@@ -1640,7 +1679,6 @@
 
           var tr = document.createElement("tr");
           tr.setAttribute("data-ts", g.created_at);
-
           var time = new Date(g.created_at).toLocaleTimeString([], {
             hour: "2-digit",
             minute: "2-digit",
@@ -1667,39 +1705,43 @@
         }
       }
 
-      // click = either export button or open detail
+      // Click: export or view
       $("ordersBody").onclick = function (e) {
         var t = e.target || e.srcElement;
         if (!t) return;
 
-        if (t.tagName && t.tagName.toLowerCase() === "button") {
-          // Export button
+        // If export button clicked
+        if (t.tagName.toLowerCase() === "button") {
           var tsBtn = t.getAttribute("data-ts");
           if (!tsBtn) return;
-          var orders = getOrders();
-          var lines = [];
-          var i;
-          for (i = 0; i < orders.length; i++) {
-            if (orders[i].created_at === tsBtn) {
-              lines.push(orders[i]);
-            }
-          }
-          if (!lines.length) return;
-          var name = lines[0].customer_name || "";
-          downloadCSV(lines, "blanco_order_" + name + ".csv");
+          exportSingleOrder(tsBtn);
           return;
         }
 
-        // otherwise: clicked row -> show detail
-        var row = t;
-        while (row && row.tagName && row.tagName.toLowerCase() !== "tr") {
-          row = row.parentNode;
+        // Otherwise, find row and open detail modal
+        var node = t;
+        while (node && node.tagName && node.tagName.toLowerCase() !== "tr") {
+          node = node.parentNode;
         }
-        if (!row) return;
-        var ts = row.getAttribute("data-ts");
+        if (!node) return;
+        var ts = node.getAttribute("data-ts");
         if (!ts) return;
-        showOrderDetail(ts);
+        openOrderModal(ts);
       };
+
+      function exportSingleOrder(ts) {
+        var orders = getOrders();
+        var lines = [];
+        var i;
+        for (i = 0; i < orders.length; i++) {
+          if (orders[i].created_at === ts) {
+            lines.push(orders[i]);
+          }
+        }
+        if (!lines.length) return;
+        var name = lines[0].customer_name || "";
+        downloadCSV(lines, "blanco_order_" + name + ".csv");
+      }
 
       $("exportOrders").onclick = function () {
         var orders = getOrders();
@@ -1711,12 +1753,6 @@
           orders,
           "blanco_orders_" + new Date().toISOString().slice(0, 10) + ".csv"
         );
-      };
-
-      $("clearOrders").onclick = function () {
-        if (!confirm("Delete all orders on this device?")) return;
-        saveOrdersList([]);
-        renderOrders();
       };
 
       function downloadCSV(orders, filename) {
@@ -1734,8 +1770,7 @@
         ];
         var rows = [headers];
 
-        var i;
-        for (i = 0; i < orders.length; i++) {
+        for (var i = 0; i < orders.length; i++) {
           var o = orders[i];
           rows.push([
             o.created_at || "",
@@ -1752,11 +1787,9 @@
         }
 
         var lines = [];
-        var r;
-        for (r = 0; r < rows.length; r++) {
+        for (var r = 0; r < rows.length; r++) {
           var row = rows[r];
-          var c;
-          for (c = 0; c < row.length; c++) {
+          for (var c = 0; c < row.length; c++) {
             row[c] = '"' + String(row[c]).replace(/"/g, '""') + '"';
           }
           lines.push(row.join(","));
@@ -1776,53 +1809,41 @@
       }
 
       // ---------- ORDER DETAIL MODAL ----------
-      function showOrderDetail(ts) {
+      function openOrderModal(ts) {
         var orders = getOrders();
         var lines = [];
         var i;
         for (i = 0; i < orders.length; i++) {
-          if (orders[i].created_at === ts) lines.push(orders[i]);
+          if (orders[i].created_at === ts) {
+            lines.push(orders[i]);
+          }
         }
         if (!lines.length) return;
-        currentDetailTs = ts;
 
         var first = lines[0];
-        var title = "Order for " + (first.customer_name || "Unknown");
-        $("orderDetailTitle").innerHTML = title;
+        var tsLabel = new Date(first.created_at).toLocaleString();
 
-        var html = "";
-        html += "<div style='font-size:12px;margin-bottom:8px;'>";
-        html +=
-          "<div><strong>Date:</strong> " +
-          new Date(first.created_at).toLocaleString() +
-          "</div>";
-        if (first.customer_email) {
-          html +=
-            "<div><strong>Email:</strong> " +
-            first.customer_email +
-            "</div>";
-        }
-        if (first.customer_phone) {
-          html +=
-            "<div><strong>Phone:</strong> " +
-            first.customer_phone +
-            "</div>";
-        }
-        if (first.notes) {
-          html +=
-            "<div><strong>Notes:</strong> " +
-            first.notes.replace(/\n/g, "<br/>") +
-            "</div>";
-        }
-        html += "</div>";
+        $("orderModalSummary").innerHTML =
+          "Customer: " +
+          (first.customer_name || "") +
+          (first.customer_email
+            ? " • " + first.customer_email
+            : "") +
+          (first.customer_phone ? " • " + first.customer_phone : "") +
+          "<br/>" +
+          "Placed: " +
+          tsLabel +
+          " • " +
+          lines.length +
+          " line(s)";
 
-        html +=
-          "<table class='catalog-table'><thead><tr><th>Style</th><th>Color</th><th>Size</th><th>Qty</th></tr></thead><tbody>";
-        var j;
-        for (j = 0; j < lines.length; j++) {
-          var ln = lines[j];
-          html +=
-            "<tr><td>" +
+        var body = $("orderModalBody");
+        body.innerHTML = "";
+        for (i = 0; i < lines.length; i++) {
+          var ln = lines[i];
+          var tr = document.createElement("tr");
+          tr.innerHTML =
+            "<td>" +
             (ln.style_name || ln.style_code || "") +
             "</td><td>" +
             (ln.color || "") +
@@ -1830,32 +1851,33 @@
             (ln.size || "") +
             "</td><td>" +
             (ln.qty || "") +
-            "</td></tr>";
+            "</td>";
+          body.appendChild(tr);
         }
-        html += "</tbody></table>";
 
-        $("orderDetailBody").innerHTML = html;
-        $("orderDetailModal").style.display = "flex";
+        var notes = (first.notes || "").trim();
+        $("orderModalNotes").innerHTML = notes
+          ? "<strong>Notes:</strong> " + notes
+          : "";
+
+        $("orderModal").style.display = "flex";
       }
 
-      function closeOrderDetail() {
-        $("orderDetailModal").style.display = "none";
-        $("orderDetailBody").innerHTML = "";
-        currentDetailTs = null;
+      function closeOrderModal() {
+        $("orderModal").style.display = "none";
       }
 
-      $("orderDetailClose").onclick = closeOrderDetail;
-      $("orderDetailCloseFooter").onclick = closeOrderDetail;
+      $("orderModalClose").onclick = closeOrderModal;
+      $("orderModalCloseFooter").onclick = closeOrderModal;
 
-      // ---------- CATALOG VIEW (cards + modal) ----------
+      // ---------- PRODUCTS / CATALOG VIEW ----------
       function styleKeyFromParts(code, name) {
         return (code || "").trim() + "::" + (name || "").trim();
       }
 
       function buildStylesIndexForProducts() {
         var map = {};
-        var i;
-        for (i = 0; i < catalog.length; i++) {
+        for (var i = 0; i < catalog.length; i++) {
           var row = catalog[i];
           var code = (row.style_code || "").trim();
           var name = (row.style_name || "").trim();
@@ -1892,19 +1914,18 @@
 
         var stylesMap = buildStylesIndexForProducts();
         var any = false;
-        var key;
 
-        for (key in stylesMap) {
+        for (var key in stylesMap) {
           if (!stylesMap.hasOwnProperty(key)) continue;
           any = true;
           var meta = stylesMap[key];
+
           var metaExtra = styleMeta[key] || {};
           var imgData = metaExtra.imageDataUrl || "";
 
           var colorCount = 0;
           var sizeCount = 0;
-          var c;
-          for (c in meta.colors) {
+          for (var c in meta.colors) {
             if (!meta.colors.hasOwnProperty(c)) continue;
             colorCount++;
             sizeCount += meta.colors[c].length;
@@ -2001,8 +2022,7 @@
             if (!cMap.hasOwnProperty(c)) continue;
             if (modalColors.indexOf(c) === -1) modalColors.push(c);
             var szs = cMap[c];
-            var i;
-            for (i = 0; i < szs.length; i++) {
+            for (var i = 0; i < szs.length; i++) {
               var size = szs[i];
               if (modalSizes.indexOf(size) === -1) modalSizes.push(size);
             }
@@ -2019,6 +2039,7 @@
 
         renderModalChips();
         renderModalImagePreview();
+
         $("styleModal").style.display = "flex";
       }
 
@@ -2062,7 +2083,7 @@
 
       $("modalColorsRow").onclick = function (e) {
         var t = e.target || e.srcElement;
-        if (!t || t.tagName.toLowerCase() !== "button") return;
+        if (t.tagName.toLowerCase() !== "button") return;
         var type = t.getAttribute("data-type");
         var idx = Number(t.getAttribute("data-idx"));
         if (type === "color") {
@@ -2072,6 +2093,7 @@
         }
         renderModalChips();
       };
+
       $("modalSizesRow").onclick = $("modalColorsRow").onclick;
 
       $("addColorBtn").onclick = function () {
@@ -2158,6 +2180,7 @@
 
         var newKey = styleKeyFromParts(code, name);
 
+        // remove old rows for this style if editing
         var newCatalog = [];
         var i;
         for (i = 0; i < catalog.length; i++) {
@@ -2166,18 +2189,20 @@
             row.style_code || "",
             row.style_name || ""
           );
-          if (editingStyleKey && rKey === editingStyleKey) continue;
+          if (editingStyleKey && rKey === editingStyleKey) {
+            continue;
+          }
           newCatalog.push(row);
         }
 
-        var cIdx, sIdx;
-        for (cIdx = 0; cIdx < modalColors.length; cIdx++) {
-          for (sIdx = 0; sIdx < modalSizes.length; sIdx++) {
+        // add all color x size combinations
+        for (var c = 0; c < modalColors.length; c++) {
+          for (var s = 0; s < modalSizes.length; s++) {
             newCatalog.push({
               style_code: code,
               style_name: name,
-              color: modalColors[cIdx],
-              size: modalSizes[sIdx],
+              color: modalColors[c],
+              size: modalSizes[s],
               price: price || "",
             });
           }
@@ -2188,7 +2213,7 @@
         saveStyleMetaEntry(newKey, desc, cat, inStock, modalImageDataUrl);
 
         renderProductsGrid();
-        renderStylesGrid();
+        renderStylesGrid(); // update +Order styles
         updateDashboard();
         closeStyleModal();
         alert("Style saved.");
@@ -2210,7 +2235,7 @@
 
       $("productsGrid").onclick = function (e) {
         var t = e.target || e.srcElement;
-        if (!t || t.tagName.toLowerCase() !== "button") return;
+        if (t.tagName.toLowerCase() !== "button") return;
         var key = t.getAttribute("data-style-key");
         if (!key) return;
 
@@ -2219,8 +2244,7 @@
         } else if (t.innerHTML.indexOf("Delete") !== -1) {
           if (!confirm("Delete this style from catalog?")) return;
           var newCatalog = [];
-          var i;
-          for (i = 0; i < catalog.length; i++) {
+          for (var i = 0; i < catalog.length; i++) {
             var row = catalog[i];
             var rKey = styleKeyFromParts(
               row.style_code || "",
@@ -2260,8 +2284,7 @@
           var first = rows[0];
           var req = ["style_code", "style_name", "color", "size"];
           var missing = [];
-          var i;
-          for (i = 0; i < req.length; i++) {
+          for (var i = 0; i < req.length; i++) {
             if (!first.hasOwnProperty(req[i])) missing.push(req[i]);
           }
           if (missing.length) {
@@ -2273,8 +2296,7 @@
             return;
           }
           catalog = [];
-          var j;
-          for (j = 0; j < rows.length; j++) {
+          for (var j = 0; j < rows.length; j++) {
             catalog.push({
               style_code: rows[j].style_code || "",
               style_name: rows[j].style_name || "",
@@ -2299,8 +2321,7 @@
         }
         var headers = ["style_code", "style_name", "color", "size", "price"];
         var rows = [headers];
-        var i;
-        for (i = 0; i < catalog.length; i++) {
+        for (var i = 0; i < catalog.length; i++) {
           var r = catalog[i];
           rows.push([
             r.style_code || "",
@@ -2311,11 +2332,9 @@
           ]);
         }
         var lines = [];
-        var rowIdx;
-        for (rowIdx = 0; rowIdx < rows.length; rowIdx++) {
+        for (var rowIdx = 0; rowIdx < rows.length; rowIdx++) {
           var row = rows[rowIdx];
-          var c;
-          for (c = 0; c < row.length; c++) {
+          for (var c = 0; c < row.length; c++) {
             row[c] = '"' + String(row[c]).replace(/"/g, '""') + '"';
           }
           lines.push(row.join(","));
@@ -2342,14 +2361,12 @@
         for (i = 0; i < header.length; i++) {
           header[i] = header[i].trim().toLowerCase();
         }
-        var r;
-        for (r = 1; r < lines.length; r++) {
+        for (var r = 1; r < lines.length; r++) {
           var line = lines[r];
           if (!line) continue;
           var cols = line.split(",");
           var obj = {};
-          var c;
-          for (c = 0; c < header.length; c++) {
+          for (var c = 0; c < header.length; c++) {
             obj[header[c]] = (cols[c] || "").replace(/^"|"$/g, "");
           }
           out.push(obj);
