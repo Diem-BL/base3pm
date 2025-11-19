@@ -45,6 +45,7 @@
         padding-bottom: 8px;
         margin-bottom: 8px;
       }
+
       header h1 {
         margin: 0;
         font-size: 20px;
@@ -69,7 +70,7 @@
         gap: 6px;
         margin-bottom: 10px;
       }
-      /* default nav pill = black, white text */
+
       .nav button {
         border-radius: 999px;
         padding: 6px 12px;
@@ -81,7 +82,7 @@
         letter-spacing: 0.08em;
         cursor: pointer;
       }
-      /* active nav = white pill, black text */
+
       .nav button.active {
         background: #ffffff;
         border-color: #ffffff;
@@ -95,6 +96,7 @@
         display: block;
       }
 
+      /* CARDS / DASHBOARD */
       section.card {
         background: #000000;
         border-radius: 12px;
@@ -164,10 +166,12 @@
         background: #020617;
         color: #f9fafb;
       }
+
       input::placeholder,
       textarea::placeholder {
         color: #6b7280;
       }
+
       input:focus,
       textarea:focus,
       select:focus {
@@ -216,7 +220,6 @@
         color: #ffffff;
       }
 
-      /* selected / active button = white pill, black text */
       button.selected,
       button.active {
         background: #ffffff !important;
@@ -237,7 +240,7 @@
         margin-top: 8px;
       }
 
-      /* ORDER FLOW STEP INDICATOR */
+      /* ORDER FLOW – STEPPER */
       .stepper {
         display: flex;
         gap: 6px;
@@ -248,7 +251,6 @@
         margin-bottom: 6px;
       }
 
-      /* default pill: black w/ white text */
       .step-pill {
         padding: 4px 10px;
         border-radius: 999px;
@@ -257,14 +259,13 @@
         color: #f9fafb;
       }
 
-      /* active step: white pill, black text */
       .step-pill.active {
         background: #ffffff;
         border-color: #ffffff;
         color: #000000;
       }
 
-      /* STEP 1: STYLES GRID (small tiles) */
+      /* STEP 1 – STYLES GRID */
       .styles-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
@@ -282,10 +283,13 @@
         gap: 4px;
         cursor: pointer;
         transition: 0.15s ease;
-        text-align: center;
       }
 
-      /* optional image placeholder square */
+      .style-card.selected {
+        border-color: #ffffff;
+        box-shadow: 0 0 0 2px #ffffff inset;
+      }
+
       .style-card::before {
         content: "";
         width: 100%;
@@ -297,38 +301,37 @@
         margin-bottom: 4px;
       }
 
-      .style-card.selected {
-        border-color: #ffffff;
-        box-shadow: 0 0 0 2px #ffffff inset;
-      }
-
       .style-name {
         font-size: 11px;
         font-weight: 600;
         color: #ffffff;
+        text-align: center;
       }
 
       .style-code {
         font-size: 10px;
         color: #9ca3af;
+        text-align: center;
       }
 
       .style-meta {
         font-size: 10px;
         color: #6b7280;
+        text-align: center;
       }
 
-      /* STEP 2: COLOR CARDS */
+      /* STEP 2 – COLORS */
       .color-card {
         border-radius: 12px;
         border: 1px solid #1f2937;
         margin-bottom: 8px;
-        background: #000000; /* black card */
+        background: #020617;
       }
 
       .color-header {
         padding: 8px;
         border-bottom: 1px solid #1f2937;
+        color: #f9fafb;
       }
 
       .color-body {
@@ -377,12 +380,12 @@
         color: #000000;
       }
 
-      /* STEP 3: SIZE & QTY CARDS */
+      /* STEP 3 – SIZE & QTY */
       .qty-card {
         border-radius: 12px;
         border: 1px solid #1f2937;
         margin-bottom: 8px;
-        background: #000000; /* black card */
+        background: #020617;
         padding: 8px;
       }
 
@@ -400,7 +403,6 @@
         gap: 6px;
       }
 
-      /* white boxes for each size/qty */
       .size-chip {
         background: #ffffff;
         border-radius: 8px;
@@ -459,6 +461,10 @@
         border-bottom: none;
       }
 
+      #ordersTable tbody tr {
+        cursor: pointer;
+      }
+
       .empty {
         font-size: 12px;
         text-align: center;
@@ -466,7 +472,6 @@
         padding: 12px 0;
       }
 
-      /* CATALOG TABLE (for CSV import/export, not main Products UI) */
       .catalog-table-wrapper {
         margin-top: 6px;
         max-height: 260px;
@@ -493,7 +498,7 @@
         font-size: 11px;
       }
 
-      /* PRODUCTS GRID – small dark tiles */
+      /* PRODUCTS GRID – small tiles */
       .products-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
@@ -586,11 +591,11 @@
         color: #f9fafb;
       }
 
-      /* MODAL (slide-up sheet) */
+      /* MODALS */
       .modal-backdrop {
         position: fixed;
         inset: 0;
-        background: rgba(15, 23, 42, 0.45);
+        background: rgba(0, 0, 0, 0.7);
         display: flex;
         justify-content: center;
         align-items: flex-end;
@@ -601,7 +606,6 @@
         width: 100%;
         max-width: 720px;
         background: #000000;
-        color: #f9fafb;
         border-radius: 16px 16px 0 0;
         border-top: 1px solid #1f2937;
         box-shadow: 0 -18px 40px rgba(0, 0, 0, 0.8);
@@ -684,9 +688,7 @@
       <div id="view-dashboard" class="view active">
         <section class="card">
           <h2>Snapshot</h2>
-          <p class="subtext">
-            Overview of offline activity on this device only.
-          </p>
+          <p class="subtext">Overview of offline activity on this device only.</p>
           <div class="stats-row">
             <div class="stat-card">
               <div class="stat-label">Offline orders</div>
@@ -698,16 +700,12 @@
             </div>
             <div class="stat-card">
               <div class="stat-label">Last activity</div>
-              <div id="stat-last" class="stat-value" style="font-size:13px">
-                —
-              </div>
+              <div id="stat-last" class="stat-value" style="font-size:13px">—</div>
             </div>
           </div>
           <div class="actions" style="justify-content:flex-start;margin-top:8px">
             <button id="dash-new-order">+ New order</button>
-            <button id="dash-orders" class="secondary small">
-              View orders
-            </button>
+            <button id="dash-orders" class="secondary small">View orders</button>
             <button id="dash-products" class="secondary small">
               Manage products
             </button>
@@ -757,27 +755,19 @@
               />
             </div>
             <div id="stylesGrid" class="styles-grid"></div>
-            <div id="stylesEmpty" class="subtext">
-              No styles yet – add products first.
-            </div>
+            <div id="stylesEmpty" class="subtext">No styles yet – add products first.</div>
             <div class="actions">
-              <button id="step1-next" class="secondary">
-                Continue to colors ›
-              </button>
+              <button id="step1-next" class="secondary">Continue to colors ›</button>
             </div>
           </div>
 
           <!-- step 2 -->
           <div id="order-step-2" style="display:none">
             <h2>Choose Colors</h2>
-            <p class="subtext">
-              For each selected style, pick one or more colors.
-            </p>
+            <p class="subtext">For each selected style, pick one or more colors.</p>
             <div id="colorsContainer"></div>
             <div class="actions" style="justify-content:space-between">
-              <button id="step2-back" class="secondary">
-                ‹ Back to styles
-              </button>
+              <button id="step2-back" class="secondary">‹ Back to styles</button>
               <button id="step2-next">Continue to sizes & qty ›</button>
             </div>
           </div>
@@ -786,8 +776,8 @@
           <div id="order-step-3" style="display:none">
             <h2>Sizes & Quantities</h2>
             <p class="subtext">
-              Enter quantities for each style, color and size. Leave at 0 for
-              sizes you don’t need.
+              Enter quantities for each style, color and size. Leave at 0 for sizes
+              you don’t need.
             </p>
             <div id="qtyContainer"></div>
             <div class="field-full">
@@ -798,9 +788,7 @@
               ></textarea>
             </div>
             <div class="actions" style="justify-content:space-between">
-              <button id="step3-back" class="secondary">
-                ‹ Back to colors
-              </button>
+              <button id="step3-back" class="secondary">‹ Back to colors</button>
               <div style="display:flex;gap:6px">
                 <button id="clearOrder" class="secondary small">Clear</button>
                 <button id="saveOrder">Save order</button>
@@ -815,12 +803,11 @@
         <section class="card">
           <h2>Orders</h2>
           <p class="subtext">
-            Orders are stored locally on this device. Export to CSV for Excel.
+            Orders are stored locally on this device. Tap a row to view details or
+            export to CSV for Excel.
           </p>
           <div class="actions" style="justify-content:flex-start">
-            <button id="exportOrders" class="secondary small">
-              Export all CSV
-            </button>
+            <button id="exportOrders" class="secondary small">Export all CSV</button>
             <button id="clearOrders" class="danger small">Clear all</button>
           </div>
           <div id="ordersEmpty" class="empty">
@@ -852,35 +839,28 @@
             <div>
               <h2>Products</h2>
               <p class="subtext">
-                Manage styles used in the + Order flow. Data is stored offline
-                on this device.
+                Manage styles used in the + Order flow. Data is stored offline on
+                this device.
               </p>
             </div>
             <button id="addStyleBtn" class="small">+ Add style</button>
           </div>
 
           <div id="productsEmpty" class="empty">
-            No styles yet – tap “+ Add style” or import a catalog CSV from
-            another device.
+            No styles yet – tap “+ Add style” or import a catalog CSV from another
+            device.
           </div>
 
           <div id="productsGrid" class="products-grid"></div>
 
-          <div
-            class="actions"
-            style="justify-content:flex-start;margin-top:8px;"
-          >
+          <div class="actions" style="justify-content:flex-start;margin-top:8px;">
             <input id="catalogFile" type="file" accept=".csv" />
-            <button id="importCatalog" class="secondary small">
-              Import CSV
-            </button>
-            <button id="exportCatalog" class="secondary small">
-              Export CSV
-            </button>
+            <button id="importCatalog" class="secondary small">Import CSV</button>
+            <button id="exportCatalog" class="secondary small">Export CSV</button>
           </div>
         </section>
 
-        <!-- Slide-up modal editor -->
+        <!-- Style modal -->
         <div id="styleModal" class="modal-backdrop" style="display:none;">
           <div class="modal-sheet">
             <div class="modal-header">
@@ -994,27 +974,48 @@
             </div>
 
             <div class="modal-footer">
-              <button id="modalCancelBtn" class="secondary small">
-                Cancel
-              </button>
+              <button id="modalCancelBtn" class="secondary small">Cancel</button>
               <button id="modalSaveBtn" class="small">Save style</button>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ORDER DETAIL MODAL -->
+      <div id="orderDetailModal" class="modal-backdrop" style="display:none;">
+        <div class="modal-sheet">
+          <div class="modal-header">
+            <div id="orderDetailTitle" class="modal-title">Order details</div>
+            <button
+              type="button"
+              id="orderDetailClose"
+              class="secondary small"
+              style="border-radius:999px;width:26px;height:26px;padding:0;"
+            >
+              ✕
+            </button>
+          </div>
+          <div id="orderDetailBody" class="modal-body"></div>
+          <div class="modal-footer">
+            <button id="orderDetailCloseFooter" class="small">Close</button>
           </div>
         </div>
       </div>
     </div>
 
     <script>
-      // SIMPLE, OLDER-SAFARI-FRIENDLY JS (no arrow functions)
+      // SIMPLE, OLDER-SAFARI-FRIENDLY JS
       var ORDERS_KEY = "blanco_orders_v1";
       var CATALOG_KEY = "blanco_catalog_v1";
       var STYLE_META_KEY = "blanco_style_meta_v1";
 
       var catalog = [];
       var styleMeta = {}; // styleKey -> {desc, category, imageDataUrl, in_stock}
+
       var selectedStyles = []; // array of styleKeys
       var selectedColors = {}; // styleKey -> { color: true }
       var currentStep = 1;
+      var currentDetailTs = null;
 
       function $(id) {
         return document.getElementById(id);
@@ -1026,7 +1027,6 @@
           var raw = localStorage.getItem(ORDERS_KEY);
           return raw ? JSON.parse(raw) : [];
         } catch (e) {
-          console.log("getOrders error", e);
           return [];
         }
       }
@@ -1034,9 +1034,7 @@
       function saveOrdersList(list) {
         try {
           localStorage.setItem(ORDERS_KEY, JSON.stringify(list));
-        } catch (e) {
-          console.log("saveOrders error", e);
-        }
+        } catch (e) {}
         updateDashboard();
       }
 
@@ -1045,7 +1043,6 @@
           var raw = localStorage.getItem(CATALOG_KEY);
           return raw ? JSON.parse(raw) : [];
         } catch (e) {
-          console.log("getCatalog error", e);
           return [];
         }
       }
@@ -1053,9 +1050,7 @@
       function saveCatalog(list) {
         try {
           localStorage.setItem(CATALOG_KEY, JSON.stringify(list));
-        } catch (e) {
-          console.log("saveCatalog error", e);
-        }
+        } catch (e) {}
       }
 
       function loadStyleMeta() {
@@ -1098,14 +1093,15 @@
           var b = $(navButtons[j]);
           b.className = b.className.replace("active", "");
         }
-        if (viewId === "view-dashboard")
-          $("nav-dashboard").className += " active";
+        if (viewId === "view-dashboard") $("nav-dashboard").className +=
+          " active";
         if (viewId === "view-order") $("nav-order").className += " active";
         if (viewId === "view-orders") $("nav-orders").className += " active";
-        if (viewId === "view-products")
-          $("nav-products").className += " active";
+        if (viewId === "view-products") $("nav-products").className +=
+          " active";
 
-        if (viewId === "view-dashboard") $("viewLabel").innerHTML = "Dashboard";
+        if (viewId === "view-dashboard") $("viewLabel").innerHTML =
+          "Dashboard";
         if (viewId === "view-order") $("viewLabel").innerHTML = "+ Order";
         if (viewId === "view-orders") $("viewLabel").innerHTML = "Orders";
         if (viewId === "view-products") $("viewLabel").innerHTML = "Products";
@@ -1164,7 +1160,7 @@
         }
       }
 
-      // ---------- CATALOG STRUCTURE SHARED ----------
+      // ---------- CATALOG STRUCTURE ----------
       function getStyleKey(row) {
         var code = (row.style_code || "").trim();
         var name = (row.style_name || "").trim();
@@ -1211,12 +1207,9 @@
         $("order-step-2").style.display = n === 2 ? "block" : "none";
         $("order-step-3").style.display = n === 3 ? "block" : "none";
 
-        $("step-pill-1").className =
-          "step-pill" + (n === 1 ? " active" : "");
-        $("step-pill-2").className =
-          "step-pill" + (n === 2 ? " active" : "");
-        $("step-pill-3").className =
-          "step-pill" + (n === 3 ? " active" : "");
+        $("step-pill-1").className = "step-pill" + (n === 1 ? " active" : "");
+        $("step-pill-2").className = "step-pill" + (n === 2 ? " active" : "");
+        $("step-pill-3").className = "step-pill" + (n === 3 ? " active" : "");
       }
 
       function resetOrderFlow() {
@@ -1246,9 +1239,7 @@
           if (!stylesMap.hasOwnProperty(key)) continue;
           var meta = stylesMap[key];
           var label = (meta.code || "") + " " + (meta.name || "");
-          if (search && label.toLowerCase().indexOf(search) === -1) {
-            continue;
-          }
+          if (search && label.toLowerCase().indexOf(search) === -1) continue;
           any = true;
 
           var card = document.createElement("div");
@@ -1269,7 +1260,8 @@
           metaDiv.className = "style-meta";
           var colorCount = 0;
           var sizeCount = 0;
-          for (var c in meta.colors) {
+          var c;
+          for (c in meta.colors) {
             if (!meta.colors.hasOwnProperty(c)) continue;
             colorCount++;
             sizeCount += meta.colors[c].sizes.length;
@@ -1314,15 +1306,18 @@
       };
       $("step2-next").onclick = function () {
         var any = false;
-        for (var s in selectedColors) {
+        var s;
+        for (s in selectedColors) {
           if (!selectedColors.hasOwnProperty(s)) continue;
           var colors = selectedColors[s];
-          for (var c in colors) {
+          var c;
+          for (c in colors) {
             if (colors.hasOwnProperty(c) && colors[c]) {
               any = true;
               break;
             }
           }
+          if (any) break;
         }
         if (!any) {
           alert("Select at least one color.");
@@ -1343,7 +1338,8 @@
         var container = $("colorsContainer");
         container.innerHTML = "";
 
-        for (var i = 0; i < selectedStyles.length; i++) {
+        var i;
+        for (i = 0; i < selectedStyles.length; i++) {
           var key = selectedStyles[i];
           var meta = stylesMap[key];
           if (!meta) continue;
@@ -1373,7 +1369,8 @@
           var list = document.createElement("div");
           list.className = "color-list";
 
-          for (var color in meta.colors) {
+          var color;
+          for (color in meta.colors) {
             if (!meta.colors.hasOwnProperty(color)) continue;
 
             var chip = document.createElement("div");
@@ -1412,13 +1409,14 @@
         var container = $("qtyContainer");
         container.innerHTML = "";
 
-        for (var i = 0; i < selectedStyles.length; i++) {
+        var i;
+        for (i = 0; i < selectedStyles.length; i++) {
           var key = selectedStyles[i];
           var meta = stylesMap[key];
           if (!meta) continue;
           var colorsMap = selectedColors[key] || {};
-
-          for (var color in colorsMap) {
+          var color;
+          for (color in colorsMap) {
             if (
               !colorsMap.hasOwnProperty(color) ||
               !colorsMap[color]
@@ -1451,7 +1449,8 @@
               return a.localeCompare(b, undefined, { numeric: true });
             });
 
-            for (var s = 0; s < sizes.length; s++) {
+            var s;
+            for (s = 0; s < sizes.length; s++) {
               var size = sizes[s];
               var chip = document.createElement("div");
               chip.className = "size-chip";
@@ -1496,7 +1495,8 @@
 
         var inputs = $("qtyContainer").getElementsByTagName("input");
         var lines = [];
-        for (var i = 0; i < inputs.length; i++) {
+        var i;
+        for (i = 0; i < inputs.length; i++) {
           var el = inputs[i];
           if (!el.getAttribute("data-size")) continue;
           var qty = Number(el.value || 0);
@@ -1517,7 +1517,8 @@
         var nowIso = new Date().toISOString();
         var orders = getOrders();
 
-        for (var j = 0; j < lines.length; j++) {
+        var j;
+        for (j = 0; j < lines.length; j++) {
           var ln = lines[j];
           var meta = stylesMap[ln.styleKey] || {};
           orders.push({
@@ -1540,7 +1541,7 @@
         alert("Order saved on this device.");
       };
 
-      // ---------- ORDERS LIST (grouped by order) ----------
+      // ---------- ORDERS LIST (grouped) ----------
       function renderOrders() {
         var orders = getOrders();
         var table = $("ordersTable");
@@ -1556,7 +1557,6 @@
         table.style.display = "table";
         empty.style.display = "none";
 
-        // Group by created_at
         var groups = {};
         var keys = [];
         var i;
@@ -1590,7 +1590,8 @@
 
         keys.sort();
 
-        for (var kIdx = 0; kIdx < keys.length; kIdx++) {
+        var kIdx;
+        for (kIdx = 0; kIdx < keys.length; kIdx++) {
           var gKey = keys[kIdx];
           var g = groups[gKey];
 
@@ -1638,6 +1639,8 @@
               : sizeCount + " sizes";
 
           var tr = document.createElement("tr");
+          tr.setAttribute("data-ts", g.created_at);
+
           var time = new Date(g.created_at).toLocaleTimeString([], {
             hour: "2-digit",
             minute: "2-digit",
@@ -1664,25 +1667,38 @@
         }
       }
 
+      // click = either export button or open detail
       $("ordersBody").onclick = function (e) {
         var t = e.target || e.srcElement;
-        if (!t || t.tagName.toLowerCase() !== "button") return;
+        if (!t) return;
 
-        var ts = t.getAttribute("data-ts");
-        if (!ts) return;
-
-        var orders = getOrders();
-        var lines = [];
-        var i;
-        for (i = 0; i < orders.length; i++) {
-          if (orders[i].created_at === ts) {
-            lines.push(orders[i]);
+        if (t.tagName && t.tagName.toLowerCase() === "button") {
+          // Export button
+          var tsBtn = t.getAttribute("data-ts");
+          if (!tsBtn) return;
+          var orders = getOrders();
+          var lines = [];
+          var i;
+          for (i = 0; i < orders.length; i++) {
+            if (orders[i].created_at === tsBtn) {
+              lines.push(orders[i]);
+            }
           }
+          if (!lines.length) return;
+          var name = lines[0].customer_name || "";
+          downloadCSV(lines, "blanco_order_" + name + ".csv");
+          return;
         }
-        if (!lines.length) return;
 
-        var name = lines[0].customer_name || "";
-        downloadCSV(lines, "blanco_order_" + name + ".csv");
+        // otherwise: clicked row -> show detail
+        var row = t;
+        while (row && row.tagName && row.tagName.toLowerCase() !== "tr") {
+          row = row.parentNode;
+        }
+        if (!row) return;
+        var ts = row.getAttribute("data-ts");
+        if (!ts) return;
+        showOrderDetail(ts);
       };
 
       $("exportOrders").onclick = function () {
@@ -1718,7 +1734,8 @@
         ];
         var rows = [headers];
 
-        for (var i = 0; i < orders.length; i++) {
+        var i;
+        for (i = 0; i < orders.length; i++) {
           var o = orders[i];
           rows.push([
             o.created_at || "",
@@ -1735,11 +1752,12 @@
         }
 
         var lines = [];
-        for (var r = 0; r < rows.length; r++) {
+        var r;
+        for (r = 0; r < rows.length; r++) {
           var row = rows[r];
-          for (var c = 0; c < row.length; c++) {
-            row[c] =
-              '"' + String(row[c]).replace(/"/g, '""') + '"';
+          var c;
+          for (c = 0; c < row.length; c++) {
+            row[c] = '"' + String(row[c]).replace(/"/g, '""') + '"';
           }
           lines.push(row.join(","));
         }
@@ -1757,14 +1775,87 @@
         URL.revokeObjectURL(url);
       }
 
-      // ---------- PRODUCTS (cards + modal, separate index) ----------
+      // ---------- ORDER DETAIL MODAL ----------
+      function showOrderDetail(ts) {
+        var orders = getOrders();
+        var lines = [];
+        var i;
+        for (i = 0; i < orders.length; i++) {
+          if (orders[i].created_at === ts) lines.push(orders[i]);
+        }
+        if (!lines.length) return;
+        currentDetailTs = ts;
+
+        var first = lines[0];
+        var title = "Order for " + (first.customer_name || "Unknown");
+        $("orderDetailTitle").innerHTML = title;
+
+        var html = "";
+        html += "<div style='font-size:12px;margin-bottom:8px;'>";
+        html +=
+          "<div><strong>Date:</strong> " +
+          new Date(first.created_at).toLocaleString() +
+          "</div>";
+        if (first.customer_email) {
+          html +=
+            "<div><strong>Email:</strong> " +
+            first.customer_email +
+            "</div>";
+        }
+        if (first.customer_phone) {
+          html +=
+            "<div><strong>Phone:</strong> " +
+            first.customer_phone +
+            "</div>";
+        }
+        if (first.notes) {
+          html +=
+            "<div><strong>Notes:</strong> " +
+            first.notes.replace(/\n/g, "<br/>") +
+            "</div>";
+        }
+        html += "</div>";
+
+        html +=
+          "<table class='catalog-table'><thead><tr><th>Style</th><th>Color</th><th>Size</th><th>Qty</th></tr></thead><tbody>";
+        var j;
+        for (j = 0; j < lines.length; j++) {
+          var ln = lines[j];
+          html +=
+            "<tr><td>" +
+            (ln.style_name || ln.style_code || "") +
+            "</td><td>" +
+            (ln.color || "") +
+            "</td><td>" +
+            (ln.size || "") +
+            "</td><td>" +
+            (ln.qty || "") +
+            "</td></tr>";
+        }
+        html += "</tbody></table>";
+
+        $("orderDetailBody").innerHTML = html;
+        $("orderDetailModal").style.display = "flex";
+      }
+
+      function closeOrderDetail() {
+        $("orderDetailModal").style.display = "none";
+        $("orderDetailBody").innerHTML = "";
+        currentDetailTs = null;
+      }
+
+      $("orderDetailClose").onclick = closeOrderDetail;
+      $("orderDetailCloseFooter").onclick = closeOrderDetail;
+
+      // ---------- CATALOG VIEW (cards + modal) ----------
       function styleKeyFromParts(code, name) {
         return (code || "").trim() + "::" + (name || "").trim();
       }
 
       function buildStylesIndexForProducts() {
         var map = {};
-        for (var i = 0; i < catalog.length; i++) {
+        var i;
+        for (i = 0; i < catalog.length; i++) {
           var row = catalog[i];
           var code = (row.style_code || "").trim();
           var name = (row.style_name || "").trim();
@@ -1785,10 +1876,7 @@
             if (!map[key].colors[color]) {
               map[key].colors[color] = [];
             }
-            if (
-              size &&
-              map[key].colors[color].indexOf(size) === -1
-            ) {
+            if (size && map[key].colors[color].indexOf(size) === -1) {
               map[key].colors[color].push(size);
             }
           }
@@ -1804,18 +1892,19 @@
 
         var stylesMap = buildStylesIndexForProducts();
         var any = false;
+        var key;
 
-        for (var key in stylesMap) {
+        for (key in stylesMap) {
           if (!stylesMap.hasOwnProperty(key)) continue;
           any = true;
           var meta = stylesMap[key];
-
           var metaExtra = styleMeta[key] || {};
           var imgData = metaExtra.imageDataUrl || "";
 
           var colorCount = 0;
           var sizeCount = 0;
-          for (var c in meta.colors) {
+          var c;
+          for (c in meta.colors) {
             if (!meta.colors.hasOwnProperty(c)) continue;
             colorCount++;
             sizeCount += meta.colors[c].length;
@@ -1897,21 +1986,14 @@
           $("modalStyleCode").value = s.code || "";
           $("modalPrice").value = s.price || "";
           $("modalDescription").value =
-            (styleMeta[styleKey] &&
-              styleMeta[styleKey].description) ||
-            "";
+            (styleMeta[styleKey] && styleMeta[styleKey].description) || "";
           $("modalCategory").value =
-            (styleMeta[styleKey] &&
-              styleMeta[styleKey].category) ||
-            "";
+            (styleMeta[styleKey] && styleMeta[styleKey].category) || "";
 
           var extra = styleMeta[styleKey] || {};
           modalImageDataUrl = extra.imageDataUrl || "";
-          $("modalInStock").checked = extra.hasOwnProperty(
-            "in_stock"
-          )
-            ? !!extra.in_stock
-            : true;
+          $("modalInStock").checked =
+            extra.hasOwnProperty("in_stock") ? !!extra.in_stock : true;
 
           var cMap = s.colors;
           var c;
@@ -1919,10 +2001,10 @@
             if (!cMap.hasOwnProperty(c)) continue;
             if (modalColors.indexOf(c) === -1) modalColors.push(c);
             var szs = cMap[c];
-            for (var i = 0; i < szs.length; i++) {
+            var i;
+            for (i = 0; i < szs.length; i++) {
               var size = szs[i];
-              if (modalSizes.indexOf(size) === -1)
-                modalSizes.push(size);
+              if (modalSizes.indexOf(size) === -1) modalSizes.push(size);
             }
           }
         } else {
@@ -1937,7 +2019,6 @@
 
         renderModalChips();
         renderModalImagePreview();
-
         $("styleModal").style.display = "flex";
       }
 
@@ -1981,7 +2062,7 @@
 
       $("modalColorsRow").onclick = function (e) {
         var t = e.target || e.srcElement;
-        if (t.tagName.toLowerCase() !== "button") return;
+        if (!t || t.tagName.toLowerCase() !== "button") return;
         var type = t.getAttribute("data-type");
         var idx = Number(t.getAttribute("data-idx"));
         if (type === "color") {
@@ -1991,7 +2072,6 @@
         }
         renderModalChips();
       };
-
       $("modalSizesRow").onclick = $("modalColorsRow").onclick;
 
       $("addColorBtn").onclick = function () {
@@ -2001,9 +2081,9 @@
         $("modalColorInput").value = "";
         renderModalChips();
       };
-
       $("modalColorInput").onkeypress = function (e) {
-        if ((e.key || e.which) === "Enter" || e.which === 13) {
+        var key = e.key || e.which;
+        if (key === "Enter" || key === 13) {
           $("addColorBtn").onclick();
           e.preventDefault();
         }
@@ -2016,9 +2096,9 @@
         $("modalSizeInput").value = "";
         renderModalChips();
       };
-
       $("modalSizeInput").onkeypress = function (e) {
-        if ((e.key || e.which) === "Enter" || e.which === 13) {
+        var key = e.key || e.which;
+        if (key === "Enter" || key === 13) {
           $("addSizeBtn").onclick();
           e.preventDefault();
         }
@@ -2086,19 +2166,18 @@
             row.style_code || "",
             row.style_name || ""
           );
-          if (editingStyleKey && rKey === editingStyleKey) {
-            continue;
-          }
+          if (editingStyleKey && rKey === editingStyleKey) continue;
           newCatalog.push(row);
         }
 
-        for (var c = 0; c < modalColors.length; c++) {
-          for (var s = 0; s < modalSizes.length; s++) {
+        var cIdx, sIdx;
+        for (cIdx = 0; cIdx < modalColors.length; cIdx++) {
+          for (sIdx = 0; sIdx < modalSizes.length; sIdx++) {
             newCatalog.push({
               style_code: code,
               style_name: name,
-              color: modalColors[c],
-              size: modalSizes[s],
+              color: modalColors[cIdx],
+              size: modalSizes[sIdx],
               price: price || "",
             });
           }
@@ -2115,13 +2194,7 @@
         alert("Style saved.");
       };
 
-      function saveStyleMetaEntry(
-        key,
-        desc,
-        cat,
-        inStock,
-        imageDataUrl
-      ) {
+      function saveStyleMetaEntry(key, desc, cat, inStock, imageDataUrl) {
         if (!key) return;
         if (!styleMeta[key]) styleMeta[key] = {};
         styleMeta[key].description = desc || "";
@@ -2137,7 +2210,7 @@
 
       $("productsGrid").onclick = function (e) {
         var t = e.target || e.srcElement;
-        if (t.tagName.toLowerCase() !== "button") return;
+        if (!t || t.tagName.toLowerCase() !== "button") return;
         var key = t.getAttribute("data-style-key");
         if (!key) return;
 
@@ -2146,7 +2219,8 @@
         } else if (t.innerHTML.indexOf("Delete") !== -1) {
           if (!confirm("Delete this style from catalog?")) return;
           var newCatalog = [];
-          for (var i = 0; i < catalog.length; i++) {
+          var i;
+          for (i = 0; i < catalog.length; i++) {
             var row = catalog[i];
             var rKey = styleKeyFromParts(
               row.style_code || "",
@@ -2186,7 +2260,8 @@
           var first = rows[0];
           var req = ["style_code", "style_name", "color", "size"];
           var missing = [];
-          for (var i = 0; i < req.length; i++) {
+          var i;
+          for (i = 0; i < req.length; i++) {
             if (!first.hasOwnProperty(req[i])) missing.push(req[i]);
           }
           if (missing.length) {
@@ -2198,7 +2273,8 @@
             return;
           }
           catalog = [];
-          for (var j = 0; j < rows.length; j++) {
+          var j;
+          for (j = 0; j < rows.length; j++) {
             catalog.push({
               style_code: rows[j].style_code || "",
               style_name: rows[j].style_name || "",
@@ -2223,7 +2299,8 @@
         }
         var headers = ["style_code", "style_name", "color", "size", "price"];
         var rows = [headers];
-        for (var i = 0; i < catalog.length; i++) {
+        var i;
+        for (i = 0; i < catalog.length; i++) {
           var r = catalog[i];
           rows.push([
             r.style_code || "",
@@ -2234,11 +2311,12 @@
           ]);
         }
         var lines = [];
-        for (var rowIdx = 0; rowIdx < rows.length; rowIdx++) {
+        var rowIdx;
+        for (rowIdx = 0; rowIdx < rows.length; rowIdx++) {
           var row = rows[rowIdx];
-          for (var c = 0; c < row.length; c++) {
-            row[c] =
-              '"' + String(row[c]).replace(/"/g, '""') + '"';
+          var c;
+          for (c = 0; c < row.length; c++) {
+            row[c] = '"' + String(row[c]).replace(/"/g, '""') + '"';
           }
           lines.push(row.join(","));
         }
@@ -2248,9 +2326,7 @@
         var a = document.createElement("a");
         a.href = url;
         a.download =
-          "blanco_catalog_" +
-          new Date().toISOString().slice(0, 10) +
-          ".csv";
+          "blanco_catalog_" + new Date().toISOString().slice(0, 10) + ".csv";
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -2266,12 +2342,14 @@
         for (i = 0; i < header.length; i++) {
           header[i] = header[i].trim().toLowerCase();
         }
-        for (var r = 1; r < lines.length; r++) {
+        var r;
+        for (r = 1; r < lines.length; r++) {
           var line = lines[r];
           if (!line) continue;
           var cols = line.split(",");
           var obj = {};
-          for (var c = 0; c < header.length; c++) {
+          var c;
+          for (c = 0; c < header.length; c++) {
             obj[header[c]] = (cols[c] || "").replace(/^"|"$/g, "");
           }
           out.push(obj);
