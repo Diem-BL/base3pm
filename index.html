@@ -11,202 +11,37 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta name="apple-mobile-web-app-title" content="BLANCO Orders" />
     <link rel="apple-touch-icon" href="/icons/icon-192.png" />
-    
+
     <style>
       * {
         box-sizing: border-box;
       }
-     body {
-  margin: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  background: #000000;
-  color: #f9fafb;
-  padding: 10px;
-  display: flex;
-  justify-content: center;
-}
-.app {
-  width: 100%;
-  max-width: 1100px;
-  background: #000000;
-  border-radius: 16px;
-  border: 1px solid #1f2937;
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.8);
-  padding: 12px 16px 16px;
-}
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-  gap: 10px;
-  margin-top: 8px;
-}
 
-.product-card {
-  background: #f9fafb;
-  border-radius: 12px;
-  border: 1px solid #e5e7eb;
-  padding: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        background: #000000;
+        color: #f9fafb;
+        padding: 10px;
+        display: flex;
+        justify-content: center;
+      }
 
-/* PRODUCT IMAGE WRAPPER */
-.product-image {
-  width: 100%;
-  padding-bottom: 100%;
-  border-radius: 10px;
-  background: #020617; /* deep black/navy */
-  border: 1px solid #1f2937;
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  color: #9ca3af; /* muted gray text */
-}
-
-.product-image img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* PRODUCT TEXT */
-.product-name {
-  font-size: 13px;
-  font-weight: 600;
-  color: #ffffff; /* white */
-}
-
-.product-code,
-.product-summary {
-  font-size: 11px;
-  color: #9ca3af; /* soft gray text */
-}
-
-/* ACTION BUTTONS INSIDE PRODUCT CARD */
-.product-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 6px;
-}
-
-/* CHIP ROW (colors, sizes, etc.) */
-.chip-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-}
-
-/* INDIVIDUAL CHIPS */
-.chip {
-  display: inline-flex;
-  align-items: center;
-  padding: 4px 8px;
-  border-radius: 999px;
-  background: #111827; /* charcoal black */
-  border: 1px solid #374151; /* dark gray border */
-  color: #f9fafb; /* white text */
-  font-size: 11px;
-}
-
-}
-.chip button {
-  border: none;
-  background: transparent;
-  padding: 0;
-  margin: 0;
-  font-size: 11px;
-  line-height: 1;
-  cursor: pointer;
-  color: #9ca3af;       /* soft gray for the "×" */
-}
-
-.chip button:hover {
-  color: #f9fafb;       /* white on hover */
-}
-
-/* modal */
-.modal-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(15, 23, 42, 0.45);
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  z-index: 40;
-}
-
-.modal-sheet {
-  width: 100%;
-  max-width: 720px;
-  background: #ffffff;
-  border-radius: 16px 16px 0 0;
-  border-top: 1px solid #e5e7eb;
-  box-shadow: 0 -18px 40px rgba(15, 23, 42, 0.25);
-  max-height: 90vh;
-  display: flex;
-  flex-direction: column;
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 12px 6px;
-  border-bottom: 1px solid #e5e7eb;
-}
-.modal-title {
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.modal-body {
-  padding: 10px 12px;
-  overflow-y: auto;
-}
-.modal-footer {
-  padding: 8px 12px 10px;
-  border-top: 1px solid #e5e7eb;
-  display: flex;
-  justify-content: flex-end;
-  gap: 6px;
-}
-
-.image-row {
-  display: flex;
-  gap: 8px;
-  align-items: stretch;
-}
-.image-preview {
-  width: 120px;
-  height: 120px;
-  border-radius: 12px;
-  border: 1px dashed #d1d5db;
-  background: #f9fafb;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  color: #9ca3af;
-  overflow: hidden;
-}
-.image-preview img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
+      .app {
+        width: 100%;
+        max-width: 1100px;
+        background: #000000;
+        border-radius: 16px;
+        border: 1px solid #1f2937;
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.8);
+        padding: 12px 16px 16px;
       }
 
       header {
         display: flex;
         justify-content: space-between;
         align-items: baseline;
-        border-bottom: 1px solid #e5e7eb;
+        border-bottom: 1px solid #1f2937;
         padding-bottom: 8px;
         margin-bottom: 8px;
       }
@@ -216,16 +51,16 @@
         letter-spacing: 0.08em;
         text-transform: uppercase;
       }
-   header span,
-.subtext,
-.stat-label,
-.style-code,
-.style-meta,
-.product-code,
-.product-summary {
-  color: #9ca3af;
-}
 
+      header span,
+      .subtext,
+      .stat-label,
+      .style-code,
+      .style-meta,
+      .product-code,
+      .product-summary {
+        color: #9ca3af;
+      }
 
       /* NAV */
       .nav {
@@ -234,25 +69,24 @@
         gap: 6px;
         margin-bottom: 10px;
       }
-     /* NAV TABS – black default, white when selected */
-.nav button {
-  border-radius: 999px;
-  padding: 6px 12px;
-  border: 1px solid #f9fafb;
-  background: #000000;
-  color: #ffffff;
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  cursor: pointer;
-}
-
-.nav button.active {
-  background: #ffffff;
-  border-color: #ffffff;
-  color: #000000;
-}
-
+      /* default nav pill = black, white text */
+      .nav button {
+        border-radius: 999px;
+        padding: 6px 12px;
+        border: 1px solid #f9fafb;
+        background: #000000;
+        color: #ffffff;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        cursor: pointer;
+      }
+      /* active nav = white pill, black text */
+      .nav button.active {
+        background: #ffffff;
+        border-color: #ffffff;
+        color: #000000;
+      }
 
       .view {
         display: none;
@@ -261,142 +95,140 @@
         display: block;
       }
 
-section.card {
-  background: #000000;
-  border-radius: 12px;
-  border: 1px solid #1f2937;
-  padding: 10px;
-  margin-bottom: 10px;
-  color: #f9fafb; /* ensure text inside is white */
-}
+      section.card {
+        background: #000000;
+        border-radius: 12px;
+        border: 1px solid #1f2937;
+        padding: 10px;
+        margin-bottom: 10px;
+        color: #f9fafb;
+      }
 
-h2 {
-  margin: 0 0 4px;
-  font-size: 16px;
-  color: #ffffff;
-}
+      h2 {
+        margin: 0 0 4px;
+        font-size: 16px;
+        color: #ffffff;
+      }
 
-.subtext {
-  font-size: 12px;
-  color: #9ca3af; /* soft gray */
-  margin-bottom: 8px;
-}
+      .subtext {
+        font-size: 12px;
+        color: #9ca3af;
+        margin-bottom: 8px;
+      }
 
-.stats-row {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 8px;
-}
+      .stats-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 8px;
+      }
 
-.stat-card {
-  background: #020617; /* deep navy-black (Base44 style) */
-  border-radius: 12px;
-  border: 1px solid #1f2937;
-  padding: 8px;
-  color: #f9fafb;
-}
+      .stat-card {
+        background: #020617;
+        border-radius: 12px;
+        border: 1px solid #1f2937;
+        padding: 8px;
+        color: #f9fafb;
+      }
 
-.stat-label {
-  font-size: 11px;
-  color: #9ca3af; /* muted gray */
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin-bottom: 2px;
-}
+      .stat-label {
+        font-size: 11px;
+        color: #9ca3af;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 2px;
+      }
 
-.stat-value {
-  font-size: 18px;
-  font-weight: 600;
-  color: #ffffff;
-}
-
+      .stat-value {
+        font-size: 18px;
+        font-weight: 600;
+        color: #ffffff;
       }
 
       label {
         font-size: 11px;
         text-transform: uppercase;
         letter-spacing: 0.08em;
-        color: #6b7280;
+        color: #9ca3af;
         display: block;
         margin-bottom: 3px;
       }
-    input,
-textarea,
-select {
-  width: 100%;
-  padding: 6px 8px;
-  border-radius: 8px;
-  border: 1px solid #374151;
-  font-size: 13px;
-  background: #020617;
-  color: #f9fafb;
-}
-input::placeholder,
-textarea::placeholder {
-  color: #6b7280;
-}
-input:focus,
-textarea:focus,
-select:focus {
-  outline: none;
-  border-color: #f9fafb;
-}
 
+      input,
+      textarea,
+      select {
+        width: 100%;
+        padding: 6px 8px;
+        border-radius: 8px;
+        border: 1px solid #374151;
+        font-size: 13px;
+        background: #020617;
+        color: #f9fafb;
       }
+      input::placeholder,
+      textarea::placeholder {
+        color: #6b7280;
+      }
+      input:focus,
+      textarea:focus,
+      select:focus {
+        outline: none;
+        border-color: #f9fafb;
+      }
+
       textarea {
         resize: vertical;
         min-height: 60px;
       }
+
       .field-row {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
         gap: 8px;
         margin-bottom: 8px;
       }
+
       .field-full {
         margin-bottom: 8px;
       }
 
-/* DEFAULT BUTTON (black with white text) */
-button {
-  border-radius: 999px;
-  padding: 6px 12px;
-  border: 1px solid #f9fafb;
-  background: #000000;
-  color: #ffffff;
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  cursor: pointer;
-}
+      /* BUTTONS */
+      button {
+        border-radius: 999px;
+        padding: 6px 12px;
+        border: 1px solid #f9fafb;
+        background: #000000;
+        color: #ffffff;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        cursor: pointer;
+      }
 
-/* SECONDARY BUTTON (outline) */
-button.secondary {
-  background: #000000;
-  color: #e5e7eb;
-  border-color: #4b5563;
-}
+      button.secondary {
+        background: #000000;
+        color: #e5e7eb;
+        border-color: #4b5563;
+      }
 
-/* DANGER BUTTON (red) */
-button.danger {
-  background: #ef4444;
-  border-color: #ef4444;
-  color: #ffffff;
-}
+      button.danger {
+        background: #ef4444;
+        border-color: #ef4444;
+        color: #ffffff;
+      }
 
-/* SELECTED BUTTON = white with black text */
-button.selected,
-button.active {
-  background: #ffffff !important;
-  color: #000000 !important;
-  border-color: #ffffff !important;
-}
-
+      /* selected / active button = white pill, black text */
+      button.selected,
+      button.active {
+        background: #ffffff !important;
+        color: #000000 !important;
+        border-color: #ffffff !important;
+      }
 
       button.small {
         font-size: 11px;
         padding: 4px 9px;
       }
+
       .actions {
         display: flex;
         flex-wrap: wrap;
@@ -405,68 +237,7 @@ button.active {
         margin-top: 8px;
       }
 
-/* ORDER FLOW – STYLES GRID (small icon layout like Products) */
-.styles-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
-  gap: 10px;
-}
-
-/* Individual style cards */
-.style-card {
-  background: #020617;
-  border-radius: 10px;
-  border: 1px solid #1f2937;
-  padding: 6px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  cursor: pointer;
-  transition: 0.15s ease;
-}
-
-/* Selected state */
-.style-card.selected {
-  border-color: #ffffff;
-  box-shadow: 0 0 0 2px #ffffff inset;
-}
-
-/* Optional image in future (placeholder square) */
-.style-card::before {
-  content: "";
-  width: 100%;
-  padding-bottom: 100%;
-  background: #111827;
-  border: 1px solid #1f2937;
-  border-radius: 8px;
-  display: block;
-  margin-bottom: 4px;
-}
-
-/* Style name */
-.style-name {
-  font-size: 11px;
-  font-weight: 600;
-  color: #ffffff;
-  text-align: center;
-}
-
-/* Style code */
-.style-code {
-  font-size: 10px;
-  color: #9ca3af;
-  text-align: center;
-}
-
-/* small text under */
-.style-meta {
-  font-size: 10px;
-  color: #6b7280;
-  text-align: center;
-}
-
-
+      /* ORDER FLOW STEP INDICATOR */
       .stepper {
         display: flex;
         gap: 6px;
@@ -476,114 +247,218 @@ button.active {
         letter-spacing: 0.08em;
         margin-bottom: 6px;
       }
+
+      /* default pill: black w/ white text */
       .step-pill {
-        padding: 4px 8px;
+        padding: 4px 10px;
         border-radius: 999px;
-        border: 1px solid #e5e7eb;
-        background: #f9fafb;
-        color: #6b7280;
-      }
-      .step-pill.active {
-        background: #111827;
-        border-color: #111827;
+        border: 1px solid #4b5563;
+        background: #000000;
         color: #f9fafb;
       }
 
+      /* active step: white pill, black text */
+      .step-pill.active {
+        background: #ffffff;
+        border-color: #ffffff;
+        color: #000000;
+      }
+
+      /* STEP 1: STYLES GRID (small tiles) */
+      .styles-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+        gap: 10px;
+      }
+
+      .style-card {
+        background: #020617;
+        border-radius: 10px;
+        border: 1px solid #1f2937;
+        padding: 6px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        cursor: pointer;
+        transition: 0.15s ease;
+        text-align: center;
+      }
+
+      /* optional image placeholder square */
+      .style-card::before {
+        content: "";
+        width: 100%;
+        padding-bottom: 100%;
+        background: #111827;
+        border: 1px solid #1f2937;
+        border-radius: 8px;
+        display: block;
+        margin-bottom: 4px;
+      }
+
+      .style-card.selected {
+        border-color: #ffffff;
+        box-shadow: 0 0 0 2px #ffffff inset;
+      }
+
+      .style-name {
+        font-size: 11px;
+        font-weight: 600;
+        color: #ffffff;
+      }
+
+      .style-code {
+        font-size: 10px;
+        color: #9ca3af;
+      }
+
+      .style-meta {
+        font-size: 10px;
+        color: #6b7280;
+      }
+
+      /* STEP 2: COLOR CARDS */
       .color-card {
         border-radius: 12px;
-        border: 1px solid #e5e7eb;
+        border: 1px solid #1f2937;
         margin-bottom: 8px;
-        background: #f9fafb;
+        background: #000000; /* black card */
       }
+
       .color-header {
         padding: 8px;
-        border-bottom: 1px solid #e5e7eb;
+        border-bottom: 1px solid #1f2937;
       }
+
       .color-body {
         padding: 8px;
       }
+
+      .color-body label {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #9ca3af;
+        display: block;
+        margin-bottom: 4px;
+      }
+
       .color-list {
         display: grid;
-        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
         gap: 6px;
       }
+
       @media (max-width: 600px) {
         .color-list {
           grid-template-columns: minmax(0, 1fr);
         }
       }
+
       .color-chip {
         display: flex;
         align-items: center;
+        justify-content: center;
         gap: 6px;
         border-radius: 999px;
-        border: 1px solid #e5e7eb;
+        border: 1px solid #4b5563;
         padding: 6px 10px;
-        background: #ffffff;
+        background: #000000;
         cursor: pointer;
-        font-size: 13px;
-      }
-      .color-chip.selected {
-        background: #111827;
-        border-color: #111827;
+        font-size: 12px;
         color: #f9fafb;
+        transition: 0.12s ease;
       }
 
+      .color-chip.selected {
+        background: #ffffff;
+        border-color: #ffffff;
+        color: #000000;
+      }
+
+      /* STEP 3: SIZE & QTY CARDS */
       .qty-card {
         border-radius: 12px;
-        border: 1px solid #e5e7eb;
+        border: 1px solid #1f2937;
         margin-bottom: 8px;
-        background: #f9fafb;
+        background: #000000; /* black card */
         padding: 8px;
       }
+
       .qty-header {
         display: flex;
         justify-content: space-between;
         font-size: 12px;
-        margin-bottom: 4px;
+        margin-bottom: 6px;
+        color: #f9fafb;
       }
+
       .sizes-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
         gap: 6px;
       }
+
+      /* white boxes for each size/qty */
       .size-chip {
         background: #ffffff;
         border-radius: 8px;
-        border: 1px solid #e5e7eb;
+        border: 1px solid #d1d5db;
         padding: 4px 6px;
         font-size: 11px;
+        color: #000000;
       }
+
       .size-chip label {
         font-size: 10px;
         text-transform: uppercase;
         letter-spacing: 0.08em;
-        color: #6b7280;
+        color: #374151;
         margin-bottom: 2px;
+        display: block;
       }
 
-     table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 11px;
-}
-th,
-td {
-  border-bottom: 1px solid #374151;
-  padding: 5px 4px;
-  text-align: left;
-  color: #f9fafb;
-}
-th {
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: #9ca3af;
-}
-
+      .size-chip input[type="number"] {
+        width: 100%;
+        padding: 4px 6px;
+        border-radius: 6px;
+        border: 1px solid #9ca3af;
+        background: #ffffff;
+        color: #000000;
+        font-size: 11px;
       }
+
+      .size-chip input[type="number"]:focus {
+        outline: none;
+        border-color: #000000;
+      }
+
+      /* TABLES */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 11px;
+      }
+
+      th,
+      td {
+        border-bottom: 1px solid #374151;
+        padding: 5px 4px;
+        text-align: left;
+        color: #f9fafb;
+      }
+
+      th {
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #9ca3af;
+      }
+
       tr:last-child td {
         border-bottom: none;
       }
+
       .empty {
         font-size: 12px;
         text-align: center;
@@ -591,27 +466,200 @@ th {
         padding: 12px 0;
       }
 
+      /* CATALOG TABLE (for CSV import/export, not main Products UI) */
       .catalog-table-wrapper {
         margin-top: 6px;
         max-height: 260px;
         overflow: auto;
         border-radius: 8px;
-        border: 1px solid #e5e7eb;
+        border: 1px solid #1f2937;
       }
+
       .catalog-table {
         width: 100%;
         border-collapse: collapse;
         font-size: 11px;
       }
+
       .catalog-table th,
       .catalog-table td {
         padding: 4px 5px;
-        border-bottom: 1px solid #e5e7eb;
+        border-bottom: 1px solid #1f2937;
       }
+
       .catalog-table input {
         width: 100%;
         padding: 3px 4px;
         font-size: 11px;
+      }
+
+      /* PRODUCTS GRID – small dark tiles */
+      .products-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+        gap: 10px;
+        margin-top: 8px;
+      }
+
+      .product-card {
+        background: #020617;
+        border-radius: 8px;
+        border: 1px solid #1f2937;
+        padding: 6px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        text-align: center;
+      }
+
+      .product-image {
+        width: 100%;
+        padding-bottom: 100%;
+        border-radius: 8px;
+        background: #020617;
+        border: 1px solid #1f2937;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        color: #9ca3af;
+      }
+
+      .product-image img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .product-name {
+        font-size: 11px;
+        font-weight: 600;
+        color: #ffffff;
+      }
+
+      .product-code,
+      .product-summary {
+        font-size: 10px;
+        color: #9ca3af;
+      }
+
+      .product-actions {
+        display: flex;
+        justify-content: center;
+        gap: 4px;
+        margin-top: 4px;
+      }
+
+      .chip-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+      }
+
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        padding: 3px 7px;
+        border-radius: 999px;
+        background: #111827;
+        border: 1px solid #374151;
+        color: #f9fafb;
+        font-size: 10px;
+      }
+
+      .chip button {
+        border: none;
+        background: transparent;
+        padding: 0;
+        margin: 0;
+        font-size: 10px;
+        line-height: 1;
+        cursor: pointer;
+        color: #9ca3af;
+      }
+
+      .chip button:hover {
+        color: #f9fafb;
+      }
+
+      /* MODAL (slide-up sheet) */
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.45);
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        z-index: 40;
+      }
+
+      .modal-sheet {
+        width: 100%;
+        max-width: 720px;
+        background: #000000;
+        color: #f9fafb;
+        border-radius: 16px 16px 0 0;
+        border-top: 1px solid #1f2937;
+        box-shadow: 0 -18px 40px rgba(0, 0, 0, 0.8);
+        max-height: 90vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 12px 6px;
+        border-bottom: 1px solid #1f2937;
+      }
+
+      .modal-title {
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      .modal-body {
+        padding: 10px 12px;
+        overflow-y: auto;
+      }
+
+      .modal-footer {
+        padding: 8px 12px 10px;
+        border-top: 1px solid #1f2937;
+        display: flex;
+        justify-content: flex-end;
+        gap: 6px;
+      }
+
+      .image-row {
+        display: flex;
+        gap: 8px;
+        align-items: stretch;
+      }
+
+      .image-preview {
+        width: 120px;
+        height: 120px;
+        border-radius: 12px;
+        border: 1px dashed #374151;
+        background: #020617;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        color: #9ca3af;
+        overflow: hidden;
+      }
+
+      .image-preview img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
       }
     </style>
   </head>
@@ -795,168 +843,175 @@ th {
         </section>
       </div>
 
-<!-- PRODUCTS -->
-<div id="view-products" class="view">
-  <section class="card">
-    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;">
-      <div>
-        <h2>Products</h2>
-        <p class="subtext">
-          Manage styles used in the + Order flow. Data is stored offline on
-          this device.
-        </p>
-      </div>
-      <button id="addStyleBtn" class="small">+ Add style</button>
-    </div>
-
-    <div id="productsEmpty" class="empty">
-      No styles yet – tap “+ Add style” or import a catalog CSV from another
-      device.
-    </div>
-
-    <div id="productsGrid" class="products-grid"></div>
-
-    <div class="actions" style="justify-content:flex-start;margin-top:8px;">
-      <input id="catalogFile" type="file" accept=".csv" />
-      <button id="importCatalog" class="secondary small">
-        Import CSV
-      </button>
-      <button id="exportCatalog" class="secondary small">
-        Export CSV
-      </button>
-    </div>
-  </section>
-
-  <!-- Slide-up modal editor -->
-  <div id="styleModal" class="modal-backdrop" style="display:none;">
-    <div class="modal-sheet">
-      <div class="modal-header">
-        <div id="modalTitle" class="modal-title">New style</div>
-        <button
-          type="button"
-          id="modalCloseBtn"
-          class="secondary small"
-          style="border-radius:999px;width:26px;height:26px;padding:0;"
-        >
-          ✕
-        </button>
-      </div>
-
-      <div class="modal-body">
-        <div class="field-row">
-          <div>
-            <label for="modalStyleName">Style name</label>
-            <input id="modalStyleName" placeholder="polo" />
-          </div>
-          <div>
-            <label for="modalStyleCode">Style code</label>
-            <input id="modalStyleCode" placeholder="1416-sup" />
-          </div>
-        </div>
-
-        <div class="field-full">
-          <label for="modalDescription">Description</label>
-          <textarea
-            id="modalDescription"
-            placeholder="Enter description (optional)"
-          ></textarea>
-        </div>
-
-        <div class="field-row">
-          <div>
-            <label for="modalPrice">Price (per piece)</label>
-            <input id="modalPrice" type="number" min="0" step="0.01" />
-          </div>
-          <div>
-            <label for="modalCategory">Category</label>
-            <input
-              id="modalCategory"
-              placeholder="polo, hoodie, outerwear…"
-            />
-          </div>
-        </div>
-
-        <!-- colors -->
-        <div class="field-full">
-          <label>Available colors</label>
+      <!-- PRODUCTS -->
+      <div id="view-products" class="view">
+        <section class="card">
           <div
-            style="display:flex;gap:6px;align-items:center;margin-bottom:4px;"
+            style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;"
           >
-            <input
-              id="modalColorInput"
-              placeholder="Add color (enter, then +)"
-            />
-            <button id="addColorBtn" class="secondary small">+</button>
+            <div>
+              <h2>Products</h2>
+              <p class="subtext">
+                Manage styles used in the + Order flow. Data is stored offline
+                on this device.
+              </p>
+            </div>
+            <button id="addStyleBtn" class="small">+ Add style</button>
           </div>
-          <div id="modalColorsRow" class="chip-row"></div>
-        </div>
 
-        <!-- sizes -->
-        <div class="field-full">
-          <label>Available sizes</label>
+          <div id="productsEmpty" class="empty">
+            No styles yet – tap “+ Add style” or import a catalog CSV from
+            another device.
+          </div>
+
+          <div id="productsGrid" class="products-grid"></div>
+
           <div
-            style="display:flex;gap:6px;align-items:center;margin-bottom:4px;"
+            class="actions"
+            style="justify-content:flex-start;margin-top:8px;"
           >
-            <input
-              id="modalSizeInput"
-              placeholder="Add size (S, M, L, XL, 32, 34…)"
-            />
-            <button id="addSizeBtn" class="secondary small">+</button>
+            <input id="catalogFile" type="file" accept=".csv" />
+            <button id="importCatalog" class="secondary small">
+              Import CSV
+            </button>
+            <button id="exportCatalog" class="secondary small">
+              Export CSV
+            </button>
           </div>
-          <div id="modalSizesRow" class="chip-row"></div>
-        </div>
+        </section>
 
-        <!-- image -->
-        <div class="field-full">
-          <label>Product image</label>
-          <div class="image-row">
-            <div id="modalImagePreview" class="image-preview">
-              <span>Tap to upload</span>
+        <!-- Slide-up modal editor -->
+        <div id="styleModal" class="modal-backdrop" style="display:none;">
+          <div class="modal-sheet">
+            <div class="modal-header">
+              <div id="modalTitle" class="modal-title">New style</div>
+              <button
+                type="button"
+                id="modalCloseBtn"
+                class="secondary small"
+                style="border-radius:999px;width:26px;height:26px;padding:0;"
+              >
+                ✕
+              </button>
             </div>
-            <div style="display:flex;flex-direction:column;gap:4px;">
-              <input
-                id="modalImageFile"
-                type="file"
-                accept="image/*"
-                style="font-size:11px;"
-              />
-              <small class="subtext">
-                Images are stored locally on this device (not in CSV).
-              </small>
+
+            <div class="modal-body">
+              <div class="field-row">
+                <div>
+                  <label for="modalStyleName">Style name</label>
+                  <input id="modalStyleName" placeholder="polo" />
+                </div>
+                <div>
+                  <label for="modalStyleCode">Style code</label>
+                  <input id="modalStyleCode" placeholder="1416-sup" />
+                </div>
+              </div>
+
+              <div class="field-full">
+                <label for="modalDescription">Description</label>
+                <textarea
+                  id="modalDescription"
+                  placeholder="Enter description (optional)"
+                ></textarea>
+              </div>
+
+              <div class="field-row">
+                <div>
+                  <label for="modalPrice">Price (per piece)</label>
+                  <input id="modalPrice" type="number" min="0" step="0.01" />
+                </div>
+                <div>
+                  <label for="modalCategory">Category</label>
+                  <input
+                    id="modalCategory"
+                    placeholder="polo, hoodie, outerwear…"
+                  />
+                </div>
+              </div>
+
+              <!-- colors -->
+              <div class="field-full">
+                <label>Available colors</label>
+                <div
+                  style="display:flex;gap:6px;align-items:center;margin-bottom:4px;"
+                >
+                  <input
+                    id="modalColorInput"
+                    placeholder="Add color (enter, then +)"
+                  />
+                  <button id="addColorBtn" class="secondary small">+</button>
+                </div>
+                <div id="modalColorsRow" class="chip-row"></div>
+              </div>
+
+              <!-- sizes -->
+              <div class="field-full">
+                <label>Available sizes</label>
+                <div
+                  style="display:flex;gap:6px;align-items:center;margin-bottom:4px;"
+                >
+                  <input
+                    id="modalSizeInput"
+                    placeholder="Add size (S, M, L, XL, 32, 34…)"
+                  />
+                  <button id="addSizeBtn" class="secondary small">+</button>
+                </div>
+                <div id="modalSizesRow" class="chip-row"></div>
+              </div>
+
+              <!-- image -->
+              <div class="field-full">
+                <label>Product image</label>
+                <div class="image-row">
+                  <div id="modalImagePreview" class="image-preview">
+                    <span>Tap to upload</span>
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:4px;">
+                    <input
+                      id="modalImageFile"
+                      type="file"
+                      accept="image/*"
+                      style="font-size:11px;"
+                    />
+                    <small class="subtext">
+                      Images are stored locally on this device (not in CSV).
+                    </small>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class="field-full"
+                style="display:flex;align-items:center;gap:6px;margin-top:4px;"
+              >
+                <input
+                  id="modalInStock"
+                  type="checkbox"
+                  style="width:auto;margin:0;"
+                />
+                <span style="font-size:12px;">In stock</span>
+              </div>
+            </div>
+
+            <div class="modal-footer">
+              <button id="modalCancelBtn" class="secondary small">
+                Cancel
+              </button>
+              <button id="modalSaveBtn" class="small">Save style</button>
             </div>
           </div>
         </div>
-
-        <div
-          class="field-full"
-          style="display:flex;align-items:center;gap:6px;margin-top:4px;"
-        >
-          <input
-            id="modalInStock"
-            type="checkbox"
-            style="width:auto;margin:0;"
-          />
-          <span style="font-size:12px;">In stock</span>
-        </div>
-      </div>
-
-      <div class="modal-footer">
-        <button id="modalCancelBtn" class="secondary small">
-          Cancel
-        </button>
-        <button id="modalSaveBtn" class="small">Save style</button>
       </div>
     </div>
-  </div>
-</div>
-
 
     <script>
-      // SIMPLE, OLDER-SAFARI-FRIENDLY JS (no arrow functions, no fancy syntax)
+      // SIMPLE, OLDER-SAFARI-FRIENDLY JS (no arrow functions)
       var ORDERS_KEY = "blanco_orders_v1";
       var CATALOG_KEY = "blanco_catalog_v1";
+      var STYLE_META_KEY = "blanco_style_meta_v1";
 
       var catalog = [];
+      var styleMeta = {}; // styleKey -> {desc, category, imageDataUrl, in_stock}
       var selectedStyles = []; // array of styleKeys
       var selectedColors = {}; // styleKey -> { color: true }
       var currentStep = 1;
@@ -985,7 +1040,6 @@ th {
         updateDashboard();
       }
 
-      
       function getCatalog() {
         try {
           var raw = localStorage.getItem(CATALOG_KEY);
@@ -1002,6 +1056,21 @@ th {
         } catch (e) {
           console.log("saveCatalog error", e);
         }
+      }
+
+      function loadStyleMeta() {
+        try {
+          var raw = localStorage.getItem(STYLE_META_KEY);
+          styleMeta = raw ? JSON.parse(raw) : {};
+        } catch (e) {
+          styleMeta = {};
+        }
+      }
+
+      function saveStyleMeta() {
+        try {
+          localStorage.setItem(STYLE_META_KEY, JSON.stringify(styleMeta));
+        } catch (e) {}
       }
 
       // ---------- NAV ----------
@@ -1029,21 +1098,20 @@ th {
           var b = $(navButtons[j]);
           b.className = b.className.replace("active", "");
         }
-        if (viewId === "view-dashboard") $("nav-dashboard").className +=
-          " active";
+        if (viewId === "view-dashboard")
+          $("nav-dashboard").className += " active";
         if (viewId === "view-order") $("nav-order").className += " active";
         if (viewId === "view-orders") $("nav-orders").className += " active";
-        if (viewId === "view-products") $("nav-products").className +=
-          " active";
+        if (viewId === "view-products")
+          $("nav-products").className += " active";
 
-        if (viewId === "view-dashboard") $("viewLabel").innerHTML =
-          "Dashboard";
+        if (viewId === "view-dashboard") $("viewLabel").innerHTML = "Dashboard";
         if (viewId === "view-order") $("viewLabel").innerHTML = "+ Order";
         if (viewId === "view-orders") $("viewLabel").innerHTML = "Orders";
         if (viewId === "view-products") $("viewLabel").innerHTML = "Products";
 
         if (viewId === "view-orders") renderOrders();
-        if (viewId === "view-products") renderCatalog();
+        if (viewId === "view-products") renderProductsGrid();
         if (viewId === "view-order") resetOrderFlow();
       }
 
@@ -1096,7 +1164,7 @@ th {
         }
       }
 
-      // ---------- CATALOG STRUCTURE ----------
+      // ---------- CATALOG STRUCTURE SHARED ----------
       function getStyleKey(row) {
         var code = (row.style_code || "").trim();
         var name = (row.style_name || "").trim();
@@ -1104,7 +1172,7 @@ th {
       }
 
       function buildStylesIndex() {
-        var map = {}; // styleKey -> {name, code, price, colors:{ color: {sizes:[]}}}
+        var map = {};
         for (var i = 0; i < catalog.length; i++) {
           var row = catalog[i];
           var key = getStyleKey(row);
@@ -1124,7 +1192,10 @@ th {
             if (!map[key].colors[color]) {
               map[key].colors[color] = { sizes: [] };
             }
-            if (size && map[key].colors[color].sizes.indexOf(size) === -1) {
+            if (
+              size &&
+              map[key].colors[color].sizes.indexOf(size) === -1
+            ) {
               map[key].colors[color].sizes.push(size);
             }
           }
@@ -1174,8 +1245,7 @@ th {
         for (var key in stylesMap) {
           if (!stylesMap.hasOwnProperty(key)) continue;
           var meta = stylesMap[key];
-          var label =
-            (meta.code || "") + " " + (meta.name || "");
+          var label = (meta.code || "") + " " + (meta.name || "");
           if (search && label.toLowerCase().indexOf(search) === -1) {
             continue;
           }
@@ -1288,7 +1358,7 @@ th {
           header.innerHTML =
             "<strong>" +
             (meta.name || meta.code || "Style") +
-            "</strong><br/><span style='font-size:11px;color:#6b7280'>" +
+            "</strong><br/><span style='font-size:11px;color:#9ca3af'>" +
             (meta.code || "") +
             "</span>";
           card.appendChild(header);
@@ -1470,154 +1540,150 @@ th {
         alert("Order saved on this device.");
       };
 
-    function renderOrders() {
-  var orders = getOrders();
-  var table = $("ordersTable");
-  var body = $("ordersBody");
-  var empty = $("ordersEmpty");
-  body.innerHTML = "";
+      // ---------- ORDERS LIST (grouped by order) ----------
+      function renderOrders() {
+        var orders = getOrders();
+        var table = $("ordersTable");
+        var body = $("ordersBody");
+        var empty = $("ordersEmpty");
+        body.innerHTML = "";
 
-  if (!orders.length) {
-    table.style.display = "none";
-    empty.style.display = "block";
-    return;
-  }
-  table.style.display = "table";
-  empty.style.display = "none";
+        if (!orders.length) {
+          table.style.display = "none";
+          empty.style.display = "block";
+          return;
+        }
+        table.style.display = "table";
+        empty.style.display = "none";
 
-  // Group by created_at (each order saved once shares the same timestamp)
-  var groups = {};
-  var keys = [];
-  var i;
-  for (i = 0; i < orders.length; i++) {
-    var o = orders[i];
-    var key = o.created_at;
-    if (!groups[key]) {
-      groups[key] = {
-        created_at: o.created_at,
-        customer_name: o.customer_name,
-        customer_email: o.customer_email,
-        customer_phone: o.customer_phone,
-        notes: o.notes,
-        lines: [],
-        total_qty: 0,
-        styles: {},
-        colors: {},
-        sizes: {},
+        // Group by created_at
+        var groups = {};
+        var keys = [];
+        var i;
+        for (i = 0; i < orders.length; i++) {
+          var o = orders[i];
+          var key = o.created_at;
+          if (!groups[key]) {
+            groups[key] = {
+              created_at: o.created_at,
+              customer_name: o.customer_name,
+              customer_email: o.customer_email,
+              customer_phone: o.customer_phone,
+              notes: o.notes,
+              lines: [],
+              total_qty: 0,
+              styles: {},
+              colors: {},
+              sizes: {},
+            };
+            keys.push(key);
+          }
+          var g = groups[key];
+          g.lines.push(o);
+          g.total_qty += Number(o.qty || 0);
+
+          var sName = o.style_name || o.style_code || "";
+          if (sName) g.styles[sName] = true;
+          if (o.color) g.colors[o.color] = true;
+          if (o.size) g.sizes[o.size] = true;
+        }
+
+        keys.sort();
+
+        for (var kIdx = 0; kIdx < keys.length; kIdx++) {
+          var gKey = keys[kIdx];
+          var g = groups[gKey];
+
+          var styleCount = 0,
+            firstStyle = "";
+          var colorCount = 0,
+            firstColor = "";
+          var sizeCount = 0;
+
+          var s;
+          for (s in g.styles) {
+            if (!g.styles.hasOwnProperty(s)) continue;
+            if (!firstStyle) firstStyle = s;
+            styleCount++;
+          }
+          var c;
+          for (c in g.colors) {
+            if (!g.colors.hasOwnProperty(c)) continue;
+            if (!firstColor) firstColor = c;
+            colorCount++;
+          }
+          var z;
+          for (z in g.sizes) {
+            if (!g.sizes.hasOwnProperty(z)) continue;
+            sizeCount++;
+          }
+
+          var styleLabel =
+            styleCount === 0
+              ? ""
+              : styleCount === 1
+              ? firstStyle
+              : "Multiple (" + styleCount + ")";
+          var colorLabel =
+            colorCount === 0
+              ? ""
+              : colorCount === 1
+              ? firstColor
+              : "Multiple (" + colorCount + ")";
+          var sizeLabel =
+            sizeCount === 0
+              ? ""
+              : sizeCount === 1
+              ? "1 size"
+              : sizeCount + " sizes";
+
+          var tr = document.createElement("tr");
+          var time = new Date(g.created_at).toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+
+          tr.innerHTML =
+            "<td>" +
+            time +
+            "</td><td>" +
+            (g.customer_name || "") +
+            "</td><td>" +
+            styleLabel +
+            "</td><td>" +
+            colorLabel +
+            "</td><td>" +
+            sizeLabel +
+            "</td><td>" +
+            g.total_qty +
+            "</td><td><button class='secondary small' data-ts='" +
+            g.created_at +
+            "'>Export</button></td>";
+
+          body.appendChild(tr);
+        }
+      }
+
+      $("ordersBody").onclick = function (e) {
+        var t = e.target || e.srcElement;
+        if (!t || t.tagName.toLowerCase() !== "button") return;
+
+        var ts = t.getAttribute("data-ts");
+        if (!ts) return;
+
+        var orders = getOrders();
+        var lines = [];
+        var i;
+        for (i = 0; i < orders.length; i++) {
+          if (orders[i].created_at === ts) {
+            lines.push(orders[i]);
+          }
+        }
+        if (!lines.length) return;
+
+        var name = lines[0].customer_name || "";
+        downloadCSV(lines, "blanco_order_" + name + ".csv");
       };
-      keys.push(key);
-    }
-    var g = groups[key];
-    g.lines.push(o);
-    g.total_qty += Number(o.qty || 0);
-
-    var sName = o.style_name || o.style_code || "";
-    if (sName) g.styles[sName] = true;
-    if (o.color) g.colors[o.color] = true;
-    if (o.size) g.sizes[o.size] = true;
-  }
-
-  // Sort by timestamp (oldest -> newest)
-  keys.sort();
-
-  for (var kIdx = 0; kIdx < keys.length; kIdx++) {
-    var gKey = keys[kIdx];
-    var g = groups[gKey];
-
-    // Build summaries
-    var styleCount = 0,
-      firstStyle = "";
-    var colorCount = 0,
-      firstColor = "";
-    var sizeCount = 0;
-
-    var s;
-    for (s in g.styles) {
-      if (!g.styles.hasOwnProperty(s)) continue;
-      if (!firstStyle) firstStyle = s;
-      styleCount++;
-    }
-    var c;
-    for (c in g.colors) {
-      if (!g.colors.hasOwnProperty(c)) continue;
-      if (!firstColor) firstColor = c;
-      colorCount++;
-    }
-    var z;
-    for (z in g.sizes) {
-      if (!g.sizes.hasOwnProperty(z)) continue;
-      sizeCount++;
-    }
-
-    var styleLabel =
-      styleCount === 0
-        ? ""
-        : styleCount === 1
-        ? firstStyle
-        : "Multiple (" + styleCount + ")";
-    var colorLabel =
-      colorCount === 0
-        ? ""
-        : colorCount === 1
-        ? firstColor
-        : "Multiple (" + colorCount + ")";
-    var sizeLabel =
-      sizeCount === 0
-        ? ""
-        : sizeCount === 1
-        ? "1 size"
-        : sizeCount + " sizes";
-
-    var tr = document.createElement("tr");
-    var time = new Date(g.created_at).toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-
-    tr.innerHTML =
-      "<td>" +
-      time +
-      "</td><td>" +
-      (g.customer_name || "") +
-      "</td><td>" +
-      styleLabel +
-      "</td><td>" +
-      colorLabel +
-      "</td><td>" +
-      sizeLabel +
-      "</td><td>" +
-      g.total_qty +
-      "</td><td><button class='secondary small' data-ts='" +
-      g.created_at +
-      "'>Export</button></td>";
-
-    body.appendChild(tr);
-  }
-}
-
-
- $("ordersBody").onclick = function (e) {
-  var t = e.target || e.srcElement;
-  if (!t || t.tagName.toLowerCase() !== "button") return;
-
-  // we stored created_at on the button as data-ts
-  var ts = t.getAttribute("data-ts");
-  if (!ts) return;
-
-  var orders = getOrders();
-  var lines = [];
-  var i;
-  for (i = 0; i < orders.length; i++) {
-    if (orders[i].created_at === ts) {
-      lines.push(orders[i]);
-    }
-  }
-  if (!lines.length) return;
-
-  var name = lines[0].customer_name || "";
-  downloadCSV(lines, "blanco_order_" + name + ".csv");
-};
-
 
       $("exportOrders").onclick = function () {
         var orders = getOrders();
@@ -1691,547 +1757,537 @@ th {
         URL.revokeObjectURL(url);
       }
 
-// ---------- CATALOG VIEW (cards + modal) ----------
-var STYLE_META_KEY = "blanco_style_meta_v1";
-var styleMeta = {}; // styleKey -> {desc, category, imageDataUrl, in_stock}
+      // ---------- PRODUCTS (cards + modal, separate index) ----------
+      function styleKeyFromParts(code, name) {
+        return (code || "").trim() + "::" + (name || "").trim();
+      }
 
-function loadStyleMeta() {
-  try {
-    var raw = localStorage.getItem(STYLE_META_KEY);
-    styleMeta = raw ? JSON.parse(raw) : {};
-  } catch (e) {
-    styleMeta = {};
-  }
-}
-function saveStyleMeta() {
-  try {
-    localStorage.setItem(STYLE_META_KEY, JSON.stringify(styleMeta));
-  } catch (e) {}
-}
+      function buildStylesIndexForProducts() {
+        var map = {};
+        for (var i = 0; i < catalog.length; i++) {
+          var row = catalog[i];
+          var code = (row.style_code || "").trim();
+          var name = (row.style_name || "").trim();
+          var key = styleKeyFromParts(code, name);
+          if (!key) continue;
+          if (!map[key]) {
+            map[key] = {
+              key: key,
+              code: code,
+              name: name,
+              price: row.price || "",
+              colors: {},
+            };
+          }
+          var color = (row.color || "").trim();
+          var size = (row.size || "").trim();
+          if (color) {
+            if (!map[key].colors[color]) {
+              map[key].colors[color] = [];
+            }
+            if (
+              size &&
+              map[key].colors[color].indexOf(size) === -1
+            ) {
+              map[key].colors[color].push(size);
+            }
+          }
+          if (row.price && !map[key].price) map[key].price = row.price;
+        }
+        return map;
+      }
 
-function styleKeyFromParts(code, name) {
-  return (code || "").trim() + "::" + (name || "").trim();
-}
+      function renderProductsGrid() {
+        var grid = $("productsGrid");
+        var empty = $("productsEmpty");
+        grid.innerHTML = "";
 
-// build index from flat catalog rows (same as used by +Order)
-function buildStylesIndexForProducts() {
-  var map = {};
-  for (var i = 0; i < catalog.length; i++) {
-    var row = catalog[i];
-    var code = (row.style_code || "").trim();
-    var name = (row.style_name || "").trim();
-    var key = styleKeyFromParts(code, name);
-    if (!key) continue;
-    if (!map[key]) {
-      map[key] = {
-        key: key,
-        code: code,
-        name: name,
-        price: row.price || "",
-        colors: {},
+        var stylesMap = buildStylesIndexForProducts();
+        var any = false;
+
+        for (var key in stylesMap) {
+          if (!stylesMap.hasOwnProperty(key)) continue;
+          any = true;
+          var meta = stylesMap[key];
+
+          var metaExtra = styleMeta[key] || {};
+          var imgData = metaExtra.imageDataUrl || "";
+
+          var colorCount = 0;
+          var sizeCount = 0;
+          for (var c in meta.colors) {
+            if (!meta.colors.hasOwnProperty(c)) continue;
+            colorCount++;
+            sizeCount += meta.colors[c].length;
+          }
+
+          var card = document.createElement("div");
+          card.className = "product-card";
+
+          var imgDiv = document.createElement("div");
+          imgDiv.className = "product-image";
+          if (imgData) {
+            var img = document.createElement("img");
+            img.src = imgData;
+            imgDiv.appendChild(img);
+          } else {
+            imgDiv.innerHTML = "<span>Photo</span>";
+          }
+          card.appendChild(imgDiv);
+
+          var nameDiv = document.createElement("div");
+          nameDiv.className = "product-name";
+          nameDiv.innerHTML = meta.name || meta.code || "Unnamed style";
+          card.appendChild(nameDiv);
+
+          var codeDiv = document.createElement("div");
+          codeDiv.className = "product-code";
+          codeDiv.innerHTML = meta.code || meta.name || "";
+          card.appendChild(codeDiv);
+
+          var summary = document.createElement("div");
+          summary.className = "product-summary";
+          summary.innerHTML =
+            colorCount +
+            " colors • " +
+            sizeCount +
+            " sizes" +
+            (meta.price ? " • $" + meta.price : "");
+          card.appendChild(summary);
+
+          var actions = document.createElement("div");
+          actions.className = "product-actions";
+
+          var editBtn = document.createElement("button");
+          editBtn.className = "secondary small";
+          editBtn.innerHTML = "Edit";
+          editBtn.setAttribute("data-style-key", key);
+          actions.appendChild(editBtn);
+
+          var delBtn = document.createElement("button");
+          delBtn.className = "danger small";
+          delBtn.innerHTML = "Delete";
+          delBtn.setAttribute("data-style-key", key);
+          actions.appendChild(delBtn);
+
+          card.appendChild(actions);
+          grid.appendChild(card);
+        }
+
+        empty.style.display = any ? "none" : "block";
+      }
+
+      var editingStyleKey = null;
+      var modalColors = [];
+      var modalSizes = [];
+      var modalImageDataUrl = "";
+
+      function openStyleModal(styleKey) {
+        var stylesMap = buildStylesIndexForProducts();
+        editingStyleKey = styleKey || null;
+        modalColors = [];
+        modalSizes = [];
+        modalImageDataUrl = "";
+
+        if (styleKey && stylesMap[styleKey]) {
+          var s = stylesMap[styleKey];
+          $("modalTitle").innerHTML = "Edit style";
+
+          $("modalStyleName").value = s.name || "";
+          $("modalStyleCode").value = s.code || "";
+          $("modalPrice").value = s.price || "";
+          $("modalDescription").value =
+            (styleMeta[styleKey] &&
+              styleMeta[styleKey].description) ||
+            "";
+          $("modalCategory").value =
+            (styleMeta[styleKey] &&
+              styleMeta[styleKey].category) ||
+            "";
+
+          var extra = styleMeta[styleKey] || {};
+          modalImageDataUrl = extra.imageDataUrl || "";
+          $("modalInStock").checked = extra.hasOwnProperty(
+            "in_stock"
+          )
+            ? !!extra.in_stock
+            : true;
+
+          var cMap = s.colors;
+          var c;
+          for (c in cMap) {
+            if (!cMap.hasOwnProperty(c)) continue;
+            if (modalColors.indexOf(c) === -1) modalColors.push(c);
+            var szs = cMap[c];
+            for (var i = 0; i < szs.length; i++) {
+              var size = szs[i];
+              if (modalSizes.indexOf(size) === -1)
+                modalSizes.push(size);
+            }
+          }
+        } else {
+          $("modalTitle").innerHTML = "New style";
+          $("modalStyleName").value = "";
+          $("modalStyleCode").value = "";
+          $("modalPrice").value = "";
+          $("modalDescription").value = "";
+          $("modalCategory").value = "";
+          $("modalInStock").checked = true;
+        }
+
+        renderModalChips();
+        renderModalImagePreview();
+
+        $("styleModal").style.display = "flex";
+      }
+
+      function closeStyleModal() {
+        $("styleModal").style.display = "none";
+      }
+
+      function renderModalChips() {
+        var colorsRow = $("modalColorsRow");
+        var sizesRow = $("modalSizesRow");
+        colorsRow.innerHTML = "";
+        sizesRow.innerHTML = "";
+
+        var i;
+        for (i = 0; i < modalColors.length; i++) {
+          (function (idx) {
+            var chip = document.createElement("span");
+            chip.className = "chip";
+            chip.innerHTML =
+              modalColors[idx] +
+              ' <button type="button" data-type="color" data-idx="' +
+              idx +
+              '">×</button>';
+            colorsRow.appendChild(chip);
+          })(i);
+        }
+
+        for (i = 0; i < modalSizes.length; i++) {
+          (function (idx2) {
+            var chip = document.createElement("span");
+            chip.className = "chip";
+            chip.innerHTML =
+              modalSizes[idx2] +
+              ' <button type="button" data-type="size" data-idx="' +
+              idx2 +
+              '">×</button>';
+            sizesRow.appendChild(chip);
+          })(i);
+        }
+      }
+
+      $("modalColorsRow").onclick = function (e) {
+        var t = e.target || e.srcElement;
+        if (t.tagName.toLowerCase() !== "button") return;
+        var type = t.getAttribute("data-type");
+        var idx = Number(t.getAttribute("data-idx"));
+        if (type === "color") {
+          modalColors.splice(idx, 1);
+        } else if (type === "size") {
+          modalSizes.splice(idx, 1);
+        }
+        renderModalChips();
       };
-    }
-    var color = (row.color || "").trim();
-    var size = (row.size || "").trim();
-    if (color) {
-      if (!map[key].colors[color]) {
-        map[key].colors[color] = [];
+
+      $("modalSizesRow").onclick = $("modalColorsRow").onclick;
+
+      $("addColorBtn").onclick = function () {
+        var v = $("modalColorInput").value.replace(/\s+$/, "");
+        if (!v) return;
+        if (modalColors.indexOf(v) === -1) modalColors.push(v);
+        $("modalColorInput").value = "";
+        renderModalChips();
+      };
+
+      $("modalColorInput").onkeypress = function (e) {
+        if ((e.key || e.which) === "Enter" || e.which === 13) {
+          $("addColorBtn").onclick();
+          e.preventDefault();
+        }
+      };
+
+      $("addSizeBtn").onclick = function () {
+        var v = $("modalSizeInput").value.replace(/\s+$/, "");
+        if (!v) return;
+        if (modalSizes.indexOf(v) === -1) modalSizes.push(v);
+        $("modalSizeInput").value = "";
+        renderModalChips();
+      };
+
+      $("modalSizeInput").onkeypress = function (e) {
+        if ((e.key || e.which) === "Enter" || e.which === 13) {
+          $("addSizeBtn").onclick();
+          e.preventDefault();
+        }
+      };
+
+      function renderModalImagePreview() {
+        var box = $("modalImagePreview");
+        box.innerHTML = "";
+        if (modalImageDataUrl) {
+          var img = document.createElement("img");
+          img.src = modalImageDataUrl;
+          box.appendChild(img);
+        } else {
+          box.innerHTML = "<span>Tap to upload</span>";
+        }
       }
-      if (size && map[key].colors[color].indexOf(size) === -1) {
-        map[key].colors[color].push(size);
+
+      $("modalImageFile").onchange = function () {
+        var file =
+          this && this.files && this.files[0] ? this.files[0] : null;
+        if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          modalImageDataUrl = e.target.result;
+          renderModalImagePreview();
+        };
+        reader.readAsDataURL(file);
+      };
+
+      $("modalImagePreview").onclick = function () {
+        $("modalImageFile").click();
+      };
+
+      $("modalCloseBtn").onclick = closeStyleModal;
+      $("modalCancelBtn").onclick = closeStyleModal;
+
+      $("modalSaveBtn").onclick = function () {
+        var name = $("modalStyleName").value.replace(/\s+$/, "");
+        var code = $("modalStyleCode").value.replace(/\s+$/, "");
+        var price = $("modalPrice").value;
+        var desc = $("modalDescription").value;
+        var cat = $("modalCategory").value;
+        var inStock = $("modalInStock").checked;
+
+        if (!name && !code) {
+          alert("Enter at least a style name or style code.");
+          return;
+        }
+        if (!modalColors.length) {
+          alert("Add at least one color.");
+          return;
+        }
+        if (!modalSizes.length) {
+          alert("Add at least one size.");
+          return;
+        }
+
+        var newKey = styleKeyFromParts(code, name);
+
+        var newCatalog = [];
+        var i;
+        for (i = 0; i < catalog.length; i++) {
+          var row = catalog[i];
+          var rKey = styleKeyFromParts(
+            row.style_code || "",
+            row.style_name || ""
+          );
+          if (editingStyleKey && rKey === editingStyleKey) {
+            continue;
+          }
+          newCatalog.push(row);
+        }
+
+        for (var c = 0; c < modalColors.length; c++) {
+          for (var s = 0; s < modalSizes.length; s++) {
+            newCatalog.push({
+              style_code: code,
+              style_name: name,
+              color: modalColors[c],
+              size: modalSizes[s],
+              price: price || "",
+            });
+          }
+        }
+
+        catalog = newCatalog;
+        saveCatalog(catalog);
+        saveStyleMetaEntry(newKey, desc, cat, inStock, modalImageDataUrl);
+
+        renderProductsGrid();
+        renderStylesGrid();
+        updateDashboard();
+        closeStyleModal();
+        alert("Style saved.");
+      };
+
+      function saveStyleMetaEntry(
+        key,
+        desc,
+        cat,
+        inStock,
+        imageDataUrl
+      ) {
+        if (!key) return;
+        if (!styleMeta[key]) styleMeta[key] = {};
+        styleMeta[key].description = desc || "";
+        styleMeta[key].category = cat || "";
+        styleMeta[key].in_stock = !!inStock;
+        if (imageDataUrl) styleMeta[key].imageDataUrl = imageDataUrl;
+        saveStyleMeta();
       }
-    }
-    if (row.price && !map[key].price) map[key].price = row.price;
-  }
-  return map;
-}
 
-// render card grid
-function renderProductsGrid() {
-  var grid = $("productsGrid");
-  var empty = $("productsEmpty");
-  grid.innerHTML = "";
+      $("addStyleBtn").onclick = function () {
+        openStyleModal(null);
+      };
 
-  var stylesMap = buildStylesIndexForProducts();
-  var any = false;
+      $("productsGrid").onclick = function (e) {
+        var t = e.target || e.srcElement;
+        if (t.tagName.toLowerCase() !== "button") return;
+        var key = t.getAttribute("data-style-key");
+        if (!key) return;
 
-  for (var key in stylesMap) {
-    if (!stylesMap.hasOwnProperty(key)) continue;
-    any = true;
-    var meta = stylesMap[key];
+        if (t.innerHTML.indexOf("Edit") !== -1) {
+          openStyleModal(key);
+        } else if (t.innerHTML.indexOf("Delete") !== -1) {
+          if (!confirm("Delete this style from catalog?")) return;
+          var newCatalog = [];
+          for (var i = 0; i < catalog.length; i++) {
+            var row = catalog[i];
+            var rKey = styleKeyFromParts(
+              row.style_code || "",
+              row.style_name || ""
+            );
+            if (rKey === key) continue;
+            newCatalog.push(row);
+          }
+          catalog = newCatalog;
+          saveCatalog(catalog);
+          delete styleMeta[key];
+          saveStyleMeta();
+          renderProductsGrid();
+          renderStylesGrid();
+          updateDashboard();
+        }
+      };
 
-    var metaExtra = styleMeta[key] || {};
-    var imgData = metaExtra.imageDataUrl || "";
+      $("importCatalog").onclick = function () {
+        var fileInput = $("catalogFile");
+        var file =
+          fileInput && fileInput.files && fileInput.files[0]
+            ? fileInput.files[0]
+            : null;
+        if (!file) {
+          alert("Choose a CSV file first.");
+          return;
+        }
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          var text = e.target.result;
+          var rows = parseCsv(text);
+          if (!rows.length) {
+            alert("No rows in CSV.");
+            return;
+          }
+          var first = rows[0];
+          var req = ["style_code", "style_name", "color", "size"];
+          var missing = [];
+          for (var i = 0; i < req.length; i++) {
+            if (!first.hasOwnProperty(req[i])) missing.push(req[i]);
+          }
+          if (missing.length) {
+            alert(
+              "Missing columns: " +
+                missing.join(", ") +
+                ". CSV must have style_code, style_name, color, size."
+            );
+            return;
+          }
+          catalog = [];
+          for (var j = 0; j < rows.length; j++) {
+            catalog.push({
+              style_code: rows[j].style_code || "",
+              style_name: rows[j].style_name || "",
+              color: rows[j].color || "",
+              size: rows[j].size || "",
+              price: rows[j].price || "",
+            });
+          }
+          saveCatalog(catalog);
+          renderProductsGrid();
+          renderStylesGrid();
+          updateDashboard();
+          alert("Catalog imported.");
+        };
+        reader.readAsText(file);
+      };
 
-    var colorCount = 0;
-    var sizeCount = 0;
-    for (var c in meta.colors) {
-      if (!meta.colors.hasOwnProperty(c)) continue;
-      colorCount++;
-      sizeCount += meta.colors[c].length;
-    }
+      $("exportCatalog").onclick = function () {
+        if (!catalog.length) {
+          alert("No catalog to export.");
+          return;
+        }
+        var headers = ["style_code", "style_name", "color", "size", "price"];
+        var rows = [headers];
+        for (var i = 0; i < catalog.length; i++) {
+          var r = catalog[i];
+          rows.push([
+            r.style_code || "",
+            r.style_name || "",
+            r.color || "",
+            r.size || "",
+            r.price || "",
+          ]);
+        }
+        var lines = [];
+        for (var rowIdx = 0; rowIdx < rows.length; rowIdx++) {
+          var row = rows[rowIdx];
+          for (var c = 0; c < row.length; c++) {
+            row[c] =
+              '"' + String(row[c]).replace(/"/g, '""') + '"';
+          }
+          lines.push(row.join(","));
+        }
+        var csv = lines.join("\n");
+        var blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement("a");
+        a.href = url;
+        a.download =
+          "blanco_catalog_" +
+          new Date().toISOString().slice(0, 10) +
+          ".csv";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      };
 
-    var card = document.createElement("div");
-    card.className = "product-card";
-
-    var imgDiv = document.createElement("div");
-    imgDiv.className = "product-image";
-    if (imgData) {
-      var img = document.createElement("img");
-      img.src = imgData;
-      imgDiv.appendChild(img);
-    } else {
-      imgDiv.innerHTML = "<span>Photo</span>";
-    }
-    card.appendChild(imgDiv);
-
-    var nameDiv = document.createElement("div");
-    nameDiv.className = "product-name";
-    nameDiv.innerHTML = meta.name || meta.code || "Unnamed style";
-    card.appendChild(nameDiv);
-
-    var codeDiv = document.createElement("div");
-    codeDiv.className = "product-code";
-    codeDiv.innerHTML = meta.code || meta.name || "";
-    card.appendChild(codeDiv);
-
-    var summary = document.createElement("div");
-    summary.className = "product-summary";
-    summary.innerHTML =
-      colorCount +
-      " colors • " +
-      sizeCount +
-      " sizes" +
-      (meta.price ? " • $" + meta.price : "");
-    card.appendChild(summary);
-
-    var actions = document.createElement("div");
-    actions.className = "product-actions";
-
-    var editBtn = document.createElement("button");
-    editBtn.className = "secondary small";
-    editBtn.innerHTML = "Edit";
-    editBtn.setAttribute("data-style-key", key);
-    actions.appendChild(editBtn);
-
-    var delBtn = document.createElement("button");
-    delBtn.className = "danger small";
-    delBtn.innerHTML = "Delete";
-    delBtn.setAttribute("data-style-key", key);
-    actions.appendChild(delBtn);
-
-    card.appendChild(actions);
-    grid.appendChild(card);
-  }
-
-  empty.style.display = any ? "none" : "block";
-}
-
-// --- modal state ---
-var editingStyleKey = null; // old key when editing
-var modalColors = [];
-var modalSizes = [];
-var modalImageDataUrl = "";
-
-function openStyleModal(styleKey) {
-  var stylesMap = buildStylesIndexForProducts();
-  editingStyleKey = styleKey || null;
-  modalColors = [];
-  modalSizes = [];
-  modalImageDataUrl = "";
-
-  if (styleKey && stylesMap[styleKey]) {
-    // editing existing style
-    var s = stylesMap[styleKey];
-    $("modalTitle").innerHTML = "Edit style";
-
-    $("modalStyleName").value = s.name || "";
-    $("modalStyleCode").value = s.code || "";
-    $("modalPrice").value = s.price || "";
-    $("modalDescription").value =
-      (styleMeta[styleKey] && styleMeta[styleKey].description) || "";
-    $("modalCategory").value =
-      (styleMeta[styleKey] && styleMeta[styleKey].category) || "";
-
-    var extra = styleMeta[styleKey] || {};
-    modalImageDataUrl = extra.imageDataUrl || "";
-    $("modalInStock").checked =
-      extra.hasOwnProperty("in_stock") ? !!extra.in_stock : true;
-
-    // colors / sizes from catalog
-    var cMap = s.colors;
-    var c;
-    for (c in cMap) {
-      if (!cMap.hasOwnProperty(c)) continue;
-      if (modalColors.indexOf(c) === -1) modalColors.push(c);
-      var szs = cMap[c];
-      for (var i = 0; i < szs.length; i++) {
-        var size = szs[i];
-        if (modalSizes.indexOf(size) === -1) modalSizes.push(size);
+      function parseCsv(text) {
+        var lines = text.split(/\r?\n/);
+        var out = [];
+        if (!lines.length) return out;
+        var header = lines[0].split(",");
+        var i;
+        for (i = 0; i < header.length; i++) {
+          header[i] = header[i].trim().toLowerCase();
+        }
+        for (var r = 1; r < lines.length; r++) {
+          var line = lines[r];
+          if (!line) continue;
+          var cols = line.split(",");
+          var obj = {};
+          for (var c = 0; c < header.length; c++) {
+            obj[header[c]] = (cols[c] || "").replace(/^"|"$/g, "");
+          }
+          out.push(obj);
+        }
+        return out;
       }
-    }
-  } else {
-    // new style
-    $("modalTitle").innerHTML = "New style";
-    $("modalStyleName").value = "";
-    $("modalStyleCode").value = "";
-    $("modalPrice").value = "";
-    $("modalDescription").value = "";
-    $("modalCategory").value = "";
-    $("modalInStock").checked = true;
-  }
-
-  renderModalChips();
-  renderModalImagePreview();
-
-  $("styleModal").style.display = "flex";
-}
-
-function closeStyleModal() {
-  $("styleModal").style.display = "none";
-}
-
-function renderModalChips() {
-  var colorsRow = $("modalColorsRow");
-  var sizesRow = $("modalSizesRow");
-  colorsRow.innerHTML = "";
-  sizesRow.innerHTML = "";
-
-  var i;
-  for (i = 0; i < modalColors.length; i++) {
-    (function (idx) {
-      var chip = document.createElement("span");
-      chip.className = "chip";
-      chip.innerHTML =
-        modalColors[idx] +
-        ' <button type="button" data-type="color" data-idx="' +
-        idx +
-        '">×</button>';
-      colorsRow.appendChild(chip);
-    })(i);
-  }
-
-  for (i = 0; i < modalSizes.length; i++) {
-    (function (idx2) {
-      var chip = document.createElement("span");
-      chip.className = "chip";
-      chip.innerHTML =
-        modalSizes[idx2] +
-        ' <button type="button" data-type="size" data-idx="' +
-        idx2 +
-        '">×</button>';
-      sizesRow.appendChild(chip);
-    })(i);
-  }
-}
-
-$("modalColorsRow").onclick = function (e) {
-  var t = e.target || e.srcElement;
-  if (t.tagName.toLowerCase() !== "button") return;
-  var type = t.getAttribute("data-type");
-  var idx = Number(t.getAttribute("data-idx"));
-  if (type === "color") {
-    modalColors.splice(idx, 1);
-  } else if (type === "size") {
-    modalSizes.splice(idx, 1);
-  }
-  renderModalChips();
-};
-
-$("modalSizesRow").onclick = $("modalColorsRow").onclick;
-
-$("addColorBtn").onclick = function () {
-  var v = $("modalColorInput").value.replace(/\s+$/, "");
-  if (!v) return;
-  if (modalColors.indexOf(v) === -1) modalColors.push(v);
-  $("modalColorInput").value = "";
-  renderModalChips();
-};
-$("modalColorInput").onkeypress = function (e) {
-  if ((e.key || e.which) === "Enter" || e.which === 13) {
-    $("addColorBtn").onclick();
-    e.preventDefault();
-  }
-};
-
-$("addSizeBtn").onclick = function () {
-  var v = $("modalSizeInput").value.replace(/\s+$/, "");
-  if (!v) return;
-  if (modalSizes.indexOf(v) === -1) modalSizes.push(v);
-  $("modalSizeInput").value = "";
-  renderModalChips();
-};
-$("modalSizeInput").onkeypress = function (e) {
-  if ((e.key || e.which) === "Enter" || e.which === 13) {
-    $("addSizeBtn").onclick();
-    e.preventDefault();
-  }
-};
-
-function renderModalImagePreview() {
-  var box = $("modalImagePreview");
-  box.innerHTML = "";
-  if (modalImageDataUrl) {
-    var img = document.createElement("img");
-    img.src = modalImageDataUrl;
-    box.appendChild(img);
-  } else {
-    box.innerHTML = "<span>Tap to upload</span>";
-  }
-}
-
-$("modalImageFile").onchange = function () {
-  var file =
-    this && this.files && this.files[0] ? this.files[0] : null;
-  if (!file) return;
-  var reader = new FileReader();
-  reader.onload = function (e) {
-    modalImageDataUrl = e.target.result;
-    renderModalImagePreview();
-  };
-  reader.readAsDataURL(file);
-};
-
-$("modalImagePreview").onclick = function () {
-  $("modalImageFile").click();
-};
-
-$("modalCloseBtn").onclick = closeStyleModal;
-$("modalCancelBtn").onclick = closeStyleModal;
-
-// save style (rebuilds underlying flat catalog entries)
-$("modalSaveBtn").onclick = function () {
-  var name = $("modalStyleName").value.replace(/\s+$/, "");
-  var code = $("modalStyleCode").value.replace(/\s+$/, "");
-  var price = $("modalPrice").value;
-  var desc = $("modalDescription").value;
-  var cat = $("modalCategory").value;
-  var inStock = $("modalInStock").checked;
-
-  if (!name && !code) {
-    alert("Enter at least a style name or style code.");
-    return;
-  }
-  if (!modalColors.length) {
-    alert("Add at least one color.");
-    return;
-  }
-  if (!modalSizes.length) {
-    alert("Add at least one size.");
-    return;
-  }
-
-  var newKey = styleKeyFromParts(code, name);
-
-  // remove old rows for this style if editing
-  var newCatalog = [];
-  var i;
-  for (i = 0; i < catalog.length; i++) {
-    var row = catalog[i];
-    var rKey = styleKeyFromParts(
-      row.style_code || "",
-      row.style_name || ""
-    );
-    if (editingStyleKey && rKey === editingStyleKey) {
-      continue;
-    }
-    newCatalog.push(row);
-  }
-
-  // add all color x size combinations
-  for (var c = 0; c < modalColors.length; c++) {
-    for (var s = 0; s < modalSizes.length; s++) {
-      newCatalog.push({
-        style_code: code,
-        style_name: name,
-        color: modalColors[c],
-        size: modalSizes[s],
-        price: price || "",
-      });
-    }
-  }
-
-  catalog = newCatalog;
-  saveCatalog(catalog);
-  saveStyleMetaEntry(newKey, desc, cat, inStock, modalImageDataUrl);
-
-  renderProductsGrid();
-  renderStylesGrid(); // update +Order styles
-  updateDashboard();
-  closeStyleModal();
-  alert("Style saved.");
-};
-
-function saveStyleMetaEntry(key, desc, cat, inStock, imageDataUrl) {
-  if (!key) return;
-  if (!styleMeta[key]) styleMeta[key] = {};
-  styleMeta[key].description = desc || "";
-  styleMeta[key].category = cat || "";
-  styleMeta[key].in_stock = !!inStock;
-  if (imageDataUrl) styleMeta[key].imageDataUrl = imageDataUrl;
-  saveStyleMeta();
-}
-
-// events for grid + import/export
-$("addStyleBtn").onclick = function () {
-  openStyleModal(null);
-};
-
-$("productsGrid").onclick = function (e) {
-  var t = e.target || e.srcElement;
-  if (t.tagName.toLowerCase() !== "button") return;
-  var key = t.getAttribute("data-style-key");
-  if (!key) return;
-
-  if (t.innerHTML.indexOf("Edit") !== -1) {
-    openStyleModal(key);
-  } else if (t.innerHTML.indexOf("Delete") !== -1) {
-    if (!confirm("Delete this style from catalog?")) return;
-    // remove catalog rows
-    var newCatalog = [];
-    for (var i = 0; i < catalog.length; i++) {
-      var row = catalog[i];
-      var rKey = styleKeyFromParts(
-        row.style_code || "",
-        row.style_name || ""
-      );
-      if (rKey === key) continue;
-      newCatalog.push(row);
-    }
-    catalog = newCatalog;
-    saveCatalog(catalog);
-    // remove meta
-    delete styleMeta[key];
-    saveStyleMeta();
-    renderProductsGrid();
-    renderStylesGrid();
-    updateDashboard();
-  }
-};
-
-// CSV import / export (same columns as before)
-$("importCatalog").onclick = function () {
-  var fileInput = $("catalogFile");
-  var file =
-    fileInput && fileInput.files && fileInput.files[0]
-      ? fileInput.files[0]
-      : null;
-  if (!file) {
-    alert("Choose a CSV file first.");
-    return;
-  }
-  var reader = new FileReader();
-  reader.onload = function (e) {
-    var text = e.target.result;
-    var rows = parseCsv(text);
-    if (!rows.length) {
-      alert("No rows in CSV.");
-      return;
-    }
-    var first = rows[0];
-    var req = ["style_code", "style_name", "color", "size"];
-    var missing = [];
-    for (var i = 0; i < req.length; i++) {
-      if (!first.hasOwnProperty(req[i])) missing.push(req[i]);
-    }
-    if (missing.length) {
-      alert(
-        "Missing columns: " +
-          missing.join(", ") +
-          ". CSV must have style_code, style_name, color, size."
-      );
-      return;
-    }
-    catalog = [];
-    for (var j = 0; j < rows.length; j++) {
-      catalog.push({
-        style_code: rows[j].style_code || "",
-        style_name: rows[j].style_name || "",
-        color: rows[j].color || "",
-        size: rows[j].size || "",
-        price: rows[j].price || "",
-      });
-    }
-    saveCatalog(catalog);
-    renderProductsGrid();
-    renderStylesGrid();
-    updateDashboard();
-    alert("Catalog imported.");
-  };
-  reader.readAsText(file);
-};
-
-$("exportCatalog").onclick = function () {
-  if (!catalog.length) {
-    alert("No catalog to export.");
-    return;
-  }
-  var headers = ["style_code", "style_name", "color", "size", "price"];
-  var rows = [headers];
-  for (var i = 0; i < catalog.length; i++) {
-    var r = catalog[i];
-    rows.push([
-      r.style_code || "",
-      r.style_name || "",
-      r.color || "",
-      r.size || "",
-      r.price || "",
-    ]);
-  }
-  var lines = [];
-  for (var rowIdx = 0; rowIdx < rows.length; rowIdx++) {
-    var row = rows[rowIdx];
-    for (var c = 0; c < row.length; c++) {
-      row[c] = '"' + String(row[c]).replace(/"/g, '""') + '"';
-    }
-    lines.push(row.join(","));
-  }
-  var csv = lines.join("\n");
-  var blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-  var url = URL.createObjectURL(blob);
-  var a = document.createElement("a");
-  a.href = url;
-  a.download =
-    "blanco_catalog_" + new Date().toISOString().slice(0, 10) + ".csv";
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-};
-
-// simple CSV parser (header row -> objects)
-function parseCsv(text) {
-  var lines = text.split(/\r?\n/);
-  var out = [];
-  if (!lines.length) return out;
-  var header = lines[0].split(",");
-  var i;
-  for (i = 0; i < header.length; i++) {
-    header[i] = header[i].trim().toLowerCase();
-  }
-  for (var r = 1; r < lines.length; r++) {
-    var line = lines[r];
-    if (!line) continue;
-    var cols = line.split(",");
-    var obj = {};
-    for (var c = 0; c < header.length; c++) {
-      obj[header[c]] = (cols[c] || "").replace(/^"|"$/g, "");
-    }
-    out.push(obj);
-  }
-  return out;
-}
 
       // ---------- INIT ----------
-    (function init() {
-  catalog = getCatalog();
-  loadStyleMeta();
-  renderProductsGrid();
-  renderStylesGrid();
-  updateDashboard();
-  renderOrders();
-})();
-
+      (function init() {
+        catalog = getCatalog();
+        loadStyleMeta();
+        renderProductsGrid();
+        renderStylesGrid();
+        updateDashboard();
+        renderOrders();
+      })();
     </script>
   </body>
 </html>
