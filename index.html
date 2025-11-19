@@ -37,6 +37,177 @@
         padding: 12px 16px 16px;
       }
 
+      /* PRODUCTS GRID – small tiles on Products page */
+      .products-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+        gap: 10px;
+        margin-top: 8px;
+      }
+
+      /* SMALL PRODUCT CARD */
+      .product-card {
+        background: #020617;
+        border-radius: 8px;
+        border: 1px solid #1f2937;
+        padding: 6px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        text-align: center;
+      }
+
+      /* PRODUCT IMAGE WRAPPER (square) */
+      .product-image {
+        width: 100%;
+        padding-bottom: 100%; /* perfect square */
+        border-radius: 8px;
+        background: #020617;
+        border: 1px solid #1f2937;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        color: #9ca3af;
+      }
+
+      .product-image img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .product-name {
+        font-size: 11px;
+        font-weight: 600;
+        color: #ffffff;
+      }
+
+      .product-code,
+      .product-summary {
+        font-size: 10px;
+        color: #9ca3af;
+      }
+
+      .product-actions {
+        display: flex;
+        justify-content: center;
+        gap: 4px;
+        margin-top: 4px;
+      }
+
+      /* CHIP ROW (colors, sizes, etc.) */
+      .chip-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+      }
+
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        padding: 3px 7px;
+        border-radius: 999px;
+        background: #111827;
+        border: 1px solid #374151;
+        color: #f9fafb;
+        font-size: 10px;
+      }
+
+      .chip button {
+        border: none;
+        background: transparent;
+        padding: 0;
+        margin: 0;
+        font-size: 10px;
+        line-height: 1;
+        cursor: pointer;
+        color: #9ca3af;
+      }
+
+      .chip button:hover {
+        color: #f9fafb;
+      }
+
+      /* modal */
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.45);
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        z-index: 40;
+      }
+
+      .modal-sheet {
+        width: 100%;
+        max-width: 720px;
+        background: #ffffff;
+        border-radius: 16px 16px 0 0;
+        border-top: 1px solid #e5e7eb;
+        box-shadow: 0 -18px 40px rgba(15, 23, 42, 0.25);
+        max-height: 90vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 12px 6px;
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      .modal-title {
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      .modal-body {
+        padding: 10px 12px;
+        overflow-y: auto;
+      }
+
+      .modal-footer {
+        padding: 8px 12px 10px;
+        border-top: 1px solid #e5e7eb;
+        display: flex;
+        justify-content: flex-end;
+        gap: 6px;
+      }
+
+      .image-row {
+        display: flex;
+        gap: 8px;
+        align-items: stretch;
+      }
+
+      .image-preview {
+        width: 120px;
+        height: 120px;
+        border-radius: 12px;
+        border: 1px dashed #d1d5db;
+        background: #f9fafb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        color: #9ca3af;
+        overflow: hidden;
+      }
+
+      .image-preview img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
       header {
         display: flex;
         justify-content: space-between;
@@ -53,20 +224,14 @@
         text-transform: uppercase;
       }
 
-      header span {
-        font-size: 11px;
+      header span,
+      .subtext,
+      .stat-label,
+      .style-code,
+      .style-meta,
+      .product-code,
+      .product-summary {
         color: #9ca3af;
-      }
-
-      #viewLabel {
-        display: block;
-        margin-top: 2px;
-      }
-
-      .subtext {
-        font-size: 12px;
-        color: #9ca3af;
-        margin-bottom: 8px;
       }
 
       /* NAV */
@@ -77,6 +242,7 @@
         margin-bottom: 10px;
       }
 
+      /* nav pills: black default, white when active */
       .nav button {
         border-radius: 999px;
         padding: 6px 12px;
@@ -103,7 +269,6 @@
         display: block;
       }
 
-      /* CARDS / DASHBOARD */
       section.card {
         background: #000000;
         border-radius: 12px;
@@ -117,6 +282,12 @@
         margin: 0 0 4px;
         font-size: 16px;
         color: #ffffff;
+      }
+
+      .subtext {
+        font-size: 12px;
+        color: #9ca3af;
+        margin-bottom: 8px;
       }
 
       .stats-row {
@@ -196,7 +367,7 @@
         margin-bottom: 8px;
       }
 
-      /* BUTTONS */
+      /* DEFAULT BUTTON (black with white text) */
       button {
         border-radius: 999px;
         padding: 6px 12px;
@@ -209,29 +380,31 @@
         cursor: pointer;
       }
 
+      /* SECONDARY BUTTON (outline) */
       button.secondary {
         background: #000000;
         color: #e5e7eb;
         border-color: #4b5563;
       }
 
+      /* DANGER BUTTON (red) */
       button.danger {
         background: #ef4444;
         border-color: #ef4444;
         color: #ffffff;
       }
 
-      button.small {
-        font-size: 11px;
-        padding: 4px 9px;
-      }
-
-      /* Selected buttons (including nav, chips, etc.) */
+      /* SELECTED BUTTON = white with black text */
       button.selected,
       button.active {
         background: #ffffff !important;
         color: #000000 !important;
         border-color: #ffffff !important;
+      }
+
+      button.small {
+        font-size: 11px;
+        padding: 4px 9px;
       }
 
       .actions {
@@ -242,32 +415,7 @@
         margin-top: 8px;
       }
 
-      /* ORDER FLOW – STEPPER */
-      .stepper {
-        display: flex;
-        gap: 6px;
-        align-items: center;
-        font-size: 11px;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        margin-bottom: 6px;
-      }
-
-      .step-pill {
-        padding: 4px 10px;
-        border-radius: 999px;
-        border: 1px solid #4b5563;
-        background: #000000;
-        color: #f9fafb;
-      }
-
-      .step-pill.active {
-        background: #ffffff;
-        border-color: #ffffff;
-        color: #000000;
-      }
-
-      /* STEP 1 – STYLES GRID */
+      /* ORDER FLOW – STYLES GRID (Step 1) */
       .styles-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
@@ -292,6 +440,7 @@
         box-shadow: 0 0 0 2px #ffffff inset;
       }
 
+      /* Optional placeholder block for future style images */
       .style-card::before {
         content: "";
         width: 100%;
@@ -322,7 +471,32 @@
         text-align: center;
       }
 
-      /* STEP 2 – COLORS */
+      .stepper {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 6px;
+      }
+
+      /* default pill: black, active: white */
+      .step-pill {
+        padding: 4px 10px;
+        border-radius: 999px;
+        border: 1px solid #4b5563;
+        background: #000000;
+        color: #f9fafb;
+      }
+
+      .step-pill.active {
+        background: #ffffff;
+        border-color: #ffffff;
+        color: #000000;
+      }
+
+      /* STEP 2: COLOR SELECTION */
       .color-card {
         border-radius: 12px;
         border: 1px solid #1f2937;
@@ -333,7 +507,6 @@
       .color-header {
         padding: 8px;
         border-bottom: 1px solid #1f2937;
-        color: #f9fafb;
       }
 
       .color-body {
@@ -382,7 +555,7 @@
         color: #000000;
       }
 
-      /* STEP 3 – SIZES & QTY */
+      /* STEP 3: SIZE & QTY CARDS */
       .qty-card {
         border-radius: 12px;
         border: 1px solid #1f2937;
@@ -405,6 +578,7 @@
         gap: 6px;
       }
 
+      /* WHITE qty boxes */
       .size-chip {
         background: #ffffff;
         border-radius: 8px;
@@ -438,7 +612,6 @@
         border-color: #000000;
       }
 
-      /* TABLES */
       table {
         width: 100%;
         border-collapse: collapse;
@@ -470,183 +643,12 @@
         padding: 12px 0;
       }
 
-      /* PRODUCTS GRID – small tiles */
-      .products-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
-        gap: 10px;
-        margin-top: 8px;
-      }
-
-      .product-card {
-        background: #020617;
-        border-radius: 8px;
-        border: 1px solid #1f2937;
-        padding: 6px;
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-        text-align: center;
-      }
-
-      .product-image {
-        width: 100%;
-        padding-bottom: 100%;
-        border-radius: 8px;
-        background: #020617;
-        border: 1px solid #1f2937;
-        position: relative;
-        overflow: hidden;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 11px;
-        color: #9ca3af;
-      }
-
-      .product-image img {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
-
-      .product-name {
-        font-size: 11px;
-        font-weight: 600;
-        color: #ffffff;
-      }
-
-      .product-code,
-      .product-summary {
-        font-size: 10px;
-        color: #9ca3af;
-      }
-
-      .product-actions {
-        display: flex;
-        justify-content: center;
-        gap: 4px;
-        margin-top: 4px;
-      }
-
-      /* chips row */
-      .chip-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 4px;
-      }
-
-      .chip {
-        display: inline-flex;
-        align-items: center;
-        padding: 3px 7px;
-        border-radius: 999px;
-        background: #111827;
-        border: 1px solid #374151;
-        color: #f9fafb;
-        font-size: 10px;
-      }
-
-      .chip button {
-        border: none;
-        background: transparent;
-        padding: 0;
-        margin: 0 0 0 4px;
-        font-size: 10px;
-        line-height: 1;
-        cursor: pointer;
-        color: #9ca3af;
-      }
-
-      .chip button:hover {
-        color: #f9fafb;
-      }
-
-      /* MODALS (used for style editor + order details) */
-      .modal-backdrop {
-        position: fixed;
-        inset: 0;
-        background: rgba(15, 23, 42, 0.7);
-        display: flex;
-        justify-content: center;
-        align-items: flex-end;
-        z-index: 40;
-      }
-
-      .modal-sheet {
-        width: 100%;
-        max-width: 720px;
-        background: #020617;
-        color: #f9fafb;
-        border-radius: 16px 16px 0 0;
-        border-top: 1px solid #1f2937;
-        box-shadow: 0 -18px 40px rgba(0, 0, 0, 0.8);
-        max-height: 90vh;
-        display: flex;
-        flex-direction: column;
-      }
-
-      .modal-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px 12px 6px;
-        border-bottom: 1px solid #1f2937;
-      }
-
-      .modal-title {
-        font-size: 14px;
-        font-weight: 600;
-      }
-
-      .modal-body {
-        padding: 10px 12px;
-        overflow-y: auto;
-      }
-
-      .modal-footer {
-        padding: 8px 12px 10px;
-        border-top: 1px solid #1f2937;
-        display: flex;
-        justify-content: flex-end;
-        gap: 6px;
-      }
-
-      .image-row {
-        display: flex;
-        gap: 8px;
-        align-items: stretch;
-      }
-
-      .image-preview {
-        width: 120px;
-        height: 120px;
-        border-radius: 12px;
-        border: 1px dashed #374151;
-        background: #020617;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 11px;
-        color: #9ca3af;
-        overflow: hidden;
-      }
-
-      .image-preview img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
-
-      /* Catalog table (CSV style) */
       .catalog-table-wrapper {
         margin-top: 6px;
         max-height: 260px;
         overflow: auto;
         border-radius: 8px;
-        border: 1px solid #1f2937;
+        border: 1px solid #e5e7eb;
       }
 
       .catalog-table {
@@ -658,7 +660,7 @@
       .catalog-table th,
       .catalog-table td {
         padding: 4px 5px;
-        border-bottom: 1px solid #1f2937;
+        border-bottom: 1px solid #e5e7eb;
       }
 
       .catalog-table input {
@@ -802,7 +804,7 @@
                 placeholder="Ship window, fit notes, event, etc."
               ></textarea>
             </div>
-            <div class="actions" style="justify-content:space-between">
+            <div class="actions" style="justify-content:space_between">
               <button id="step3-back" class="secondary">
                 ‹ Back to colors
               </button>
@@ -821,7 +823,6 @@
           <h2>Orders</h2>
           <p class="subtext">
             Orders are stored locally on this device. Export to CSV for Excel.
-            Tap a row to view full details.
           </p>
           <div class="actions" style="justify-content:flex-start">
             <button id="exportOrders" class="secondary small">
@@ -837,57 +838,16 @@
               <tr>
                 <th>Time</th>
                 <th>Customer</th>
-                <th>Style</th>
-                <th>Color</th>
-                <th>Size</th>
+                <th>Style(s)</th>
+                <th>Color(s)</th>
+                <th>Sizes</th>
                 <th>Qty</th>
-                <th></th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody id="ordersBody"></tbody>
           </table>
         </section>
-
-        <!-- ORDER DETAILS MODAL -->
-        <div id="orderModal" class="modal-backdrop" style="display:none;">
-          <div class="modal-sheet">
-            <div class="modal-header">
-              <div class="modal-title">Order details</div>
-              <button
-                type="button"
-                id="orderModalClose"
-                class="secondary small"
-                style="border-radius:999px;width:26px;height:26px;padding:0;"
-              >
-                ✕
-              </button>
-            </div>
-            <div class="modal-body">
-              <div id="orderModalSummary" class="subtext"></div>
-              <table style="width:100%;margin-top:6px;">
-                <thead>
-                  <tr>
-                    <th>Style</th>
-                    <th>Color</th>
-                    <th>Size</th>
-                    <th>Qty</th>
-                  </tr>
-                </thead>
-                <tbody id="orderModalBody"></tbody>
-              </table>
-              <div
-                id="orderModalNotes"
-                class="subtext"
-                style="margin-top:8px;"
-              ></div>
-            </div>
-            <div class="modal-footer">
-              <button id="orderModalCloseFooter" class="secondary small">
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
       </div>
 
       <!-- PRODUCTS -->
@@ -927,7 +887,7 @@
           </div>
         </section>
 
-        <!-- Style editor modal -->
+        <!-- Slide-up modal editor for styles -->
         <div id="styleModal" class="modal-backdrop" style="display:none;">
           <div class="modal-sheet">
             <div class="modal-header">
@@ -1052,17 +1012,15 @@
     </div>
 
     <script>
-      // SIMPLE, OLDER-SAFARI-FRIENDLY JS (no arrow functions, etc.)
+      // SIMPLE, OLDER-SAFARI-FRIENDLY JS (no arrow functions)
       var ORDERS_KEY = "blanco_orders_v1";
       var CATALOG_KEY = "blanco_catalog_v1";
-      var STYLE_META_KEY = "blanco_style_meta_v1";
 
       var catalog = [];
       var selectedStyles = []; // array of styleKeys
       var selectedColors = {}; // styleKey -> { color: true }
       var currentStep = 1;
-
-      var styleMeta = {}; // styleKey -> {desc, category, imageDataUrl, in_stock}
+      var editingOrderTs = null; // if non-null, we're editing an existing order
 
       function $(id) {
         return document.getElementById(id);
@@ -1106,21 +1064,6 @@
         }
       }
 
-      function loadStyleMeta() {
-        try {
-          var raw = localStorage.getItem(STYLE_META_KEY);
-          styleMeta = raw ? JSON.parse(raw) : {};
-        } catch (e) {
-          styleMeta = {};
-        }
-      }
-
-      function saveStyleMeta() {
-        try {
-          localStorage.setItem(STYLE_META_KEY, JSON.stringify(styleMeta));
-        } catch (e) {}
-      }
-
       // ---------- NAV ----------
       function setView(viewId) {
         var views = [
@@ -1153,34 +1096,44 @@
         if (viewId === "view-products")
           $("nav-products").className += " active";
 
-        if (viewId === "view-dashboard") $("viewLabel").innerHTML = "Dashboard";
+        if (viewId === "view-dashboard") $("viewLabel").innerHTML =
+          "Dashboard";
         if (viewId === "view-order") $("viewLabel").innerHTML = "+ Order";
         if (viewId === "view-orders") $("viewLabel").innerHTML = "Orders";
         if (viewId === "view-products") $("viewLabel").innerHTML = "Products";
 
         if (viewId === "view-orders") renderOrders();
         if (viewId === "view-products") renderProductsGrid();
-        if (viewId === "view-order") resetOrderFlow();
       }
 
       $("nav-dashboard").onclick = function () {
         setView("view-dashboard");
       };
+
       $("nav-order").onclick = function () {
+        editingOrderTs = null;
+        resetOrderFlow();
         setView("view-order");
       };
+
       $("nav-orders").onclick = function () {
         setView("view-orders");
       };
+
       $("nav-products").onclick = function () {
         setView("view-products");
       };
+
       $("dash-new-order").onclick = function () {
+        editingOrderTs = null;
+        resetOrderFlow();
         setView("view-order");
       };
+
       $("dash-orders").onclick = function () {
         setView("view-orders");
       };
+
       $("dash-products").onclick = function () {
         setView("view-products");
       };
@@ -1212,7 +1165,7 @@
         }
       }
 
-      // ---------- CATALOG STRUCTURE ----------
+      // ---------- CATALOG STRUCTURE (for +Order) ----------
       function getStyleKey(row) {
         var code = (row.style_code || "").trim();
         var name = (row.style_name || "").trim();
@@ -1262,6 +1215,7 @@
       }
 
       function resetOrderFlow() {
+        editingOrderTs = null;
         setStep(1);
         $("custName").value = "";
         $("custEmail").value = "";
@@ -1351,9 +1305,11 @@
         renderColorSelection();
         setStep(2);
       };
+
       $("step2-back").onclick = function () {
         setStep(1);
       };
+
       $("step2-next").onclick = function () {
         var any = false;
         for (var s in selectedColors) {
@@ -1373,9 +1329,11 @@
         renderQtySelection();
         setStep(3);
       };
+
       $("step3-back").onclick = function () {
         setStep(2);
       };
+
       $("clearOrder").onclick = function () {
         resetOrderFlow();
       };
@@ -1461,7 +1419,8 @@
           var colorsMap = selectedColors[key] || {};
 
           for (var color in colorsMap) {
-            if (!colorsMap.hasOwnProperty(color) || !colorsMap[color]) continue;
+            if (!colorsMap.hasOwnProperty(color) || !colorsMap[color])
+              continue;
 
             var sizesInfo = meta.colors[color];
             if (!sizesInfo) continue;
@@ -1552,8 +1511,22 @@
         }
 
         var stylesMap = buildStylesIndex();
-        var nowIso = new Date().toISOString();
         var orders = getOrders();
+        var nowIso;
+
+        if (editingOrderTs) {
+          nowIso = editingOrderTs;
+          // remove existing lines for this order
+          var filtered = [];
+          for (var k = 0; k < orders.length; k++) {
+            if (orders[k].created_at !== editingOrderTs) {
+              filtered.push(orders[k]);
+            }
+          }
+          orders = filtered;
+        } else {
+          nowIso = new Date().toISOString();
+        }
 
         for (var j = 0; j < lines.length; j++) {
           var ln = lines[j];
@@ -1575,10 +1548,22 @@
         saveOrdersList(orders);
         renderOrders();
         resetOrderFlow();
+        editingOrderTs = null;
         alert("Order saved on this device.");
       };
 
-      // ---------- ORDERS LIST (grouped) ----------
+      // ---------- ORDERS LIST (grouped by created_at) ----------
+      function getOrderLinesByTs(ts) {
+        var orders = getOrders();
+        var lines = [];
+        for (var i = 0; i < orders.length; i++) {
+          if (orders[i].created_at === ts) {
+            lines.push(orders[i]);
+          }
+        }
+        return lines;
+      }
+
       function renderOrders() {
         var orders = getOrders();
         var table = $("ordersTable");
@@ -1594,7 +1579,7 @@
         table.style.display = "table";
         empty.style.display = "none";
 
-        // Group by created_at (each order saved once shares the same timestamp)
+        // group by created_at
         var groups = {};
         var keys = [];
         var i;
@@ -1626,14 +1611,12 @@
           if (o.size) g.sizes[o.size] = true;
         }
 
-        // Sort by timestamp (oldest -> newest)
         keys.sort();
 
         for (var kIdx = 0; kIdx < keys.length; kIdx++) {
           var gKey = keys[kIdx];
           var g = groups[gKey];
 
-          // Build summaries
           var styleCount = 0,
             firstStyle = "";
           var colorCount = 0,
@@ -1678,7 +1661,6 @@
               : sizeCount + " sizes";
 
           var tr = document.createElement("tr");
-          tr.setAttribute("data-ts", g.created_at);
           var time = new Date(g.created_at).toLocaleTimeString([], {
             hour: "2-digit",
             minute: "2-digit",
@@ -1697,50 +1679,172 @@
             sizeLabel +
             "</td><td>" +
             g.total_qty +
-            "</td><td><button class='secondary small' data-ts='" +
+            "</td><td>" +
+            "<button class='secondary small' data-action='view' data-ts='" +
             g.created_at +
-            "'>Export</button></td>";
+            "'>View</button> " +
+            "<button class='secondary small' data-action='edit' data-ts='" +
+            g.created_at +
+            "'>Edit</button> " +
+            "<button class='secondary small' data-action='export' data-ts='" +
+            g.created_at +
+            "'>Export</button>" +
+            "</td>";
 
           body.appendChild(tr);
         }
       }
 
-      // Click: export or view
       $("ordersBody").onclick = function (e) {
         var t = e.target || e.srcElement;
-        if (!t) return;
+        if (!t || t.tagName.toLowerCase() !== "button") return;
 
-        // If export button clicked
-        if (t.tagName.toLowerCase() === "button") {
-          var tsBtn = t.getAttribute("data-ts");
-          if (!tsBtn) return;
-          exportSingleOrder(tsBtn);
-          return;
-        }
-
-        // Otherwise, find row and open detail modal
-        var node = t;
-        while (node && node.tagName && node.tagName.toLowerCase() !== "tr") {
-          node = node.parentNode;
-        }
-        if (!node) return;
-        var ts = node.getAttribute("data-ts");
+        var ts = t.getAttribute("data-ts");
         if (!ts) return;
-        openOrderModal(ts);
+        var action = t.getAttribute("data-action") || "";
+
+        if (action === "export") {
+          var lines = getOrderLinesByTs(ts);
+          if (!lines.length) return;
+          var name = lines[0].customer_name || "";
+          downloadCSV(lines, "blanco_order_" + name + ".csv");
+        } else if (action === "view") {
+          viewOrderDetails(ts);
+        } else if (action === "edit") {
+          loadOrderIntoFlow(ts);
+        }
       };
 
-      function exportSingleOrder(ts) {
-        var orders = getOrders();
-        var lines = [];
-        var i;
-        for (i = 0; i < orders.length; i++) {
-          if (orders[i].created_at === ts) {
-            lines.push(orders[i]);
+      function viewOrderDetails(ts) {
+        var lines = getOrderLinesByTs(ts);
+        if (!lines.length) {
+          alert("Order not found.");
+          return;
+        }
+        var first = lines[0];
+        var msg = "";
+        msg += "Customer: " + (first.customer_name || "") + "\n";
+        if (first.customer_email)
+          msg += "Email: " + first.customer_email + "\n";
+        if (first.customer_phone)
+          msg += "Phone: " + first.customer_phone + "\n";
+        msg +=
+          "Placed at: " +
+          new Date(first.created_at).toLocaleString() +
+          "\n\n";
+        msg += "Items:\n";
+        for (var i = 0; i < lines.length; i++) {
+          var ln = lines[i];
+          msg +=
+            "- " +
+            (ln.style_name || ln.style_code || "Style") +
+            " • " +
+            (ln.color || "") +
+            " • " +
+            (ln.size || "") +
+            " x " +
+            ln.qty +
+            "\n";
+        }
+        if (first.notes) {
+          msg += "\nNotes:\n" + first.notes;
+        }
+        alert(msg);
+      }
+
+      function findStyleKeyForLine(stylesMap, line) {
+        var key;
+        // exact code + name
+        for (key in stylesMap) {
+          if (!stylesMap.hasOwnProperty(key)) continue;
+          var m = stylesMap[key];
+          if (
+            (m.code || "") === (line.style_code || "") &&
+            (m.name || "") === (line.style_name || "")
+          ) {
+            return key;
           }
         }
-        if (!lines.length) return;
-        var name = lines[0].customer_name || "";
-        downloadCSV(lines, "blanco_order_" + name + ".csv");
+        // fallback code only
+        if (line.style_code) {
+          for (key in stylesMap) {
+            if (!stylesMap.hasOwnProperty(key)) continue;
+            var m2 = stylesMap[key];
+            if ((m2.code || "") === line.style_code) return key;
+          }
+        }
+        // fallback name only
+        if (line.style_name) {
+          for (key in stylesMap) {
+            if (!stylesMap.hasOwnProperty(key)) continue;
+            var m3 = stylesMap[key];
+            if ((m3.name || "") === line.style_name) return key;
+          }
+        }
+        return null;
+      }
+
+      function loadOrderIntoFlow(ts) {
+        var lines = getOrderLinesByTs(ts);
+        if (!lines.length) {
+          alert("Order not found.");
+          return;
+        }
+        editingOrderTs = ts;
+
+        var first = lines[0];
+        $("custName").value = first.customer_name || "";
+        $("custEmail").value = first.customer_email || "";
+        $("custPhone").value = first.customer_phone || "";
+        $("orderNotes").value = first.notes || "";
+
+        var stylesMap = buildStylesIndex();
+        selectedStyles = [];
+        selectedColors = {};
+
+        var i;
+        for (i = 0; i < lines.length; i++) {
+          var ln = lines[i];
+          var styleKey = findStyleKeyForLine(stylesMap, ln);
+          if (!styleKey) continue;
+          if (selectedStyles.indexOf(styleKey) === -1) {
+            selectedStyles.push(styleKey);
+          }
+          if (!selectedColors[styleKey]) selectedColors[styleKey] = {};
+          selectedColors[styleKey][ln.color] = true;
+        }
+
+        renderStylesGrid();
+        renderColorSelection();
+        renderQtySelection();
+
+        // fill quantities
+        var qtyMap = {};
+        for (i = 0; i < lines.length; i++) {
+          var li = lines[i];
+          var sk = findStyleKeyForLine(stylesMap, li);
+          if (!sk) continue;
+          var keyStr = sk + "||" + (li.color || "") + "||" + (li.size || "");
+          qtyMap[keyStr] = (qtyMap[keyStr] || 0) + Number(li.qty || 0);
+        }
+
+        var inputs = $("qtyContainer").getElementsByTagName("input");
+        for (i = 0; i < inputs.length; i++) {
+          var el = inputs[i];
+          if (!el.getAttribute("data-size")) continue;
+          var skey = el.getAttribute("data-style-key");
+          var col = el.getAttribute("data-color");
+          var sz = el.getAttribute("data-size");
+          var kStr = skey + "||" + col + "||" + sz;
+          if (qtyMap.hasOwnProperty(kStr)) {
+            el.value = qtyMap[kStr];
+          } else {
+            el.value = "";
+          }
+        }
+
+        setView("view-order");
+        setStep(3);
       }
 
       $("exportOrders").onclick = function () {
@@ -1790,7 +1894,8 @@
         for (var r = 0; r < rows.length; r++) {
           var row = rows[r];
           for (var c = 0; c < row.length; c++) {
-            row[c] = '"' + String(row[c]).replace(/"/g, '""') + '"';
+            row[c] =
+              '"' + String(row[c]).replace(/"/g, '""') + '"';
           }
           lines.push(row.join(","));
         }
@@ -1808,73 +1913,30 @@
         URL.revokeObjectURL(url);
       }
 
-      // ---------- ORDER DETAIL MODAL ----------
-      function openOrderModal(ts) {
-        var orders = getOrders();
-        var lines = [];
-        var i;
-        for (i = 0; i < orders.length; i++) {
-          if (orders[i].created_at === ts) {
-            lines.push(orders[i]);
-          }
+      // ---------- CATALOG VIEW (cards + modal) ----------
+      var STYLE_META_KEY = "blanco_style_meta_v1";
+      var styleMeta = {}; // styleKey -> {desc, category, imageDataUrl, in_stock}
+
+      function loadStyleMeta() {
+        try {
+          var raw = localStorage.getItem(STYLE_META_KEY);
+          styleMeta = raw ? JSON.parse(raw) : {};
+        } catch (e) {
+          styleMeta = {};
         }
-        if (!lines.length) return;
-
-        var first = lines[0];
-        var tsLabel = new Date(first.created_at).toLocaleString();
-
-        $("orderModalSummary").innerHTML =
-          "Customer: " +
-          (first.customer_name || "") +
-          (first.customer_email
-            ? " • " + first.customer_email
-            : "") +
-          (first.customer_phone ? " • " + first.customer_phone : "") +
-          "<br/>" +
-          "Placed: " +
-          tsLabel +
-          " • " +
-          lines.length +
-          " line(s)";
-
-        var body = $("orderModalBody");
-        body.innerHTML = "";
-        for (i = 0; i < lines.length; i++) {
-          var ln = lines[i];
-          var tr = document.createElement("tr");
-          tr.innerHTML =
-            "<td>" +
-            (ln.style_name || ln.style_code || "") +
-            "</td><td>" +
-            (ln.color || "") +
-            "</td><td>" +
-            (ln.size || "") +
-            "</td><td>" +
-            (ln.qty || "") +
-            "</td>";
-          body.appendChild(tr);
-        }
-
-        var notes = (first.notes || "").trim();
-        $("orderModalNotes").innerHTML = notes
-          ? "<strong>Notes:</strong> " + notes
-          : "";
-
-        $("orderModal").style.display = "flex";
       }
 
-      function closeOrderModal() {
-        $("orderModal").style.display = "none";
+      function saveStyleMeta() {
+        try {
+          localStorage.setItem(STYLE_META_KEY, JSON.stringify(styleMeta));
+        } catch (e) {}
       }
 
-      $("orderModalClose").onclick = closeOrderModal;
-      $("orderModalCloseFooter").onclick = closeOrderModal;
-
-      // ---------- PRODUCTS / CATALOG VIEW ----------
       function styleKeyFromParts(code, name) {
         return (code || "").trim() + "::" + (name || "").trim();
       }
 
+      // build index from flat catalog rows (for Products view)
       function buildStylesIndexForProducts() {
         var map = {};
         for (var i = 0; i < catalog.length; i++) {
@@ -1907,6 +1969,7 @@
         return map;
       }
 
+      // render products grid
       function renderProductsGrid() {
         var grid = $("productsGrid");
         var empty = $("productsEmpty");
@@ -1972,12 +2035,21 @@
           editBtn.className = "secondary small";
           editBtn.innerHTML = "Edit";
           editBtn.setAttribute("data-style-key", key);
+          editBtn.setAttribute("data-action", "edit");
           actions.appendChild(editBtn);
+
+          var dupBtn = document.createElement("button");
+          dupBtn.className = "secondary small";
+          dupBtn.innerHTML = "Duplicate";
+          dupBtn.setAttribute("data-style-key", key);
+          dupBtn.setAttribute("data-action", "duplicate");
+          actions.appendChild(dupBtn);
 
           var delBtn = document.createElement("button");
           delBtn.className = "danger small";
           delBtn.innerHTML = "Delete";
           delBtn.setAttribute("data-style-key", key);
+          delBtn.setAttribute("data-action", "delete");
           actions.appendChild(delBtn);
 
           card.appendChild(actions);
@@ -1987,7 +2059,8 @@
         empty.style.display = any ? "none" : "block";
       }
 
-      var editingStyleKey = null;
+      // --- modal state ---
+      var editingStyleKey = null; // old key when editing
       var modalColors = [];
       var modalSizes = [];
       var modalImageDataUrl = "";
@@ -2000,6 +2073,7 @@
         modalImageDataUrl = "";
 
         if (styleKey && stylesMap[styleKey]) {
+          // editing existing style
           var s = stylesMap[styleKey];
           $("modalTitle").innerHTML = "Edit style";
 
@@ -2013,8 +2087,9 @@
 
           var extra = styleMeta[styleKey] || {};
           modalImageDataUrl = extra.imageDataUrl || "";
-          $("modalInStock").checked =
-            extra.hasOwnProperty("in_stock") ? !!extra.in_stock : true;
+          $("modalInStock").checked = extra.hasOwnProperty("in_stock")
+            ? !!extra.in_stock
+            : true;
 
           var cMap = s.colors;
           var c;
@@ -2028,6 +2103,7 @@
             }
           }
         } else {
+          // new style
           $("modalTitle").innerHTML = "New style";
           $("modalStyleName").value = "";
           $("modalStyleCode").value = "";
@@ -2103,9 +2179,9 @@
         $("modalColorInput").value = "";
         renderModalChips();
       };
+
       $("modalColorInput").onkeypress = function (e) {
-        var key = e.key || e.which;
-        if (key === "Enter" || key === 13) {
+        if ((e.key || e.which) === "Enter" || e.which === 13) {
           $("addColorBtn").onclick();
           e.preventDefault();
         }
@@ -2118,9 +2194,9 @@
         $("modalSizeInput").value = "";
         renderModalChips();
       };
+
       $("modalSizeInput").onkeypress = function (e) {
-        var key = e.key || e.which;
-        if (key === "Enter" || key === 13) {
+        if ((e.key || e.which) === "Enter" || e.which === 13) {
           $("addSizeBtn").onclick();
           e.preventDefault();
         }
@@ -2213,7 +2289,7 @@
         saveStyleMetaEntry(newKey, desc, cat, inStock, modalImageDataUrl);
 
         renderProductsGrid();
-        renderStylesGrid(); // update +Order styles
+        renderStylesGrid();
         updateDashboard();
         closeStyleModal();
         alert("Style saved.");
@@ -2230,6 +2306,10 @@
       }
 
       $("addStyleBtn").onclick = function () {
+        editingStyleKey = null;
+        modalColors = [];
+        modalSizes = [];
+        modalImageDataUrl = "";
         openStyleModal(null);
       };
 
@@ -2237,11 +2317,12 @@
         var t = e.target || e.srcElement;
         if (t.tagName.toLowerCase() !== "button") return;
         var key = t.getAttribute("data-style-key");
+        var action = t.getAttribute("data-action") || "";
         if (!key) return;
 
-        if (t.innerHTML.indexOf("Edit") !== -1) {
+        if (action === "edit") {
           openStyleModal(key);
-        } else if (t.innerHTML.indexOf("Delete") !== -1) {
+        } else if (action === "delete") {
           if (!confirm("Delete this style from catalog?")) return;
           var newCatalog = [];
           for (var i = 0; i < catalog.length; i++) {
@@ -2260,6 +2341,48 @@
           renderProductsGrid();
           renderStylesGrid();
           updateDashboard();
+        } else if (action === "duplicate") {
+          var stylesMap = buildStylesIndexForProducts();
+          var s = stylesMap[key];
+          if (!s) return;
+
+          var newName = (s.name || s.code || "Style") + " copy";
+          var newCode = s.code || "";
+          var newKey = styleKeyFromParts(newCode, newName);
+
+          var newCatalog = catalog.slice();
+          var cName;
+          var idx;
+          for (cName in s.colors) {
+            if (!s.colors.hasOwnProperty(cName)) continue;
+            var sizesArr = s.colors[cName];
+            for (idx = 0; idx < sizesArr.length; idx++) {
+              newCatalog.push({
+                style_code: newCode,
+                style_name: newName,
+                color: cName,
+                size: sizesArr[idx],
+                price: s.price || "",
+              });
+            }
+          }
+          catalog = newCatalog;
+          saveCatalog(catalog);
+
+          if (styleMeta[key]) {
+            styleMeta[newKey] = {
+              description: styleMeta[key].description || "",
+              category: styleMeta[key].category || "",
+              in_stock: !!styleMeta[key].in_stock,
+              imageDataUrl: styleMeta[key].imageDataUrl || "",
+            };
+            saveStyleMeta();
+          }
+
+          renderProductsGrid();
+          renderStylesGrid();
+          updateDashboard();
+          alert("Style duplicated.");
         }
       };
 
@@ -2345,13 +2468,16 @@
         var a = document.createElement("a");
         a.href = url;
         a.download =
-          "blanco_catalog_" + new Date().toISOString().slice(0, 10) + ".csv";
+          "blanco_catalog_" +
+          new Date().toISOString().slice(0, 10) +
+          ".csv";
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
       };
 
+      // simple CSV parser
       function parseCsv(text) {
         var lines = text.split(/\r?\n/);
         var out = [];
