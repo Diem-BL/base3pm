@@ -1,1036 +1,2773 @@
- (cd "$(git rev-parse --show-toplevel)" && git apply --3way <<'EOF' 
-diff --git a/index.html b/index.html
-index b0b7f3bf52cf3d51abfbfcee7a67f38499ada72d..bbe620720ae1a3de5ec000d27cb79cd1a68e6621 100644
---- a/index.html
-+++ b/index.html
-@@ -1,755 +1,747 @@
- <!doctype html>
- <html lang="en">
-   <head>
-     <meta charset="UTF-8" />
-     <title>BLANCO Offline Order App</title>
-     <meta
-       name="viewport"
-       content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-     />
-     <meta name="apple-mobile-web-app-capable" content="yes" />
-     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-     <meta name="apple-mobile-web-app-title" content="BLANCO Orders" />
-     <link rel="apple-touch-icon" href="/icons/icon-192.png" />
- 
-     <style>
-+      :root {
-+        --bg: #030712;
-+        --panel: #0b1224;
-+        --panel-strong: #0f172a;
-+        --border: #1f2937;
-+        --border-strong: #273449;
-+        --accent: #6de2ff;
-+        --accent-strong: #3b82f6;
-+        --text: #e5e7eb;
-+        --muted: #9ca3af;
-+        --shadow: 0 25px 70px rgba(0, 0, 0, 0.6);
-+      }
-+
-       * {
-         box-sizing: border-box;
-       }
- 
-       body {
-         margin: 0;
--        font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
--        background: #000000;
--        color: #f9fafb;
--        padding: 10px;
-+        font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
-+          sans-serif;
-+        background: radial-gradient(circle at 20% 20%, #112035, transparent 45%),
-+          radial-gradient(circle at 80% 0%, #1f2937, transparent 35%),
-+          linear-gradient(140deg, #030712 0%, #060915 50%, #04060d 100%);
-+        color: var(--text);
-+        padding: 18px;
-+        min-height: 100vh;
-         display: flex;
-         justify-content: center;
-       }
- 
-       .app {
-         width: 100%;
--        max-width: 1100px;
--        background: #000000;
--        border-radius: 16px;
--        border: 1px solid #1f2937;
--        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.8);
--        padding: 12px 16px 16px;
-+        max-width: 1180px;
-+        background: linear-gradient(150deg, rgba(17, 24, 39, 0.94),
-+            rgba(12, 17, 31, 0.94));
-+        border-radius: 18px;
-+        border: 1px solid var(--border);
-+        box-shadow: var(--shadow);
-+        padding: 16px 18px 18px;
-+        backdrop-filter: blur(12px);
-       }
- 
-       header {
-         display: flex;
-         justify-content: space-between;
--        align-items: baseline;
--        border-bottom: 1px solid #1f2937;
--        padding-bottom: 8px;
--        margin-bottom: 8px;
-+        align-items: center;
-+        border-bottom: 1px solid var(--border);
-+        padding-bottom: 12px;
-+        margin-bottom: 12px;
-       }
- 
-       header h1 {
-         margin: 0;
-         font-size: 20px;
-         letter-spacing: 0.08em;
-         text-transform: uppercase;
-       }
- 
-       header span {
--        font-size: 11px;
--        color: #9ca3af;
-+        font-size: 12px;
-+        color: var(--muted);
-       }
- 
-       .subtext {
-         font-size: 12px;
--        color: #9ca3af;
-+        color: var(--muted);
-         margin-bottom: 8px;
-       }
- 
-       /* NAV */
-       .nav {
-         display: flex;
-         flex-wrap: wrap;
--        gap: 6px;
--        margin-bottom: 10px;
-+        gap: 8px;
-+        margin-bottom: 12px;
-       }
- 
-       .nav button {
-         border-radius: 999px;
--        padding: 6px 12px;
--        border: 1px solid #f9fafb;
--        background: #000000;
--        color: #ffffff;
-+        padding: 7px 14px;
-+        border: 1px solid var(--border-strong);
-+        background: linear-gradient(180deg, #0f172a, #0b1224);
-+        color: var(--text);
-         font-size: 12px;
-         text-transform: uppercase;
-         letter-spacing: 0.08em;
-         cursor: pointer;
-+        transition: transform 0.12s ease, box-shadow 0.12s ease,
-+          border-color 0.12s ease;
-+      }
-+
-+      .nav button:hover {
-+        transform: translateY(-1px);
-+        border-color: var(--accent);
-       }
- 
-       .nav button.active {
--        background: #ffffff;
--        border-color: #ffffff;
--        color: #000000;
-+        background: linear-gradient(135deg, var(--accent), var(--accent-strong));
-+        border-color: transparent;
-+        color: #051225;
-+        box-shadow: 0 12px 24px rgba(109, 226, 255, 0.18);
-       }
- 
-       .view {
-         display: none;
-       }
- 
-       .view.active {
-         display: block;
-       }
- 
-       /* CARDS / HEADINGS */
-       section.card {
--        background: #000000;
--        border-radius: 12px;
--        border: 1px solid #1f2937;
--        padding: 10px;
--        margin-bottom: 10px;
--        color: #f9fafb;
-+        background: linear-gradient(170deg, rgba(15, 23, 42, 0.96),
-+            rgba(8, 12, 24, 0.95));
-+        border-radius: 14px;
-+        border: 1px solid var(--border);
-+        padding: 12px;
-+        margin-bottom: 12px;
-+        color: var(--text);
-+        box-shadow: 0 16px 32px rgba(0, 0, 0, 0.4);
-       }
- 
-       h2 {
--        margin: 0 0 4px;
-+        margin: 0 0 6px;
-         font-size: 16px;
--        color: #ffffff;
-+        color: #f8fafc;
-+        letter-spacing: 0.02em;
-       }
- 
-       /* DASHBOARD STATS */
-       .stats-row {
-         display: grid;
--        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
--        gap: 8px;
-+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-+        gap: 10px;
-       }
- 
-       .stat-card {
--        background: #020617;
-+        background: radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.08),
-+            transparent 45%),
-+          #0a1223;
-         border-radius: 12px;
--        border: 1px solid #1f2937;
--        padding: 8px;
--        color: #f9fafb;
-+        border: 1px solid var(--border);
-+        padding: 10px;
-+        color: var(--text);
-       }
- 
-       .stat-label {
-         font-size: 11px;
--        color: #9ca3af;
-+        color: var(--muted);
-         text-transform: uppercase;
-         letter-spacing: 0.08em;
-         margin-bottom: 2px;
-       }
- 
-       .stat-value {
--        font-size: 18px;
--        font-weight: 600;
--        color: #ffffff;
-+        font-size: 19px;
-+        font-weight: 700;
-+        color: #f8fafc;
-       }
- 
-       /* FORMS */
-       label {
-         font-size: 11px;
-         text-transform: uppercase;
-         letter-spacing: 0.08em;
--        color: #9ca3af;
-+        color: var(--muted);
-         display: block;
-         margin-bottom: 3px;
-       }
- 
-       input,
-       textarea,
-       select {
-         width: 100%;
--        padding: 6px 8px;
--        border-radius: 8px;
--        border: 1px solid #374151;
-+        padding: 8px 10px;
-+        border-radius: 9px;
-+        border: 1px solid var(--border);
-         font-size: 13px;
--        background: #020617;
--        color: #f9fafb;
-+        background: #0a1223;
-+        color: var(--text);
-+        transition: border-color 0.12s ease, box-shadow 0.12s ease;
-       }
- 
-       input::placeholder,
-       textarea::placeholder {
-         color: #6b7280;
-       }
- 
-       input:focus,
-       textarea:focus,
-       select:focus {
-         outline: none;
--        border-color: #f9fafb;
-+        border-color: var(--accent);
-+        box-shadow: 0 0 0 3px rgba(109, 226, 255, 0.15);
-       }
- 
-       textarea {
-         resize: vertical;
--        min-height: 60px;
-+        min-height: 70px;
-       }
- 
-       .field-row {
-         display: grid;
--        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
--        gap: 8px;
--        margin-bottom: 8px;
-+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-+        gap: 10px;
-+        margin-bottom: 10px;
-       }
- 
-       .field-full {
--        margin-bottom: 8px;
-+        margin-bottom: 10px;
-       }
- 
-       /* BUTTONS */
-       button {
-         border-radius: 999px;
--        padding: 6px 12px;
--        border: 1px solid #f9fafb;
--        background: #000000;
--        color: #ffffff;
-+        padding: 7px 12px;
-+        border: 1px solid transparent;
-+        background: linear-gradient(135deg, var(--accent), var(--accent-strong));
-+        color: #051225;
-         font-size: 12px;
-+        font-weight: 700;
-         text-transform: uppercase;
-         letter-spacing: 0.06em;
-         cursor: pointer;
-+        transition: transform 0.12s ease, box-shadow 0.12s ease,
-+          filter 0.12s ease;
-+        box-shadow: 0 12px 24px rgba(109, 226, 255, 0.18);
-+      }
-+
-+      button:hover {
-+        transform: translateY(-1px);
-+        filter: brightness(1.05);
-       }
- 
-       button.secondary {
--        background: #000000;
--        color: #e5e7eb;
--        border-color: #4b5563;
-+        background: linear-gradient(180deg, #0f172a, #0b1224);
-+        color: var(--text);
-+        border-color: var(--border-strong);
-+        box-shadow: none;
-       }
- 
-       button.danger {
--        background: #ef4444;
--        border-color: #ef4444;
--        color: #ffffff;
-+        background: linear-gradient(135deg, #ef4444, #b91c1c);
-+        border-color: #b91c1c;
-+        color: #fff;
-+        box-shadow: 0 10px 20px rgba(239, 68, 68, 0.22);
-       }
- 
-       button.selected,
-       button.active {
--        background: #ffffff !important;
--        color: #000000 !important;
--        border-color: #ffffff !important;
-+        background: linear-gradient(135deg, var(--accent), var(--accent-strong)) !important;
-+        color: #051225 !important;
-+        border-color: transparent !important;
-       }
- 
-       button.small {
-         font-size: 11px;
--        padding: 4px 9px;
-+        padding: 5px 10px;
-       }
- 
-       .actions {
-         display: flex;
-         flex-wrap: wrap;
--        gap: 6px;
-+        gap: 8px;
-         justify-content: flex-end;
-         margin-top: 8px;
-       }
- 
-       /* ORDER FLOW – STEPPER */
-       .stepper {
-         display: flex;
-         gap: 6px;
-         align-items: center;
-         font-size: 11px;
-         text-transform: uppercase;
-         letter-spacing: 0.08em;
--        margin-bottom: 6px;
-+        margin-bottom: 8px;
-+        color: var(--muted);
-       }
- 
-       .step-pill {
--        padding: 4px 10px;
-+        padding: 5px 12px;
-         border-radius: 999px;
--        border: 1px solid #4b5563;
--        background: #000000;
--        color: #f9fafb;
-+        border: 1px solid var(--border-strong);
-+        background: #0b1224;
-+        color: var(--text);
-       }
- 
-       .step-pill.active {
--        background: #ffffff;
--        border-color: #ffffff;
--        color: #000000;
-+        background: linear-gradient(135deg, var(--accent), var(--accent-strong));
-+        border-color: transparent;
-+        color: #051225;
-+        box-shadow: 0 8px 16px rgba(109, 226, 255, 0.15);
-       }
- 
-       /* ORDER FLOW – STYLES GRID (step 1) */
-       .styles-grid {
-         display: grid;
--        grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
--        gap: 10px;
-+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-+        gap: 12px;
-       }
- 
-       .style-card {
--        background: #020617;
--        border-radius: 10px;
--        border: 1px solid #1f2937;
--        padding: 6px;
-+        background: #0a1223;
-+        border-radius: 12px;
-+        border: 1px solid var(--border);
-+        padding: 8px;
-         display: flex;
-         flex-direction: column;
-         align-items: center;
-         gap: 4px;
-         cursor: pointer;
-         transition: 0.15s ease;
-+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
-+      }
-+
-+      .style-card:hover {
-+        border-color: var(--accent);
-+        transform: translateY(-1px);
-       }
- 
-       .style-card.selected {
--        border-color: #ffffff;
--        box-shadow: 0 0 0 2px #ffffff inset;
-+        border-color: var(--accent);
-+        box-shadow: 0 0 0 2px rgba(109, 226, 255, 0.35);
-       }
- 
-       .style-card::before {
-         content: "";
-         width: 100%;
-         padding-bottom: 100%;
--        background: #111827;
--        border: 1px solid #1f2937;
--        border-radius: 8px;
-+        background: linear-gradient(160deg, #0f172a, #0b1224);
-+        border: 1px solid var(--border);
-+        border-radius: 10px;
-         display: block;
--        margin-bottom: 4px;
-+        margin-bottom: 6px;
-       }
- 
-       .style-name {
-         font-size: 11px;
--        font-weight: 600;
--        color: #ffffff;
-+        font-weight: 700;
-+        color: #f8fafc;
-         text-align: center;
-       }
- 
-       .style-code {
-         font-size: 10px;
--        color: #9ca3af;
-+        color: var(--muted);
-         text-align: center;
-       }
- 
-       .style-meta {
-         font-size: 10px;
--        color: #6b7280;
-+        color: #718096;
-         text-align: center;
-       }
- 
-       /* STEP 2 – COLORS */
-       .color-card {
-         border-radius: 12px;
--        border: 1px solid #1f2937;
--        margin-bottom: 8px;
--        background: #020617;
-+        border: 1px solid var(--border);
-+        margin-bottom: 10px;
-+        background: #0b1224;
-+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.28);
-       }
- 
-       .color-header {
--        padding: 8px;
--        border-bottom: 1px solid #1f2937;
-+        padding: 10px;
-+        border-bottom: 1px solid var(--border);
-       }
- 
-       .color-body {
--        padding: 8px;
-+        padding: 10px;
-       }
- 
-       .color-body label {
-         font-size: 11px;
-         text-transform: uppercase;
-         letter-spacing: 0.08em;
--        color: #9ca3af;
-+        color: var(--muted);
-         display: block;
--        margin-bottom: 4px;
-+        margin-bottom: 5px;
-       }
- 
-       .color-list {
-         display: grid;
--        grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
--        gap: 6px;
-+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-+        gap: 8px;
-       }
- 
-       @media (max-width: 600px) {
-         .color-list {
-           grid-template-columns: minmax(0, 1fr);
-         }
-       }
- 
-       .color-chip {
-         display: flex;
-         align-items: center;
-         justify-content: center;
-         gap: 6px;
-         border-radius: 999px;
--        border: 1px solid #4b5563;
--        padding: 6px 10px;
--        background: #000000;
-+        border: 1px solid var(--border-strong);
-+        padding: 8px 12px;
-+        background: #0a1223;
-         cursor: pointer;
-         font-size: 12px;
--        color: #f9fafb;
-+        color: var(--text);
-         transition: 0.12s ease;
-       }
- 
-+      .color-chip:hover {
-+        border-color: var(--accent);
-+      }
-+
-       .color-chip.selected {
--        background: #ffffff;
--        border-color: #ffffff;
--        color: #000000;
-+        background: linear-gradient(135deg, var(--accent), var(--accent-strong));
-+        border-color: transparent;
-+        color: #051225;
-+        box-shadow: 0 10px 20px rgba(109, 226, 255, 0.18);
-       }
- 
-       /* STEP 3 – QTY */
-       .qty-card {
-         border-radius: 12px;
--        border: 1px solid #1f2937;
--        margin-bottom: 8px;
--        background: #020617;
--        padding: 8px;
-+        border: 1px solid var(--border);
-+        margin-bottom: 10px;
-+        background: #0b1224;
-+        padding: 10px;
-+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.28);
-       }
- 
-       .qty-header {
-         display: flex;
-         justify-content: space-between;
-         font-size: 12px;
--        margin-bottom: 6px;
--        color: #f9fafb;
-+        margin-bottom: 8px;
-+        color: var(--text);
-       }
- 
-       .sizes-grid {
-         display: grid;
-         grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
--        gap: 6px;
-+        gap: 8px;
-       }
- 
-       .size-chip {
--        background: #ffffff;
--        border-radius: 8px;
--        border: 1px solid #d1d5db;
--        padding: 4px 6px;
-+        background: #0f172a;
-+        border-radius: 10px;
-+        border: 1px solid var(--border);
-+        padding: 6px 8px;
-         font-size: 11px;
--        color: #000000;
-+        color: var(--text);
-       }
- 
-       .size-chip label {
-         font-size: 10px;
-         text-transform: uppercase;
-         letter-spacing: 0.08em;
--        color: #374151;
--        margin-bottom: 2px;
-+        color: var(--muted);
-+        margin-bottom: 3px;
-         display: block;
-       }
- 
-       .size-chip input[type="number"] {
-         width: 100%;
--        padding: 4px 6px;
--        border-radius: 6px;
--        border: 1px solid #9ca3af;
--        background: #ffffff;
--        color: #000000;
-+        padding: 6px 8px;
-+        border-radius: 8px;
-+        border: 1px solid var(--border);
-+        background: #0a1223;
-+        color: var(--text);
-         font-size: 11px;
-       }
- 
-       .size-chip input[type="number"]:focus {
-         outline: none;
--        border-color: #000000;
-+        border-color: var(--accent);
-       }
- 
-       /* TABLES */
-       table {
-         width: 100%;
-         border-collapse: collapse;
-         font-size: 11px;
-+        overflow: hidden;
-+        border-radius: 10px;
-       }
- 
-       th,
-       td {
--        border-bottom: 1px solid #374151;
--        padding: 5px 4px;
-+        border-bottom: 1px solid var(--border);
-+        padding: 7px 6px;
-         text-align: left;
--        color: #f9fafb;
-+        color: var(--text);
-       }
- 
-       th {
-         text-transform: uppercase;
-         letter-spacing: 0.08em;
--        color: #9ca3af;
-+        color: var(--muted);
-+        background: #0b1224;
-       }
- 
-       tr:last-child td {
-         border-bottom: none;
-       }
- 
-       .empty {
-         font-size: 12px;
-         text-align: center;
--        color: #9ca3af;
--        padding: 12px 0;
-+        color: var(--muted);
-+        padding: 14px 0;
-       }
- 
-       /* PRODUCTS GRID */
-       .products-grid {
-         display: grid;
--        grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
--        gap: 10px;
-+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-+        gap: 12px;
-         margin-top: 8px;
-       }
- 
-       .product-card {
--        background: #020617;
--        border-radius: 8px;
--        border: 1px solid #1f2937;
--        padding: 6px;
-+        background: #0a1223;
-+        border-radius: 10px;
-+        border: 1px solid var(--border);
-+        padding: 8px;
-         display: flex;
-         flex-direction: column;
--        gap: 4px;
-+        gap: 5px;
-         text-align: center;
-+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.28);
-       }
- 
-       .product-image {
-         width: 100%;
-         padding-bottom: 100%;
--        border-radius: 8px;
--        background: #020617;
--        border: 1px solid #1f2937;
-+        border-radius: 10px;
-+        background: #0f172a;
-+        border: 1px solid var(--border);
-         position: relative;
-         overflow: hidden;
-         display: flex;
-         align-items: center;
-         justify-content: center;
-         font-size: 11px;
--        color: #9ca3af;
-+        color: var(--muted);
-       }
- 
-       .product-image img {
-         position: absolute;
-         inset: 0;
-         width: 100%;
-         height: 100%;
-         object-fit: cover;
-       }
- 
-       .product-name {
-         font-size: 11px;
--        font-weight: 600;
--        color: #ffffff;
-+        font-weight: 700;
-+        color: #f8fafc;
-       }
- 
-       .product-code,
-       .product-summary {
-         font-size: 10px;
--        color: #9ca3af;
-+        color: var(--muted);
-       }
- 
-       .product-actions {
-         display: flex;
-+        gap: 6px;
-         justify-content: center;
--        gap: 4px;
-         margin-top: 4px;
-       }
- 
--      .chip-row {
--        display: flex;
--        flex-wrap: wrap;
--        gap: 4px;
-+      .product-actions button {
-+        font-size: 10px;
-+        padding: 4px 9px;
-       }
- 
--      .chip {
--        display: inline-flex;
-+      /* PRODUCT FORM */
-+      .product-form {
-+        display: grid;
-+        grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-+        gap: 10px;
-+      }
-+
-+      .color-row {
-+        display: flex;
-+        gap: 6px;
-         align-items: center;
--        padding: 3px 7px;
--        border-radius: 999px;
--        background: #111827;
--        border: 1px solid #374151;
--        color: #f9fafb;
--        font-size: 10px;
-       }
- 
--      .chip button {
--        border: none;
--        background: transparent;
--        padding: 0;
--        margin: 0;
--        font-size: 10px;
--        line-height: 1;
--        cursor: pointer;
--        color: #9ca3af;
-+      .color-row input[type="text"] {
-+        flex: 1;
-       }
- 
--      .chip button:hover {
--        color: #f9fafb;
-+      .color-row button {
-+        padding: 7px 10px;
-       }
- 
--      /* MODAL (Products editor) */
--      .modal-backdrop {
-+      /* MODAL */
-+      .modal {
-         position: fixed;
-         inset: 0;
--        background: rgba(15, 23, 42, 0.45);
-+        background: rgba(0, 0, 0, 0.7);
-         display: flex;
-+        align-items: center;
-         justify-content: center;
--        align-items: flex-end;
--        z-index: 40;
-+        padding: 20px;
-       }
- 
--      .modal-sheet {
-+      .modal-content {
-+        background: linear-gradient(180deg, #0f172a, #0a0f1f);
-+        padding: 16px;
-+        border-radius: 14px;
-+        border: 1px solid var(--border);
-         width: 100%;
--        max-width: 720px;
--        background: #ffffff;
--        border-radius: 16px 16px 0 0;
--        border-top: 1px solid #e5e7eb;
--        box-shadow: 0 -18px 40px rgba(15, 23, 42, 0.25);
--        max-height: 90vh;
--        display: flex;
--        flex-direction: column;
-+        max-width: 460px;
-+        box-shadow: 0 18px 36px rgba(0, 0, 0, 0.45);
-       }
- 
-       .modal-header {
-         display: flex;
-         justify-content: space-between;
-         align-items: center;
--        padding: 10px 12px 6px;
--        border-bottom: 1px solid #e5e7eb;
--      }
--
--      .modal-title {
--        font-size: 14px;
--        font-weight: 600;
--      }
--
--      .modal-body {
--        padding: 10px 12px;
--        overflow-y: auto;
-+        margin-bottom: 10px;
-+        border-bottom: 1px solid var(--border);
-+        padding-bottom: 8px;
-       }
- 
-       .modal-footer {
--        padding: 8px 12px 10px;
--        border-top: 1px solid #e5e7eb;
-         display: flex;
-         justify-content: flex-end;
--        gap: 6px;
--      }
--
--      .image-row {
--        display: flex;
-         gap: 8px;
--        align-items: stretch;
--      }
--
--      .image-preview {
--        width: 120px;
--        height: 120px;
--        border-radius: 12px;
--        border: 1px dashed #d1d5db;
--        background: #f9fafb;
--        display: flex;
--        align-items: center;
--        justify-content: center;
--        font-size: 11px;
--        color: #9ca3af;
--        overflow: hidden;
--      }
--
--      .image-preview img {
--        width: 100%;
--        height: 100%;
--        object-fit: cover;
--      }
--
--      /* CATALOG TABLE (if used later) */
--      .catalog-table-wrapper {
--        margin-top: 6px;
--        max-height: 260px;
--        overflow: auto;
--        border-radius: 8px;
--        border: 1px solid #1f2937;
--      }
--
--      .catalog-table {
--        width: 100%;
--        border-collapse: collapse;
--        font-size: 11px;
--      }
--
--      .catalog-table th,
--      .catalog-table td {
--        padding: 4px 5px;
--        border-bottom: 1px solid #1f2937;
--      }
--
--      .catalog-table input {
--        width: 100%;
--        padding: 3px 4px;
--        font-size: 11px;
--      }
--
--      /* ORDER DETAIL PANEL */
--      #orderDetailPanel {
--        margin-top: 10px;
--        border-top: 1px solid #1f2937;
--        padding-top: 8px;
-+        margin-top: 12px;
-       }
- 
-+      /* ORDER DETAIL */
-       .order-detail-header {
-+        border: 1px solid var(--border);
-+        border-radius: 12px;
-+        padding: 10px;
-+        background: #0b1224;
-         font-size: 12px;
--        color: #9ca3af;
--        margin-bottom: 6px;
-+        color: var(--text);
-+        margin-bottom: 8px;
-       }
- 
-       .order-item-card {
--        background: #020617;
-+        background: #0b1224;
-         border-radius: 12px;
--        border: 1px solid #1f2937;
--        padding: 8px 10px;
--        margin-bottom: 8px;
-+        border: 1px solid var(--border);
-+        padding: 10px 12px;
-+        margin-bottom: 10px;
-+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.28);
-       }
- 
-       .order-item-header {
-         display: flex;
-         justify-content: space-between;
-         align-items: baseline;
-         margin-bottom: 6px;
-       }
- 
-       .order-item-title {
-         font-size: 13px;
--        font-weight: 600;
-+        font-weight: 700;
-       }
- 
-       .order-item-subtitle {
-         font-size: 11px;
--        color: #9ca3af;
-+        color: var(--muted);
-       }
- 
-       .order-item-price {
-         font-size: 11px;
-         text-align: right;
-       }
- 
-       .order-tag {
-         display: inline-block;
--        padding: 3px 8px;
-+        padding: 4px 10px;
-         border-radius: 999px;
--        border: 1px solid #374151;
--        background: #000000;
-+        border: 1px solid var(--border);
-+        background: #0a1223;
-         font-size: 11px;
--        color: #f9fafb;
-+        color: var(--text);
-         margin-bottom: 6px;
-       }
- 
-       .order-sizes-row {
-         display: flex;
-         flex-wrap: wrap;
-         gap: 6px;
-         margin-top: 4px;
-       }
- 
-       .order-size-chip {
--        padding: 3px 8px;
-+        padding: 4px 10px;
-         border-radius: 999px;
--        border: 1px solid #374151;
-+        border: 1px solid var(--border);
-         font-size: 11px;
--        background: #000000;
--        color: #f9fafb;
-+        background: #0a1223;
-+        color: var(--text);
-       }
-     </style>
-   </head>
-   <body>
-     <div class="app">
-       <header>
-         <div>
-           <h1>BLANCO Clothing</h1>
-           <span id="viewLabel">Dashboard</span>
-         </div>
-         <span id="lastActivity">No orders yet</span>
-       </header>
- 
-       <div class="nav">
-         <button id="nav-dashboard" class="active">Dashboard</button>
-         <button id="nav-order">+ Order</button>
-         <button id="nav-orders">Orders</button>
-         <button id="nav-products">Products</button>
-       </div>
- 
-       <!-- DASHBOARD -->
-       <div id="view-dashboard" class="view active">
-         <section class="card">
-           <h2>Snapshot</h2>
-           <p class="subtext">
- 
-EOF
-)
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>BLANCO Offline Order App</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-title" content="BLANCO Orders" />
+    <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+
+    <style>
+      :root {
+        --bg: #030712;
+        --panel: #0b1224;
+        --panel-strong: #0f172a;
+        --border: #1f2937;
+        --border-strong: #273449;
+        --accent: #6de2ff;
+        --accent-strong: #3b82f6;
+        --text: #e5e7eb;
+        --muted: #9ca3af;
+        --shadow: 0 25px 70px rgba(0, 0, 0, 0.6);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
+          sans-serif;
+        background: radial-gradient(circle at 20% 20%, #112035, transparent 45%),
+          radial-gradient(circle at 80% 0%, #1f2937, transparent 35%),
+          linear-gradient(140deg, #030712 0%, #060915 50%, #04060d 100%);
+        color: var(--text);
+        padding: 18px;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+      }
+
+      .app {
+        width: 100%;
+        max-width: 1180px;
+        background: linear-gradient(150deg, rgba(17, 24, 39, 0.94),
+            rgba(12, 17, 31, 0.94));
+        border-radius: 18px;
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+        padding: 16px 18px 18px;
+        backdrop-filter: blur(12px);
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 12px;
+        margin-bottom: 12px;
+      }
+
+      header h1 {
+        margin: 0;
+        font-size: 20px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      header span {
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .subtext {
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 8px;
+      }
+
+      /* NAV */
+      .nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+
+      .nav button {
+        border-radius: 999px;
+        padding: 7px 14px;
+        border: 1px solid var(--border-strong);
+        background: linear-gradient(180deg, #0f172a, #0b1224);
+        color: var(--text);
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        cursor: pointer;
+        transition: transform 0.12s ease, box-shadow 0.12s ease,
+          border-color 0.12s ease;
+      }
+
+      .nav button:hover {
+        transform: translateY(-1px);
+        border-color: var(--accent);
+      }
+
+      .nav button.active {
+        background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+        border-color: transparent;
+        color: #051225;
+        box-shadow: 0 12px 24px rgba(109, 226, 255, 0.18);
+      }
+
+      .view {
+        display: none;
+      }
+
+      .view.active {
+        display: block;
+      }
+
+      /* CARDS / HEADINGS */
+      section.card {
+        background: linear-gradient(170deg, rgba(15, 23, 42, 0.96),
+            rgba(8, 12, 24, 0.95));
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        padding: 12px;
+        margin-bottom: 12px;
+        color: var(--text);
+        box-shadow: 0 16px 32px rgba(0, 0, 0, 0.4);
+      }
+
+      h2 {
+        margin: 0 0 6px;
+        font-size: 16px;
+        color: #f8fafc;
+        letter-spacing: 0.02em;
+      }
+
+      /* DASHBOARD STATS */
+      .stats-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 10px;
+      }
+
+      .stat-card {
+        background: radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.08),
+            transparent 45%),
+          #0a1223;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        padding: 10px;
+        color: var(--text);
+      }
+
+      .stat-label {
+        font-size: 11px;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 2px;
+      }
+
+      .stat-value {
+        font-size: 19px;
+        font-weight: 700;
+        color: #f8fafc;
+      }
+
+      /* FORMS */
+      label {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+        display: block;
+        margin-bottom: 3px;
+      }
+
+      input,
+      textarea,
+      select {
+        width: 100%;
+        padding: 8px 10px;
+        border-radius: 9px;
+        border: 1px solid var(--border);
+        font-size: 13px;
+        background: #0a1223;
+        color: var(--text);
+        transition: border-color 0.12s ease, box-shadow 0.12s ease;
+      }
+
+      input::placeholder,
+      textarea::placeholder {
+        color: #6b7280;
+      }
+
+      input:focus,
+      textarea:focus,
+      select:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(109, 226, 255, 0.15);
+      }
+
+      textarea {
+        resize: vertical;
+        min-height: 70px;
+      }
+
+      .field-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+
+      .field-full {
+        margin-bottom: 10px;
+      }
+
+      /* BUTTONS */
+      button {
+        border-radius: 999px;
+        padding: 7px 12px;
+        border: 1px solid transparent;
+        background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+        color: #051225;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        cursor: pointer;
+        transition: transform 0.12s ease, box-shadow 0.12s ease,
+          filter 0.12s ease;
+        box-shadow: 0 12px 24px rgba(109, 226, 255, 0.18);
+      }
+
+      button:hover {
+        transform: translateY(-1px);
+        filter: brightness(1.05);
+      }
+
+      button.secondary {
+        background: linear-gradient(180deg, #0f172a, #0b1224);
+        color: var(--text);
+        border-color: var(--border-strong);
+        box-shadow: none;
+      }
+
+      button.danger {
+        background: linear-gradient(135deg, #ef4444, #b91c1c);
+        border-color: #b91c1c;
+        color: #fff;
+        box-shadow: 0 10px 20px rgba(239, 68, 68, 0.22);
+      }
+
+      button.selected,
+      button.active {
+        background: linear-gradient(135deg, var(--accent), var(--accent-strong)) !important;
+        color: #051225 !important;
+        border-color: transparent !important;
+      }
+
+      button.small {
+        font-size: 11px;
+        padding: 5px 10px;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: flex-end;
+        margin-top: 8px;
+      }
+
+      /* ORDER FLOW – STEPPER */
+      .stepper {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 8px;
+        color: var(--muted);
+      }
+
+      .step-pill {
+        padding: 5px 12px;
+        border-radius: 999px;
+        border: 1px solid var(--border-strong);
+        background: #0b1224;
+        color: var(--text);
+      }
+
+      .step-pill.active {
+        background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+        border-color: transparent;
+        color: #051225;
+        box-shadow: 0 8px 16px rgba(109, 226, 255, 0.15);
+      }
+
+      /* ORDER FLOW – STYLES GRID (step 1) */
+      .styles-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 12px;
+      }
+
+      .style-card {
+        background: #0a1223;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        padding: 8px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        cursor: pointer;
+        transition: 0.15s ease;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+      }
+
+      .style-card:hover {
+        border-color: var(--accent);
+        transform: translateY(-1px);
+      }
+
+      .style-card.selected {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 2px rgba(109, 226, 255, 0.35);
+      }
+
+      .style-card::before {
+        content: "";
+        width: 100%;
+        padding-bottom: 100%;
+        background: linear-gradient(160deg, #0f172a, #0b1224);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        display: block;
+        margin-bottom: 6px;
+      }
+
+      .style-name {
+        font-size: 11px;
+        font-weight: 700;
+        color: #f8fafc;
+        text-align: center;
+      }
+
+      .style-code {
+        font-size: 10px;
+        color: var(--muted);
+        text-align: center;
+      }
+
+      .style-meta {
+        font-size: 10px;
+        color: #718096;
+        text-align: center;
+      }
+
+      /* STEP 2 – COLORS */
+      .color-card {
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        margin-bottom: 10px;
+        background: #0b1224;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.28);
+      }
+
+      .color-header {
+        padding: 10px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .color-body {
+        padding: 10px;
+      }
+
+      .color-body label {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      .color-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 8px;
+      }
+
+      @media (max-width: 600px) {
+        .color-list {
+          grid-template-columns: minmax(0, 1fr);
+        }
+      }
+
+      .color-chip {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        border-radius: 999px;
+        border: 1px solid var(--border-strong);
+        padding: 8px 12px;
+        background: #0a1223;
+        cursor: pointer;
+        font-size: 12px;
+        color: var(--text);
+        transition: 0.12s ease;
+      }
+
+      .color-chip:hover {
+        border-color: var(--accent);
+      }
+
+      .color-chip.selected {
+        background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+        border-color: transparent;
+        color: #051225;
+        box-shadow: 0 10px 20px rgba(109, 226, 255, 0.18);
+      }
+
+      /* STEP 3 – QTY */
+      .qty-card {
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        margin-bottom: 10px;
+        background: #0b1224;
+        padding: 10px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.28);
+      }
+
+      .qty-header {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+        margin-bottom: 8px;
+        color: var(--text);
+      }
+
+      .sizes-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+        gap: 8px;
+      }
+
+      .size-chip {
+        background: #0f172a;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        padding: 6px 8px;
+        font-size: 11px;
+        color: var(--text);
+      }
+
+      .size-chip label {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+        margin-bottom: 3px;
+        display: block;
+      }
+
+      .size-chip input[type="number"] {
+        width: 100%;
+        padding: 6px 8px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: #0a1223;
+        color: var(--text);
+        font-size: 11px;
+      }
+
+      .size-chip input[type="number"]:focus {
+        outline: none;
+        border-color: var(--accent);
+      }
+
+      /* TABLES */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 11px;
+        overflow: hidden;
+        border-radius: 10px;
+      }
+
+      th,
+      td {
+        border-bottom: 1px solid var(--border);
+        padding: 7px 6px;
+        text-align: left;
+        color: var(--text);
+      }
+
+      th {
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+        background: #0b1224;
+      }
+
+      tr:last-child td {
+        border-bottom: none;
+      }
+
+      .empty {
+        font-size: 12px;
+        text-align: center;
+        color: var(--muted);
+        padding: 14px 0;
+      }
+
+      /* PRODUCTS GRID */
+      .products-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 12px;
+        margin-top: 8px;
+      }
+
+      .product-card {
+        background: #0a1223;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        padding: 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        text-align: center;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.28);
+      }
+
+      .product-image {
+        width: 100%;
+        padding-bottom: 100%;
+        border-radius: 10px;
+        background: #0f172a;
+        border: 1px solid var(--border);
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        color: var(--muted);
+      }
+
+      .product-image img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .product-name {
+        font-size: 11px;
+        font-weight: 700;
+        color: #f8fafc;
+      }
+
+      .product-code,
+      .product-summary {
+        font-size: 10px;
+        color: var(--muted);
+      }
+
+      .product-actions {
+        display: flex;
+        gap: 6px;
+        justify-content: center;
+        margin-top: 4px;
+      }
+
+      .product-actions button {
+        font-size: 10px;
+        padding: 4px 9px;
+      }
+
+      /* PRODUCT FORM */
+      .product-form {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+        gap: 10px;
+      }
+
+      .color-row {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+      }
+
+      .color-row input[type="text"] {
+        flex: 1;
+      }
+
+      .color-row button {
+        padding: 7px 10px;
+      }
+
+      /* MODAL */
+      .modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+
+      .modal-content {
+        background: linear-gradient(180deg, #0f172a, #0a0f1f);
+        padding: 16px;
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        width: 100%;
+        max-width: 460px;
+        box-shadow: 0 18px 36px rgba(0, 0, 0, 0.45);
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 8px;
+      }
+
+      .modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        margin-top: 12px;
+      }
+
+      /* ORDER DETAIL */
+      .order-detail-header {
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 10px;
+        background: #0b1224;
+        font-size: 12px;
+        color: var(--text);
+        margin-bottom: 8px;
+      }
+
+      .order-item-card {
+        background: #0b1224;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        padding: 10px 12px;
+        margin-bottom: 10px;
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.28);
+      }
+
+      .order-item-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        margin-bottom: 6px;
+      }
+
+      .order-item-title {
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .order-item-subtitle {
+        font-size: 11px;
+        color: var(--muted);
+      }
+
+      .order-item-price {
+        font-size: 11px;
+        text-align: right;
+      }
+
+      .order-tag {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: #0a1223;
+        font-size: 11px;
+        color: var(--text);
+        margin-bottom: 6px;
+      }
+
+      .order-sizes-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 4px;
+      }
+
+      .order-size-chip {
+        padding: 4px 10px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        font-size: 11px;
+        background: #0a1223;
+        color: var(--text);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <header>
+        <div>
+          <h1>BLANCO Clothing</h1>
+          <span id="viewLabel">Dashboard</span>
+        </div>
+        <span id="lastActivity">No orders yet</span>
+      </header>
+
+      <div class="nav">
+        <button id="nav-dashboard" class="active">Dashboard</button>
+        <button id="nav-order">+ Order</button>
+        <button id="nav-orders">Orders</button>
+        <button id="nav-products">Products</button>
+      </div>
+
+      <!-- DASHBOARD -->
+      <div id="view-dashboard" class="view active">
+        <section class="card">
+          <h2>Snapshot</h2>
+          <p class="subtext">
+            Overview of offline activity on this device only.
+          </p>
+          <div class="stats-row">
+            <div class="stat-card">
+              <div class="stat-label">Offline orders</div>
+              <div id="stat-orders" class="stat-value">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Styles in catalog</div>
+              <div id="stat-styles" class="stat-value">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Last activity</div>
+              <div id="stat-last" class="stat-value" style="font-size:13px">
+                —
+              </div>
+            </div>
+          </div>
+          <div class="actions" style="justify-content:flex-start;margin-top:8px">
+            <button id="dash-new-order">+ New order</button>
+            <button id="dash-orders" class="secondary small">
+              View orders
+            </button>
+            <button id="dash-products" class="secondary small">
+              Manage products
+            </button>
+          </div>
+        </section>
+      </div>
+
+      <!-- ORDER FLOW -->
+      <div id="view-order" class="view">
+        <section class="card">
+          <div class="stepper">
+            <span id="step-pill-1" class="step-pill active">1. Styles</span>
+            <span>›</span>
+            <span id="step-pill-2" class="step-pill">2. Colors</span>
+            <span>›</span>
+            <span id="step-pill-3" class="step-pill">3. Sizes & Qty</span>
+          </div>
+
+          <!-- customer -->
+          <div class="field-row">
+            <div>
+              <label for="custName">Customer</label>
+              <input id="custName" placeholder="Customer name" />
+            </div>
+            <div>
+              <label for="custEmail">Email</label>
+              <input id="custEmail" type="email" placeholder="email@club.com" />
+            </div>
+            <div>
+              <label for="custPhone">Phone</label>
+              <input id="custPhone" placeholder="+1 (555) 123-4567" />
+            </div>
+          </div>
+
+          <!-- step 1 -->
+          <div id="order-step-1">
+            <h2>Select Styles</h2>
+            <p class="subtext">
+              Tap one or more styles to include in this order. Styles are loaded
+              from the Products catalog.
+            </p>
+            <div class="field-full">
+              <label for="styleSearch">Search styles</label>
+              <input
+                id="styleSearch"
+                placeholder="Search by style code or name"
+              />
+            </div>
+            <div id="stylesGrid" class="styles-grid"></div>
+            <div id="stylesEmpty" class="subtext">
+              No styles yet – add products first.
+            </div>
+            <div class="actions">
+              <button id="step1-next" class="secondary">
+                Continue to colors ›
+              </button>
+            </div>
+          </div>
+
+          <!-- step 2 -->
+          <div id="order-step-2" style="display:none">
+            <h2>Choose Colors</h2>
+            <p class="subtext">
+              For each selected style, pick one or more colors.
+            </p>
+            <div id="colorsContainer"></div>
+            <div class="actions" style="justify-content:space-between">
+              <button id="step2-back" class="secondary">
+                ‹ Back to styles
+              </button>
+              <button id="step2-next">Continue to sizes & qty ›</button>
+            </div>
+          </div>
+
+          <!-- step 3 -->
+          <div id="order-step-3" style="display:none">
+            <h2>Sizes & Quantities</h2>
+            <p class="subtext">
+              Enter quantities for each style, color and size. Leave at 0 for
+              sizes you don’t need.
+            </p>
+            <div id="qtyContainer"></div>
+            <div class="field-full">
+              <label for="orderNotes">Order notes</label>
+              <textarea
+                id="orderNotes"
+                placeholder="Ship window, fit notes, event, etc."
+              ></textarea>
+            </div>
+            <div class="actions" style="justify-content:space-between">
+              <button id="step3-back" class="secondary">
+                ‹ Back to colors
+              </button>
+              <div style="display:flex;gap:6px">
+                <button id="clearOrder" class="secondary small">Clear</button>
+                <button id="saveOrder">Save order</button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ORDERS -->
+      <div id="view-orders" class="view">
+        <section class="card">
+          <h2>Orders</h2>
+          <p class="subtext">
+            Orders are stored locally on this device. Export or email per order.
+          </p>
+          <div class="actions" style="justify-content:flex-start">
+            <button id="exportOrders" class="secondary small">
+              Export all CSV
+            </button>
+          </div>
+          <div id="ordersEmpty" class="empty">
+            No orders yet – create one from the + Order tab.
+          </div>
+          <table id="ordersTable" style="display:none;margin-top:6px">
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Customer</th>
+                <th>Styles</th>
+                <th>Colors</th>
+                <th>Sizes</th>
+                <th>Qty</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="ordersBody"></tbody>
+          </table>
+
+          <!-- Order detail panel -->
+          <div id="orderDetailPanel" style="display:none">
+            <h3 style="margin:10px 0 4px;font-size:14px;">Order items</h3>
+            <div id="orderDetailMeta" class="order-detail-header"></div>
+            <div id="orderDetailItems"></div>
+          </div>
+
+          <!-- Email template options -->
+          <div style="margin-top:12px;border-top:1px solid #1f2937;padding-top:8px;">
+            <h3 style="margin:0 0 4px;font-size:14px;">Email template options</h3>
+            <p class="subtext" style="margin-bottom:4px;">
+              Choose what to include when emailing orders.
+            </p>
+            <div class="field-row">
+              <div style="display:flex;align-items:center;gap:6px;">
+                <input
+                  id="emailIncludeNotes"
+                  type="checkbox"
+                  style="width:auto;margin:0;"
+                />
+                <span style="font-size:12px;">Include order notes</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <input
+                  id="emailIncludeUnitPrice"
+                  type="checkbox"
+                  style="width:auto;margin:0;"
+                />
+                <span style="font-size:12px;">Show unit price on items</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- PRODUCTS -->
+      <div id="view-products" class="view">
+        <section class="card">
+          <div
+            style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;"
+          >
+            <div>
+              <h2>Products</h2>
+              <p class="subtext">
+                Manage styles used in the + Order flow. Data is stored offline on
+                this device.
+              </p>
+            </div>
+            <button id="addStyleBtn" class="small">+ Add style</button>
+          </div>
+
+          <div id="productsEmpty" class="empty">
+            No styles yet – tap “+ Add style” or import a catalog CSV from
+            another device.
+          </div>
+
+          <div id="productsGrid" class="products-grid"></div>
+
+          <div class="actions" style="justify-content:flex-start;margin-top:8px;">
+            <input id="catalogFile" type="file" accept=".csv" />
+            <button id="importCatalog" class="secondary small">
+              Import CSV
+            </button>
+            <button id="exportCatalog" class="secondary small">
+              Export CSV
+            </button>
+          </div>
+        </section>
+
+        <!-- Slide-up modal editor -->
+        <div id="styleModal" class="modal-backdrop" style="display:none;">
+          <div class="modal-sheet">
+            <div class="modal-header">
+              <div id="modalTitle" class="modal-title">New style</div>
+              <button
+                type="button"
+                id="modalCloseBtn"
+                class="secondary small"
+                style="border-radius:999px;width:26px;height:26px;padding:0;"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div class="modal-body">
+              <div class="field-row">
+                <div>
+                  <label for="modalStyleName">Style name</label>
+                  <input id="modalStyleName" placeholder="polo" />
+                </div>
+                <div>
+                  <label for="modalStyleCode">Style code</label>
+                  <input id="modalStyleCode" placeholder="1416-sup" />
+                </div>
+              </div>
+
+              <div class="field-full">
+                <label for="modalDescription">Description</label>
+                <textarea
+                  id="modalDescription"
+                  placeholder="Enter description (optional)"
+                ></textarea>
+              </div>
+
+              <div class="field-row">
+                <div>
+                  <label for="modalPrice">Price (per piece)</label>
+                  <input id="modalPrice" type="number" min="0" step="0.01" />
+                </div>
+                <div>
+                  <label for="modalCategory">Category</label>
+                  <input
+                    id="modalCategory"
+                    placeholder="polo, hoodie, outerwear…"
+                  />
+                </div>
+              </div>
+
+              <!-- colors -->
+              <div class="field-full">
+                <label>Available colors</label>
+                <div
+                  style="display:flex;gap:6px;align-items:center;margin-bottom:4px;"
+                >
+                  <input
+                    id="modalColorInput"
+                    placeholder="Add color (enter, then +)"
+                  />
+                  <button id="addColorBtn" class="secondary small">+</button>
+                </div>
+                <div id="modalColorsRow" class="chip-row"></div>
+              </div>
+
+              <!-- sizes -->
+              <div class="field-full">
+                <label>Available sizes</label>
+                <div
+                  style="display:flex;gap:6px;align-items:center;margin-bottom:4px;"
+                >
+                  <input
+                    id="modalSizeInput"
+                    placeholder="Add size (S, M, L, XL, 32, 34…)"
+                  />
+                  <button id="addSizeBtn" class="secondary small">+</button>
+                </div>
+                <div id="modalSizesRow" class="chip-row"></div>
+              </div>
+
+              <!-- image -->
+              <div class="field-full">
+                <label>Product image</label>
+                <div class="image-row">
+                  <div id="modalImagePreview" class="image-preview">
+                    <span>Tap to upload</span>
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:4px;">
+                    <input
+                      id="modalImageFile"
+                      type="file"
+                      accept="image/*"
+                      style="font-size:11px;"
+                    />
+                    <small class="subtext">
+                      Images are stored locally on this device (not in CSV).
+                    </small>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class="field-full"
+                style="display:flex;align-items:center;gap:6px;margin-top:4px;"
+              >
+                <input
+                  id="modalInStock"
+                  type="checkbox"
+                  style="width:auto;margin:0;"
+                />
+                <span style="font-size:12px;">In stock</span>
+              </div>
+            </div>
+
+            <div class="modal-footer">
+              <button id="modalCancelBtn" class="secondary small">
+                Cancel
+              </button>
+              <button id="modalSaveBtn" class="small">Save style</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // SIMPLE, OLDER-SAFARI-FRIENDLY JS (no arrow functions)
+
+      var ORDERS_KEY = "blanco_orders_v1";
+      var CATALOG_KEY = "blanco_catalog_v1";
+      var STYLE_META_KEY = "blanco_style_meta_v1";
+      var EMAIL_OPTS_KEY = "blanco_email_opts_v1";
+
+      var catalog = [];
+      var styleMeta = {}; // styleKey -> {desc, category, imageDataUrl, in_stock}
+      var selectedStyles = []; // array of styleKeys
+      var selectedColors = {}; // styleKey -> { color: true }
+      var currentStep = 1;
+      var emailOpts = {
+        includeNotes: true,
+        includeUnitPrice: false,
+      };
+
+      function $(id) {
+        return document.getElementById(id);
+      }
+
+      // ---------- STORAGE ----------
+      function getOrders() {
+        try {
+          var raw = localStorage.getItem(ORDERS_KEY);
+          return raw ? JSON.parse(raw) : [];
+        } catch (e) {
+          console.log("getOrders error", e);
+          return [];
+        }
+      }
+
+      function saveOrdersList(list) {
+        try {
+          localStorage.setItem(ORDERS_KEY, JSON.stringify(list));
+        } catch (e) {
+          console.log("saveOrders error", e);
+        }
+        updateDashboard();
+      }
+
+      function getCatalog() {
+        try {
+          var raw = localStorage.getItem(CATALOG_KEY);
+          return raw ? JSON.parse(raw) : [];
+        } catch (e) {
+          console.log("getCatalog error", e);
+          return [];
+        }
+      }
+
+      function saveCatalog(list) {
+        try {
+          localStorage.setItem(CATALOG_KEY, JSON.stringify(list));
+        } catch (e) {
+          console.log("saveCatalog error", e);
+        }
+      }
+
+      function loadStyleMeta() {
+        try {
+          var raw = localStorage.getItem(STYLE_META_KEY);
+          styleMeta = raw ? JSON.parse(raw) : {};
+        } catch (e) {
+          styleMeta = {};
+        }
+      }
+
+      function saveStyleMeta() {
+        try {
+          localStorage.setItem(STYLE_META_KEY, JSON.stringify(styleMeta));
+        } catch (e) {}
+      }
+
+      function loadEmailOpts() {
+        try {
+          var raw = localStorage.getItem(EMAIL_OPTS_KEY);
+          if (raw) {
+            var obj = JSON.parse(raw);
+            emailOpts.includeNotes =
+              obj.includeNotes !== undefined
+                ? !!obj.includeNotes
+                : true;
+            emailOpts.includeUnitPrice = !!obj.includeUnitPrice;
+          }
+        } catch (e) {}
+
+        if ($("emailIncludeNotes")) {
+          $("emailIncludeNotes").checked = !!emailOpts.includeNotes;
+        }
+        if ($("emailIncludeUnitPrice")) {
+          $("emailIncludeUnitPrice").checked =
+            !!emailOpts.includeUnitPrice;
+        }
+      }
+
+      function saveEmailOptsFromUI() {
+        if ($("emailIncludeNotes")) {
+          emailOpts.includeNotes = $("emailIncludeNotes").checked;
+        }
+        if ($("emailIncludeUnitPrice")) {
+          emailOpts.includeUnitPrice =
+            $("emailIncludeUnitPrice").checked;
+        }
+        try {
+          localStorage.setItem(
+            EMAIL_OPTS_KEY,
+            JSON.stringify(emailOpts)
+          );
+        } catch (e) {}
+      }
+
+      // ---------- NAV ----------
+      function setView(viewId) {
+        var views = [
+          "view-dashboard",
+          "view-order",
+          "view-orders",
+          "view-products",
+        ];
+        for (var i = 0; i < views.length; i++) {
+          var v = $(views[i]);
+          v.className =
+            v.className.replace("active", "").replace(/\s+$/, "") ||
+            "";
+        }
+        $(viewId).className += " active";
+
+        var navButtons = [
+          "nav-dashboard",
+          "nav-order",
+          "nav-orders",
+          "nav-products",
+        ];
+        for (var j = 0; j < navButtons.length; j++) {
+          var b = $(navButtons[j]);
+          b.className = b.className.replace("active", "");
+        }
+        if (viewId === "view-dashboard")
+          $("nav-dashboard").className += " active";
+        if (viewId === "view-order")
+          $("nav-order").className += " active";
+        if (viewId === "view-orders")
+          $("nav-orders").className += " active";
+        if (viewId === "view-products")
+          $("nav-products").className += " active";
+
+        if (viewId === "view-dashboard")
+          $("viewLabel").innerHTML = "Dashboard";
+        if (viewId === "view-order")
+          $("viewLabel").innerHTML = "+ Order";
+        if (viewId === "view-orders")
+          $("viewLabel").innerHTML = "Orders";
+        if (viewId === "view-products")
+          $("viewLabel").innerHTML = "Products";
+
+        if (viewId === "view-orders") renderOrders();
+        if (viewId === "view-products") renderCatalog();
+        if (viewId === "view-order") resetOrderFlow();
+      }
+
+      $("nav-dashboard").onclick = function () {
+        setView("view-dashboard");
+      };
+      $("nav-order").onclick = function () {
+        setView("view-order");
+      };
+      $("nav-orders").onclick = function () {
+        setView("view-orders");
+      };
+      $("nav-products").onclick = function () {
+        setView("view-products");
+      };
+      $("dash-new-order").onclick = function () {
+        setView("view-order");
+      };
+      $("dash-orders").onclick = function () {
+        setView("view-orders");
+      };
+      $("dash-products").onclick = function () {
+        setView("view-products");
+      };
+
+      // ---------- DASHBOARD ----------
+      function updateDashboard() {
+        var orders = getOrders();
+        $("stat-orders").innerHTML = String(orders.length);
+
+        var styleMap = {};
+        for (var i = 0; i < catalog.length; i++) {
+          var code = (catalog[i].style_code || "").trim();
+          if (code) styleMap[code] = true;
+        }
+        var styleCount = 0;
+        for (var k in styleMap) {
+          if (styleMap.hasOwnProperty(k)) styleCount++;
+        }
+        $("stat-styles").innerHTML = String(styleCount);
+
+        if (!orders.length) {
+          $("stat-last").innerHTML = "—";
+          $("lastActivity").innerHTML = "No orders yet";
+        } else {
+          var last = orders[orders.length - 1];
+          var ts = new Date(last.created_at).toLocaleString();
+          $("stat-last").innerHTML = ts;
+          $("lastActivity").innerHTML = "Last order: " + ts;
+        }
+      }
+
+      // ---------- CATALOG STRUCTURE ----------
+      function getStyleKey(row) {
+        var code = (row.style_code || "").trim();
+        var name = (row.style_name || "").trim();
+        return code || name;
+      }
+
+      function buildStylesIndex() {
+        var map = {};
+        for (var i = 0; i < catalog.length; i++) {
+          var row = catalog[i];
+          var key = getStyleKey(row);
+          if (!key) continue;
+          if (!map[key]) {
+            map[key] = {
+              key: key,
+              code: (row.style_code || "").trim(),
+              name: (row.style_name || "").trim(),
+              price: row.price || "",
+              colors: {},
+            };
+          }
+          var color = (row.color || "").trim();
+          var size = (row.size || "").trim();
+          if (color) {
+            if (!map[key].colors[color]) {
+              map[key].colors[color] = { sizes: [] };
+            }
+            if (
+              size &&
+              map[key].colors[color].sizes.indexOf(size) === -1
+            ) {
+              map[key].colors[color].sizes.push(size);
+            }
+          }
+          if (row.price && !map[key].price) map[key].price = row.price;
+        }
+        return map;
+      }
+
+      // ---------- ORDER FLOW ----------
+      function setStep(n) {
+        currentStep = n;
+        $("order-step-1").style.display = n === 1 ? "block" : "none";
+        $("order-step-2").style.display = n === 2 ? "block" : "none";
+        $("order-step-3").style.display = n === 3 ? "block" : "none";
+
+        $("step-pill-1").className =
+          "step-pill" + (n === 1 ? " active" : "");
+        $("step-pill-2").className =
+          "step-pill" + (n === 2 ? " active" : "");
+        $("step-pill-3").className =
+          "step-pill" + (n === 3 ? " active" : "");
+      }
+
+      function resetOrderFlow() {
+        setStep(1);
+        $("custName").value = "";
+        $("custEmail").value = "";
+        $("custPhone").value = "";
+        $("orderNotes").value = "";
+        $("styleSearch").value = "";
+        selectedStyles = [];
+        selectedColors = {};
+        renderStylesGrid();
+        $("colorsContainer").innerHTML = "";
+        $("qtyContainer").innerHTML = "";
+      }
+
+      function renderStylesGrid() {
+        var stylesMap = buildStylesIndex();
+        var grid = $("stylesGrid");
+        var empty = $("stylesEmpty");
+        grid.innerHTML = "";
+
+        var search = $("styleSearch").value.toLowerCase();
+        var any = false;
+
+        for (var key in stylesMap) {
+          if (!stylesMap.hasOwnProperty(key)) continue;
+          var meta = stylesMap[key];
+          var label =
+            (meta.code || "") + " " + (meta.name || "");
+          if (search && label.toLowerCase().indexOf(search) === -1) {
+            continue;
+          }
+          any = true;
+
+          var card = document.createElement("div");
+          card.className = "style-card";
+          card.setAttribute("data-style-key", key);
+          if (selectedStyles.indexOf(key) !== -1)
+            card.className += " selected";
+
+          var nameDiv = document.createElement("div");
+          nameDiv.className = "style-name";
+          nameDiv.innerHTML = meta.name || meta.code || "Unnamed";
+
+          var codeDiv = document.createElement("div");
+          codeDiv.className = "style-code";
+          codeDiv.innerHTML = meta.code || meta.name || "";
+
+          var metaDiv = document.createElement("div");
+          metaDiv.className = "style-meta";
+          var colorCount = 0;
+          var sizeCount = 0;
+          for (var c in meta.colors) {
+            if (!meta.colors.hasOwnProperty(c)) continue;
+            colorCount++;
+            sizeCount += meta.colors[c].sizes.length;
+          }
+          metaDiv.innerHTML =
+            colorCount +
+            " colors • " +
+            sizeCount +
+            " sizes" +
+            (meta.price ? " • $" + meta.price + "/pc" : "");
+
+          card.appendChild(nameDiv);
+          card.appendChild(codeDiv);
+          card.appendChild(metaDiv);
+
+          card.onclick = function () {
+            var skey = this.getAttribute("data-style-key");
+            var idx = selectedStyles.indexOf(skey);
+            if (idx === -1) selectedStyles.push(skey);
+            else selectedStyles.splice(idx, 1);
+            renderStylesGrid();
+          };
+
+          grid.appendChild(card);
+        }
+
+        empty.style.display = any ? "none" : "block";
+      }
+
+      $("styleSearch").oninput = renderStylesGrid;
+
+      $("step1-next").onclick = function () {
+        if (!selectedStyles.length) {
+          alert("Select at least one style.");
+          return;
+        }
+        renderColorSelection();
+        setStep(2);
+      };
+      $("step2-back").onclick = function () {
+        setStep(1);
+      };
+      $("step2-next").onclick = function () {
+        var any = false;
+        for (var s in selectedColors) {
+          if (!selectedColors.hasOwnProperty(s)) continue;
+          var colors = selectedColors[s];
+          for (var c in colors) {
+            if (colors.hasOwnProperty(c) && colors[c]) {
+              any = true;
+              break;
+            }
+          }
+        }
+        if (!any) {
+          alert("Select at least one color.");
+          return;
+        }
+        renderQtySelection();
+        setStep(3);
+      };
+      $("step3-back").onclick = function () {
+        setStep(2);
+      };
+      $("clearOrder").onclick = function () {
+        resetOrderFlow();
+      };
+
+      function renderColorSelection() {
+        var stylesMap = buildStylesIndex();
+        var container = $("colorsContainer");
+        container.innerHTML = "";
+
+        for (var i = 0; i < selectedStyles.length; i++) {
+          var key = selectedStyles[i];
+          var meta = stylesMap[key];
+          if (!meta) continue;
+
+          if (!selectedColors[key]) selectedColors[key] = {};
+
+          var card = document.createElement("div");
+          card.className = "color-card";
+
+          var header = document.createElement("div");
+          header.className = "color-header";
+          header.innerHTML =
+            "<strong>" +
+            (meta.name || meta.code || "Style") +
+            "</strong><br/><span style='font-size:11px;color:#9ca3af'>" +
+            (meta.code || "") +
+            "</span>";
+          card.appendChild(header);
+
+          var body = document.createElement("div");
+          body.className = "color-body";
+
+          var label = document.createElement("label");
+          label.innerHTML = "Choose colors";
+          body.appendChild(label);
+
+          var list = document.createElement("div");
+          list.className = "color-list";
+
+          for (var color in meta.colors) {
+            if (!meta.colors.hasOwnProperty(color)) continue;
+
+            var chip = document.createElement("div");
+            chip.className = "color-chip";
+            chip.setAttribute("data-style-key", key);
+            chip.setAttribute("data-color", color);
+            if (selectedColors[key][color]) {
+              chip.className += " selected";
+            }
+            chip.innerHTML = color;
+
+            chip.onclick = function () {
+              var sk = this.getAttribute("data-style-key");
+              var col = this.getAttribute("data-color");
+              if (!selectedColors[sk]) selectedColors[sk] = {};
+              selectedColors[sk][col] = !selectedColors[sk][col];
+              renderColorSelection();
+            };
+
+            list.appendChild(chip);
+          }
+
+          body.appendChild(list);
+          card.appendChild(body);
+          container.appendChild(card);
+        }
+
+        if (!selectedStyles.length) {
+          container.innerHTML =
+            "<div class='subtext'>No styles selected.</div>";
+        }
+      }
+
+      function renderQtySelection() {
+        var stylesMap = buildStylesIndex();
+        var container = $("qtyContainer");
+        container.innerHTML = "";
+
+        for (var i = 0; i < selectedStyles.length; i++) {
+          var key = selectedStyles[i];
+          var meta = stylesMap[key];
+          if (!meta) continue;
+          var colorsMap = selectedColors[key] || {};
+
+          for (var color in colorsMap) {
+            if (
+              !colorsMap.hasOwnProperty(color) ||
+              !colorsMap[color]
+            )
+              continue;
+
+            var sizesInfo = meta.colors[color];
+            if (!sizesInfo) continue;
+
+            var card = document.createElement("div");
+            card.className = "qty-card";
+
+            var header = document.createElement("div");
+            header.className = "qty-header";
+            header.innerHTML =
+              "<span>" +
+              (meta.name || meta.code) +
+              " • " +
+              color +
+              "</span><span>" +
+              (meta.price ? "$" + meta.price + "/pc" : "") +
+              "</span>";
+            card.appendChild(header);
+
+            var grid = document.createElement("div");
+            grid.className = "sizes-grid";
+
+            var sizes = sizesInfo.sizes.slice();
+            sizes.sort(function (a, b) {
+              return a.localeCompare(b, undefined, { numeric: true });
+            });
+
+            for (var s = 0; s < sizes.length; s++) {
+              var size = sizes[s];
+              var chip = document.createElement("div");
+              chip.className = "size-chip";
+
+              var lab = document.createElement("label");
+              lab.innerHTML = size;
+              chip.appendChild(lab);
+
+              var input = document.createElement("input");
+              input.type = "number";
+              input.min = "0";
+              input.step = "1";
+              input.value = "";
+              input.setAttribute("data-style-key", key);
+              input.setAttribute("data-color", color);
+              input.setAttribute("data-size", size);
+              chip.appendChild(input);
+
+              grid.appendChild(chip);
+            }
+
+            card.appendChild(grid);
+            container.appendChild(card);
+          }
+        }
+
+        if (!container.innerHTML) {
+          container.innerHTML =
+            "<div class='subtext'>No colors selected.</div>";
+        }
+      }
+
+      $("saveOrder").onclick = function () {
+        var cust = $("custName").value.replace(/\s+$/, "");
+        if (!cust) {
+          alert("Customer name is required.");
+          return;
+        }
+        var email = $("custEmail").value;
+        var phone = $("custPhone").value;
+        var notes = $("orderNotes").value;
+
+        var inputs = $("qtyContainer").getElementsByTagName("input");
+        var lines = [];
+        for (var i = 0; i < inputs.length; i++) {
+          var el = inputs[i];
+          if (!el.getAttribute("data-size")) continue;
+          var qty = Number(el.value || 0);
+          if (qty <= 0) continue;
+          lines.push({
+            styleKey: el.getAttribute("data-style-key"),
+            color: el.getAttribute("data-color"),
+            size: el.getAttribute("data-size"),
+            qty: qty,
+          });
+        }
+        if (!lines.length) {
+          alert("Enter quantity for at least one size.");
+          return;
+        }
+
+        var stylesMap = buildStylesIndex();
+        var nowIso = new Date().toISOString();
+        var orders = getOrders();
+
+        for (var j = 0; j < lines.length; j++) {
+          var ln = lines[j];
+          var meta = stylesMap[ln.styleKey] || {};
+          orders.push({
+            created_at: nowIso,
+            customer_name: cust,
+            customer_email: email,
+            customer_phone: phone,
+            style_code: meta.code || "",
+            style_name: meta.name || "",
+            color: ln.color,
+            size: ln.size,
+            qty: ln.qty,
+            notes: notes,
+          });
+        }
+
+        saveOrdersList(orders);
+        renderOrders();
+        resetOrderFlow();
+        alert("Order saved on this device.");
+      };
+
+      // ---------- ORDERS GROUPING + VIEW ----------
+      function groupOrdersByTimestamp(orders) {
+        var groups = {};
+        var keys = [];
+        for (var i = 0; i < orders.length; i++) {
+          var o = orders[i];
+          var key = o.created_at;
+          if (!groups[key]) {
+            groups[key] = {
+              created_at: o.created_at,
+              customer_name: o.customer_name,
+              customer_email: o.customer_email,
+              customer_phone: o.customer_phone,
+              notes: o.notes,
+              lines: [],
+              total_qty: 0,
+              styles: {},
+              colors: {},
+              sizes: {},
+            };
+            keys.push(key);
+          }
+          var g = groups[key];
+          g.lines.push(o);
+          g.total_qty += Number(o.qty || 0);
+
+          var sName = o.style_name || o.style_code || "";
+          if (sName) g.styles[sName] = true;
+          if (o.color) g.colors[o.color] = true;
+          if (o.size) g.sizes[o.size] = true;
+        }
+        keys.sort();
+        return { map: groups, keys: keys };
+      }
+
+      function renderOrders() {
+        var orders = getOrders();
+        var table = $("ordersTable");
+        var body = $("ordersBody");
+        var empty = $("ordersEmpty");
+        body.innerHTML = "";
+
+        $("orderDetailPanel").style.display = "none";
+        $("orderDetailItems").innerHTML = "";
+        $("orderDetailMeta").innerHTML = "";
+
+        if (!orders.length) {
+          table.style.display = "none";
+          empty.style.display = "block";
+          return;
+        }
+        table.style.display = "table";
+        empty.style.display = "none";
+
+        var grouped = groupOrdersByTimestamp(orders);
+        var keys = grouped.keys;
+        var groups = grouped.map;
+
+        for (var kIdx = 0; kIdx < keys.length; kIdx++) {
+          var gKey = keys[kIdx];
+          var g = groups[gKey];
+
+          var styleCount = 0,
+            firstStyle = "";
+          var colorCount = 0,
+            firstColor = "";
+          var sizeCount = 0;
+
+          var s;
+          for (s in g.styles) {
+            if (!g.styles.hasOwnProperty(s)) continue;
+            if (!firstStyle) firstStyle = s;
+            styleCount++;
+          }
+          var c;
+          for (c in g.colors) {
+            if (!g.colors.hasOwnProperty(c)) continue;
+            if (!firstColor) firstColor = c;
+            colorCount++;
+          }
+          var z;
+          for (z in g.sizes) {
+            if (!g.sizes.hasOwnProperty(z)) continue;
+            sizeCount++;
+          }
+
+          var styleLabel =
+            styleCount === 0
+              ? ""
+              : styleCount === 1
+              ? firstStyle
+              : "Multiple (" + styleCount + ")";
+          var colorLabel =
+            colorCount === 0
+              ? ""
+              : colorCount === 1
+              ? firstColor
+              : "Multiple (" + colorCount + ")";
+          var sizeLabel =
+            sizeCount === 0
+              ? ""
+              : sizeCount === 1
+              ? "1 size"
+              : sizeCount + " sizes";
+
+          var tr = document.createElement("tr");
+          var time = new Date(g.created_at).toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+
+          tr.innerHTML =
+            "<td>" +
+            time +
+            "</td><td>" +
+            (g.customer_name || "") +
+            "</td><td>" +
+            styleLabel +
+            "</td><td>" +
+            colorLabel +
+            "</td><td>" +
+            sizeLabel +
+            "</td><td>" +
+            g.total_qty +
+            "</td><td>" +
+            "<button class='small' data-ts='" +
+            g.created_at +
+            "' data-action='view'>View</button> " +
+            "<button class='secondary small' data-ts='" +
+            g.created_at +
+            "' data-action='edit'>Edit</button> " +
+            "<button class='secondary small' data-ts='" +
+            g.created_at +
+            "' data-action='csv'>CSV</button> " +
+            "<button class='secondary small' data-ts='" +
+            g.created_at +
+            "' data-action='email'>Email</button>" +
+            "</td>";
+
+          body.appendChild(tr);
+        }
+      }
+
+      $("ordersBody").onclick = function (e) {
+        var t = e.target || e.srcElement;
+        if (!t || t.tagName.toLowerCase() !== "button") return;
+        var ts = t.getAttribute("data-ts");
+        var action = t.getAttribute("data-action");
+        if (!ts || !action) return;
+
+        if (action === "csv") {
+          exportSingleOrderCSV(ts);
+        } else if (action === "view") {
+          showOrderDetails(ts);
+        } else if (action === "edit") {
+          editOrderMeta(ts);
+        } else if (action === "email") {
+          emailOrder(ts);
+        }
+      };
+
+      function exportSingleOrderCSV(ts) {
+        var orders = getOrders();
+        var lines = [];
+        for (var i = 0; i < orders.length; i++) {
+          if (orders[i].created_at === ts) {
+            lines.push(orders[i]);
+          }
+        }
+        if (!lines.length) return;
+        var name = lines[0].customer_name || "";
+        downloadCSV(lines, "blanco_order_" + name + ".csv");
+      }
+
+      // Detail view
+      function showOrderDetails(ts) {
+        var orders = getOrders();
+        var grouped = groupOrdersByTimestamp(orders);
+        var g = grouped.map[ts];
+        if (!g) return;
+
+        $("orderDetailPanel").style.display = "block";
+
+        var dateStr = new Date(g.created_at).toLocaleString();
+        var metaText =
+          (g.customer_name || "Customer") +
+          " • " +
+          dateStr +
+          (g.customer_email ? " • " + g.customer_email : "") +
+          (g.customer_phone ? " • " + g.customer_phone : "");
+        if (g.notes) {
+          metaText += " • Notes: " + g.notes;
+        }
+        $("orderDetailMeta").innerHTML = metaText;
+
+        var container = $("orderDetailItems");
+        container.innerHTML = "";
+
+        // Group lines by style + color
+        var itemMap = {};
+        var keyOrder = [];
+        for (var i = 0; i < g.lines.length; i++) {
+          var o = g.lines[i];
+          var key =
+            (o.style_code || "") +
+            "|" +
+            (o.style_name || "") +
+            "|" +
+            (o.color || "");
+          if (!itemMap[key]) {
+            itemMap[key] = {
+              style_name: o.style_name || "",
+              style_code: o.style_code || "",
+              color: o.color || "",
+              sizes: {},
+              total_qty: 0,
+              unitPrice: getLinePrice(o),
+            };
+            keyOrder.push(key);
+          }
+          var item = itemMap[key];
+          var size = o.size || "";
+          if (!item.sizes[size]) {
+            item.sizes[size] = 0;
+          }
+          item.sizes[size] += Number(o.qty || 0);
+          item.total_qty += Number(o.qty || 0);
+        }
+
+        for (var k = 0; k < keyOrder.length; k++) {
+          var mapItem = itemMap[keyOrder[k]];
+          var card = document.createElement("div");
+          card.className = "order-item-card";
+
+          var header = document.createElement("div");
+          header.className = "order-item-header";
+
+          var left = document.createElement("div");
+          var title = document.createElement("div");
+          title.className = "order-item-title";
+          title.innerHTML =
+            mapItem.style_name || mapItem.style_code || "Style";
+          var sub = document.createElement("div");
+          sub.className = "order-item-subtitle";
+          sub.innerHTML = mapItem.style_code || "";
+          left.appendChild(title);
+          left.appendChild(sub);
+          header.appendChild(left);
+
+          var right = document.createElement("div");
+          right.className = "order-item-price";
+          if (mapItem.unitPrice && emailOpts.includeUnitPrice) {
+            var amount =
+              mapItem.total_qty * Number(mapItem.unitPrice || 0);
+            right.innerHTML =
+              "$" +
+              Number(mapItem.unitPrice).toFixed(2) +
+              " each<br/><strong>$" +
+              amount.toFixed(2) +
+              "</strong>";
+          } else {
+            right.innerHTML =
+              "Total: <strong>" +
+              mapItem.total_qty +
+              " pcs</strong>";
+          }
+          header.appendChild(right);
+          card.appendChild(header);
+
+          var tag = document.createElement("div");
+          tag.className = "order-tag";
+          tag.innerHTML = "Color: " + (mapItem.color || "—");
+          card.appendChild(tag);
+
+          var sizeRow = document.createElement("div");
+          sizeRow.className = "order-sizes-row";
+          for (var size in mapItem.sizes) {
+            if (!mapItem.sizes.hasOwnProperty(size)) continue;
+            var chip = document.createElement("div");
+            chip.className = "order-size-chip";
+            chip.innerHTML =
+              size + ": " + mapItem.sizes[size] + " pcs";
+            sizeRow.appendChild(chip);
+          }
+          card.appendChild(sizeRow);
+
+          container.appendChild(card);
+        }
+      }
+
+      function editOrderMeta(ts) {
+        var orders = getOrders();
+        var grouped = groupOrdersByTimestamp(orders);
+        var g = grouped.map[ts];
+        if (!g) return;
+
+        var newName = prompt(
+          "Edit customer name",
+          g.customer_name || ""
+        );
+        if (newName === null) return;
+        var newEmail = prompt(
+          "Edit customer email",
+          g.customer_email || ""
+        );
+        if (newEmail === null) return;
+        var newPhone = prompt(
+          "Edit customer phone",
+          g.customer_phone || ""
+        );
+        if (newPhone === null) return;
+        var newNotes = prompt(
+          "Edit order notes",
+          g.notes || ""
+        );
+        if (newNotes === null) return;
+
+        for (var i = 0; i < orders.length; i++) {
+          if (orders[i].created_at === ts) {
+            orders[i].customer_name = newName;
+            orders[i].customer_email = newEmail;
+            orders[i].customer_phone = newPhone;
+            orders[i].notes = newNotes;
+          }
+        }
+        saveOrdersList(orders);
+        renderOrders();
+        showOrderDetails(ts);
+      }
+
+      function getLinePrice(o) {
+        // look up in catalog by style + color + size
+        for (var i = 0; i < catalog.length; i++) {
+          var r = catalog[i];
+          if (
+            (r.style_code || "") === (o.style_code || "") &&
+            (r.style_name || "") === (o.style_name || "") &&
+            (r.color || "") === (o.color || "") &&
+            (r.size || "") === (o.size || "")
+          ) {
+            return r.price || "";
+          }
+        }
+        return "";
+      }
+
+      function emailOrder(ts) {
+        var orders = getOrders();
+        var grouped = groupOrdersByTimestamp(orders);
+        var g = grouped.map[ts];
+        if (!g) return;
+
+        var subject =
+          "BLANCO order – " +
+          (g.customer_name || "Customer") +
+          " – " +
+          new Date(g.created_at).toLocaleDateString();
+
+        var body = buildOrderEmailBody(g, emailOpts);
+
+        var to = g.customer_email || "";
+        var url =
+          "mailto:" +
+          encodeURIComponent(to) +
+          "?subject=" +
+          encodeURIComponent(subject) +
+          "&body=" +
+          encodeURIComponent(body);
+
+        window.location.href = url;
+      }
+
+      function buildOrderEmailBody(group, opts) {
+        var lines = [];
+        lines.push("BLANCO Clothing – Order");
+        lines.push("");
+        lines.push("Customer: " + (group.customer_name || ""));
+        if (group.customer_email)
+          lines.push("Email: " + group.customer_email);
+        if (group.customer_phone)
+          lines.push("Phone: " + group.customer_phone);
+        lines.push(
+          "Date: " +
+            new Date(group.created_at).toLocaleString()
+        );
+        lines.push("");
+        lines.push("Total pieces: " + group.total_qty);
+        lines.push("");
+
+        // group by style/color
+        var itemMap = {};
+        var keyOrder = [];
+        for (var i = 0; i < group.lines.length; i++) {
+          var o = group.lines[i];
+          var key =
+            (o.style_code || "") +
+            "|" +
+            (o.style_name || "") +
+            "|" +
+            (o.color || "");
+          if (!itemMap[key]) {
+            itemMap[key] = {
+              style_name: o.style_name || "",
+              style_code: o.style_code || "",
+              color: o.color || "",
+              sizes: {},
+              total_qty: 0,
+              unitPrice: getLinePrice(o),
+            };
+            keyOrder.push(key);
+          }
+          var item = itemMap[key];
+          var size = o.size || "";
+          if (!item.sizes[size]) item.sizes[size] = 0;
+          item.sizes[size] += Number(o.qty || 0);
+          item.total_qty += Number(o.qty || 0);
+        }
+
+        lines.push("Items:");
+        for (var k = 0; k < keyOrder.length; k++) {
+          var item = itemMap[keyOrder[k]];
+          lines.push(
+            "- " +
+              (item.style_name || item.style_code || "Style") +
+              (item.style_code
+                ? " (" + item.style_code + ")"
+                : "") +
+              " – Color: " +
+              (item.color || "")
+          );
+
+          var sizeParts = [];
+          for (var size in item.sizes) {
+            if (!item.sizes.hasOwnProperty(size)) continue;
+            sizeParts.push(size + ": " + item.sizes[size]);
+          }
+          if (sizeParts.length) {
+            lines.push("  Sizes: " + sizeParts.join(", "));
+          }
+
+          if (opts && opts.includeUnitPrice && item.unitPrice) {
+            var amount =
+              item.total_qty * Number(item.unitPrice || 0);
+            lines.push(
+              "  Price: $" +
+                Number(item.unitPrice).toFixed(2) +
+                " each – Amount: $" +
+                amount.toFixed(2)
+            );
+          } else {
+            lines.push("  Total pieces: " + item.total_qty);
+          }
+
+          lines.push("");
+        }
+
+        if (opts && opts.includeNotes && group.notes) {
+          lines.push("Order notes:");
+          lines.push(group.notes);
+          lines.push("");
+        }
+
+        lines.push("Generated from BLANCO offline order app.");
+        return lines.join("\n");
+      }
+
+      $("exportOrders").onclick = function () {
+        var orders = getOrders();
+        if (!orders.length) {
+          alert("No orders to export.");
+          return;
+        }
+        downloadCSV(
+          orders,
+          "blanco_orders_" +
+            new Date().toISOString().slice(0, 10) +
+            ".csv"
+        );
+      };
+
+      function downloadCSV(orders, filename) {
+        var headers = [
+          "created_at",
+          "customer_name",
+          "customer_email",
+          "customer_phone",
+          "style_code",
+          "style_name",
+          "color",
+          "size",
+          "qty",
+          "notes",
+        ];
+        var rows = [headers];
+
+        for (var i = 0; i < orders.length; i++) {
+          var o = orders[i];
+          rows.push([
+            o.created_at || "",
+            o.customer_name || "",
+            o.customer_email || "",
+            o.customer_phone || "",
+            o.style_code || "",
+            o.style_name || "",
+            o.color || "",
+            o.size || "",
+            o.qty || "",
+            (o.notes || "").replace(/\n/g, " "),
+          ]);
+        }
+
+        var lines = [];
+        for (var r = 0; r < rows.length; r++) {
+          var row = rows[r];
+          for (var c = 0; c < row.length; c++) {
+            row[c] =
+              '"' + String(row[c]).replace(/"/g, '""') + '"';
+          }
+          lines.push(row.join(","));
+        }
+        var csv = lines.join("\n");
+        var blob = new Blob([csv], {
+          type: "text/csv;charset=utf-8;",
+        });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+
+      // ---------- CATALOG VIEW (cards + modal) ----------
+      function styleKeyFromParts(code, name) {
+        return (code || "").trim() + "::" + (name || "").trim();
+      }
+
+      function buildStylesIndexForProducts() {
+        var map = {};
+        for (var i = 0; i < catalog.length; i++) {
+          var row = catalog[i];
+          var code = (row.style_code || "").trim();
+          var name = (row.style_name || "").trim();
+          var key = styleKeyFromParts(code, name);
+          if (!key) continue;
+          if (!map[key]) {
+            map[key] = {
+              key: key,
+              code: code,
+              name: name,
+              price: row.price || "",
+              colors: {},
+            };
+          }
+          var color = (row.color || "").trim();
+          var size = (row.size || "").trim();
+          if (color) {
+            if (!map[key].colors[color]) {
+              map[key].colors[color] = [];
+            }
+            if (size && map[key].colors[color].indexOf(size) === -1) {
+              map[key].colors[color].push(size);
+            }
+          }
+          if (row.price && !map[key].price) map[key].price = row.price;
+        }
+        return map;
+      }
+
+      function renderProductsGrid() {
+        var grid = $("productsGrid");
+        var empty = $("productsEmpty");
+        grid.innerHTML = "";
+
+        var stylesMap = buildStylesIndexForProducts();
+        var any = false;
+
+        for (var key in stylesMap) {
+          if (!stylesMap.hasOwnProperty(key)) continue;
+          any = true;
+          var meta = stylesMap[key];
+
+          var metaExtra = styleMeta[key] || {};
+          var imgData = metaExtra.imageDataUrl || "";
+
+          var colorCount = 0;
+          var sizeCount = 0;
+          for (var c in meta.colors) {
+            if (!meta.colors.hasOwnProperty(c)) continue;
+            colorCount++;
+            sizeCount += meta.colors[c].length;
+          }
+
+          var card = document.createElement("div");
+          card.className = "product-card";
+
+          var imgDiv = document.createElement("div");
+          imgDiv.className = "product-image";
+          if (imgData) {
+            var img = document.createElement("img");
+            img.src = imgData;
+            imgDiv.appendChild(img);
+          } else {
+            imgDiv.innerHTML = "<span>Photo</span>";
+          }
+          card.appendChild(imgDiv);
+
+          var nameDiv = document.createElement("div");
+          nameDiv.className = "product-name";
+          nameDiv.innerHTML = meta.name || meta.code || "Unnamed style";
+          card.appendChild(nameDiv);
+
+          var codeDiv = document.createElement("div");
+          codeDiv.className = "product-code";
+          codeDiv.innerHTML = meta.code || meta.name || "";
+          card.appendChild(codeDiv);
+
+          var summary = document.createElement("div");
+          summary.className = "product-summary";
+          summary.innerHTML =
+            colorCount +
+            " colors • " +
+            sizeCount +
+            " sizes" +
+            (meta.price ? " • $" + meta.price : "");
+          card.appendChild(summary);
+
+          var actions = document.createElement("div");
+          actions.className = "product-actions";
+
+          var editBtn = document.createElement("button");
+          editBtn.className = "secondary small";
+          editBtn.innerHTML = "Edit";
+          editBtn.setAttribute("data-style-key", key);
+          editBtn.setAttribute("data-action", "edit");
+          actions.appendChild(editBtn);
+
+          var dupBtn = document.createElement("button");
+          dupBtn.className = "secondary small";
+          dupBtn.innerHTML = "Duplicate";
+          dupBtn.setAttribute("data-style-key", key);
+          dupBtn.setAttribute("data-action", "duplicate");
+          actions.appendChild(dupBtn);
+
+          var delBtn = document.createElement("button");
+          delBtn.className = "danger small";
+          delBtn.innerHTML = "Delete";
+          delBtn.setAttribute("data-style-key", key);
+          delBtn.setAttribute("data-action", "delete");
+          actions.appendChild(delBtn);
+
+          card.appendChild(actions);
+          grid.appendChild(card);
+        }
+
+        empty.style.display = any ? "none" : "block";
+      }
+
+      var editingStyleKey = null;
+      var modalColors = [];
+      var modalSizes = [];
+      var modalImageDataUrl = "";
+
+      function openStyleModal(styleKey, isDuplicate) {
+        var stylesMap = buildStylesIndexForProducts();
+        editingStyleKey = isDuplicate ? null : styleKey || null;
+        modalColors = [];
+        modalSizes = [];
+        modalImageDataUrl = "";
+
+        if (styleKey && stylesMap[styleKey]) {
+          var s = stylesMap[styleKey];
+          var extra = styleMeta[styleKey] || {};
+
+          if (isDuplicate) {
+            $("modalTitle").innerHTML = "Duplicate style";
+            $("modalStyleName").value =
+              (s.name || "") + " (Copy)";
+            $("modalStyleCode").value = s.code
+              ? s.code + "-COPY"
+              : "";
+          } else {
+            $("modalTitle").innerHTML = "Edit style";
+            $("modalStyleName").value = s.name || "";
+            $("modalStyleCode").value = s.code || "";
+          }
+
+          $("modalPrice").value = s.price || "";
+          $("modalDescription").value = extra.description || "";
+          $("modalCategory").value = extra.category || "";
+          modalImageDataUrl = extra.imageDataUrl || "";
+          $("modalInStock").checked =
+            extra.hasOwnProperty("in_stock")
+              ? !!extra.in_stock
+              : true;
+
+          var cMap = s.colors;
+          var c;
+          for (c in cMap) {
+            if (!cMap.hasOwnProperty(c)) continue;
+            if (modalColors.indexOf(c) === -1) modalColors.push(c);
+            var szs = cMap[c];
+            for (var i = 0; i < szs.length; i++) {
+              var size = szs[i];
+              if (modalSizes.indexOf(size) === -1)
+                modalSizes.push(size);
+            }
+          }
+        } else {
+          $("modalTitle").innerHTML = "New style";
+          $("modalStyleName").value = "";
+          $("modalStyleCode").value = "";
+          $("modalPrice").value = "";
+          $("modalDescription").value = "";
+          $("modalCategory").value = "";
+          $("modalInStock").checked = true;
+        }
+
+        renderModalChips();
+        renderModalImagePreview();
+
+        $("styleModal").style.display = "flex";
+      }
+
+      function closeStyleModal() {
+        $("styleModal").style.display = "none";
+      }
+
+      function renderModalChips() {
+        var colorsRow = $("modalColorsRow");
+        var sizesRow = $("modalSizesRow");
+        colorsRow.innerHTML = "";
+        sizesRow.innerHTML = "";
+
+        var i;
+        for (i = 0; i < modalColors.length; i++) {
+          (function (idx) {
+            var chip = document.createElement("span");
+            chip.className = "chip";
+            chip.innerHTML =
+              modalColors[idx] +
+              ' <button type="button" data-type="color" data-idx="' +
+              idx +
+              '">×</button>';
+            colorsRow.appendChild(chip);
+          })(i);
+        }
+
+        for (i = 0; i < modalSizes.length; i++) {
+          (function (idx2) {
+            var chip = document.createElement("span");
+            chip.className = "chip";
+            chip.innerHTML =
+              modalSizes[idx2] +
+              ' <button type="button" data-type="size" data-idx="' +
+              idx2 +
+              '">×</button>';
+            sizesRow.appendChild(chip);
+          })(i);
+        }
+      }
+
+      $("modalColorsRow").onclick = function (e) {
+        var t = e.target || e.srcElement;
+        if (t.tagName.toLowerCase() !== "button") return;
+        var type = t.getAttribute("data-type");
+        var idx = Number(t.getAttribute("data-idx"));
+        if (type === "color") {
+          modalColors.splice(idx, 1);
+        } else if (type === "size") {
+          modalSizes.splice(idx, 1);
+        }
+        renderModalChips();
+      };
+
+      $("modalSizesRow").onclick = $("modalColorsRow").onclick;
+
+      $("addColorBtn").onclick = function () {
+        var v = $("modalColorInput").value.replace(/\s+$/, "");
+        if (!v) return;
+        if (modalColors.indexOf(v) === -1) modalColors.push(v);
+        $("modalColorInput").value = "";
+        renderModalChips();
+      };
+      $("modalColorInput").onkeypress = function (e) {
+        if ((e.key || e.which) === "Enter" || e.which === 13) {
+          $("addColorBtn").onclick();
+          e.preventDefault();
+        }
+      };
+
+      $("addSizeBtn").onclick = function () {
+        var v = $("modalSizeInput").value.replace(/\s+$/, "");
+        if (!v) return;
+        if (modalSizes.indexOf(v) === -1) modalSizes.push(v);
+        $("modalSizeInput").value = "";
+        renderModalChips();
+      };
+      $("modalSizeInput").onkeypress = function (e) {
+        if ((e.key || e.which) === "Enter" || e.which === 13) {
+          $("addSizeBtn").onclick();
+          e.preventDefault();
+        }
+      };
+
+      function renderModalImagePreview() {
+        var box = $("modalImagePreview");
+        box.innerHTML = "";
+        if (modalImageDataUrl) {
+          var img = document.createElement("img");
+          img.src = modalImageDataUrl;
+          box.appendChild(img);
+        } else {
+          box.innerHTML = "<span>Tap to upload</span>";
+        }
+      }
+
+      $("modalImageFile").onchange = function () {
+        var file =
+          this && this.files && this.files[0] ? this.files[0] : null;
+        if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          modalImageDataUrl = e.target.result;
+          renderModalImagePreview();
+        };
+        reader.readAsDataURL(file);
+      };
+
+      $("modalImagePreview").onclick = function () {
+        $("modalImageFile").click();
+      };
+
+      $("modalCloseBtn").onclick = closeStyleModal;
+      $("modalCancelBtn").onclick = closeStyleModal;
+
+      $("modalSaveBtn").onclick = function () {
+        var name = $("modalStyleName").value.replace(/\s+$/, "");
+        var code = $("modalStyleCode").value.replace(/\s+$/, "");
+        var price = $("modalPrice").value;
+        var desc = $("modalDescription").value;
+        var cat = $("modalCategory").value;
+        var inStock = $("modalInStock").checked;
+
+        if (!name && !code) {
+          alert("Enter at least a style name or style code.");
+          return;
+        }
+        if (!modalColors.length) {
+          alert("Add at least one color.");
+          return;
+        }
+        if (!modalSizes.length) {
+          alert("Add at least one size.");
+          return;
+        }
+
+        var newKey = styleKeyFromParts(code, name);
+
+        var newCatalog = [];
+        var i;
+        for (i = 0; i < catalog.length; i++) {
+          var row = catalog[i];
+          var rKey = styleKeyFromParts(
+            row.style_code || "",
+            row.style_name || ""
+          );
+          if (editingStyleKey && rKey === editingStyleKey) {
+            continue;
+          }
+          newCatalog.push(row);
+        }
+
+        for (var c = 0; c < modalColors.length; c++) {
+          for (var s = 0; s < modalSizes.length; s++) {
+            newCatalog.push({
+              style_code: code,
+              style_name: name,
+              color: modalColors[c],
+              size: modalSizes[s],
+              price: price || "",
+            });
+          }
+        }
+
+        catalog = newCatalog;
+        saveCatalog(catalog);
+        saveStyleMetaEntry(newKey, desc, cat, inStock, modalImageDataUrl);
+
+        renderProductsGrid();
+        renderStylesGrid();
+        updateDashboard();
+        closeStyleModal();
+        alert("Style saved.");
+      };
+
+      function saveStyleMetaEntry(key, desc, cat, inStock, imageDataUrl) {
+        if (!key) return;
+        if (!styleMeta[key]) styleMeta[key] = {};
+        styleMeta[key].description = desc || "";
+        styleMeta[key].category = cat || "";
+        styleMeta[key].in_stock = !!inStock;
+        if (imageDataUrl) styleMeta[key].imageDataUrl = imageDataUrl;
+        saveStyleMeta();
+      }
+
+      $("addStyleBtn").onclick = function () {
+        openStyleModal(null, false);
+      };
+
+      $("productsGrid").onclick = function (e) {
+        var t = e.target || e.srcElement;
+        if (t.tagName.toLowerCase() !== "button") return;
+        var key = t.getAttribute("data-style-key");
+        var action = t.getAttribute("data-action");
+        if (!key || !action) return;
+
+        if (action === "edit") {
+          openStyleModal(key, false);
+        } else if (action === "duplicate") {
+          openStyleModal(key, true);
+        } else if (action === "delete") {
+          if (!confirm("Delete this style from catalog?")) return;
+          var newCatalog = [];
+          for (var i = 0; i < catalog.length; i++) {
+            var row = catalog[i];
+            var rKey = styleKeyFromParts(
+              row.style_code || "",
+              row.style_name || ""
+            );
+            if (rKey === key) continue;
+            newCatalog.push(row);
+          }
+          catalog = newCatalog;
+          saveCatalog(catalog);
+          delete styleMeta[key];
+          saveStyleMeta();
+          renderProductsGrid();
+          renderStylesGrid();
+          updateDashboard();
+        }
+      };
+
+      // CSV import / export for catalog
+      $("importCatalog").onclick = function () {
+        var fileInput = $("catalogFile");
+        var file =
+          fileInput && fileInput.files && fileInput.files[0]
+            ? fileInput.files[0]
+            : null;
+        if (!file) {
+          alert("Choose a CSV file first.");
+          return;
+        }
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          var text = e.target.result;
+          var rows = parseCsv(text);
+          if (!rows.length) {
+            alert("No rows in CSV.");
+            return;
+          }
+          var first = rows[0];
+          var req = [
+            "style_code",
+            "style_name",
+            "color",
+            "size",
+          ];
+          var missing = [];
+          for (var i = 0; i < req.length; i++) {
+            if (!first.hasOwnProperty(req[i])) missing.push(req[i]);
+          }
+          if (missing.length) {
+            alert(
+              "Missing columns: " +
+                missing.join(", ") +
+                ". CSV must have style_code, style_name, color, size."
+            );
+            return;
+          }
+          catalog = [];
+          for (var j = 0; j < rows.length; j++) {
+            catalog.push({
+              style_code: rows[j].style_code || "",
+              style_name: rows[j].style_name || "",
+              color: rows[j].color || "",
+              size: rows[j].size || "",
+              price: rows[j].price || "",
+            });
+          }
+          saveCatalog(catalog);
+          renderProductsGrid();
+          renderStylesGrid();
+          updateDashboard();
+          alert("Catalog imported.");
+        };
+        reader.readAsText(file);
+      };
+
+      $("exportCatalog").onclick = function () {
+        if (!catalog.length) {
+          alert("No catalog to export.");
+          return;
+        }
+        var headers = [
+          "style_code",
+          "style_name",
+          "color",
+          "size",
+          "price",
+        ];
+        var rows = [headers];
+        for (var i = 0; i < catalog.length; i++) {
+          var r = catalog[i];
+          rows.push([
+            r.style_code || "",
+            r.style_name || "",
+            r.color || "",
+            r.size || "",
+            r.price || "",
+          ]);
+        }
+        var lines = [];
+        for (var rowIdx = 0; rowIdx < rows.length; rowIdx++) {
+          var row = rows[rowIdx];
+          for (var c = 0; c < row.length; c++) {
+            row[c] = '"' + String(row[c]).replace(/"/g, '""') + '"';
+          }
+          lines.push(row.join(","));
+        }
+        var csv = lines.join("\n");
+        var blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement("a");
+        a.href = url;
+        a.download =
+          "blanco_catalog_" +
+          new Date().toISOString().slice(0, 10) +
+          ".csv";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      };
+
+      function parseCsv(text) {
+        var lines = text.split(/\r?\n/);
+        var out = [];
+        if (!lines.length) return out;
+        var header = lines[0].split(",");
+        var i;
+        for (i = 0; i < header.length; i++) {
+          header[i] = header[i].trim().toLowerCase();
+        }
+        for (var r = 1; r < lines.length; r++) {
+          var line = lines[r];
+          if (!line) continue;
+          var cols = line.split(",");
+          var obj = {};
+          for (var c = 0; c < header.length; c++) {
+            obj[header[c]] = (cols[c] || "").replace(/^"|"$/g, "");
+          }
+          out.push(obj);
+        }
+        return out;
+      }
+
+      // ---------- INIT ----------
+      (function init() {
+        catalog = getCatalog();
+        loadStyleMeta();
+        loadEmailOpts();
+        if ($("emailIncludeNotes"))
+          $("emailIncludeNotes").onchange =
+            saveEmailOptsFromUI;
+        if ($("emailIncludeUnitPrice"))
+          $("emailIncludeUnitPrice").onchange =
+            saveEmailOptsFromUI;
+
+        renderProductsGrid();
+        renderStylesGrid();
+        updateDashboard();
+        renderOrders();
+      })();
+    </script>
+  </body>
+</html>
