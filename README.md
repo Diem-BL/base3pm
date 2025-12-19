@@ -1,15 +1,17 @@
-# Base44 App
+# Blanco offline order app
 
-
-This app was created automatically by Base44.
-It's a Vite+React app that communicates with the Base44 API.
+Static, offline-capable ordering tool for Blanco Clothing. The UI and logic live in `index.html` so the app can run from any static host with no API dependencies.
 
 ## Running the app
+
+Use Vite's static dev server for local testing:
 
 ```bash
 npm install
 npm run dev
 ```
+
+You can also serve the built files directly with any HTTP server (for example `python -m http.server`).
 
 ## Building the app
 
@@ -17,8 +19,6 @@ npm run dev
 npm run build
 ```
 
-For more information and support, please contact Base44 support at app@base44.com.
-
 ## Contributing / sharing updates
 
-You do not need to copy-and-paste these files into GitHub manually. Make your changes in this repository, commit them on a branch, and open a pull request in GitHub so reviewers can see the diff.
+Commit your changes on a branch and open a pull request so reviewers can see the diff.
