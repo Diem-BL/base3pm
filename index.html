@@ -14,16 +14,16 @@
 
     <style>
       :root {
-        --bg: #030712;
-        --panel: #0b1224;
-        --panel-strong: #0f172a;
-        --border: #1f2937;
-        --border-strong: #273449;
-        --accent: #6de2ff;
-        --accent-strong: #3b82f6;
-        --text: #e5e7eb;
-        --muted: #9ca3af;
-        --shadow: 0 25px 70px rgba(0, 0, 0, 0.6);
+        --bg: #000000;
+        --panel: #0b0b0b;
+        --panel-strong: #111111;
+        --border: #1f1f1f;
+        --border-strong: #2a2a2a;
+        --accent: #ffffff;
+        --accent-strong: #d4d4d4;
+        --text: #ffffff;
+        --muted: #b0b0b0;
+        --shadow: 0 25px 70px rgba(0, 0, 0, 0.65);
       }
 
       * {
@@ -34,9 +34,7 @@
         margin: 0;
         font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
           sans-serif;
-        background: radial-gradient(circle at 20% 20%, #112035, transparent 45%),
-          radial-gradient(circle at 80% 0%, #1f2937, transparent 35%),
-          linear-gradient(140deg, #030712 0%, #060915 50%, #04060d 100%);
+        background: var(--bg);
         color: var(--text);
         padding: 18px;
         min-height: 100vh;
@@ -47,8 +45,7 @@
       .app {
         width: 100%;
         max-width: 1180px;
-        background: linear-gradient(150deg, rgba(17, 24, 39, 0.94),
-            rgba(12, 17, 31, 0.94));
+        background: var(--panel);
         border-radius: 18px;
         border: 1px solid var(--border);
         box-shadow: var(--shadow);
@@ -95,7 +92,7 @@
         border-radius: 999px;
         padding: 7px 14px;
         border: 1px solid var(--border-strong);
-        background: linear-gradient(180deg, #0f172a, #0b1224);
+        background: var(--panel-strong);
         color: var(--text);
         font-size: 12px;
         text-transform: uppercase;
@@ -111,10 +108,10 @@
       }
 
       .nav button.active {
-        background: linear-gradient(135deg, var(--accent), var(--accent-strong));
-        border-color: transparent;
-        color: #051225;
-        box-shadow: 0 12px 24px rgba(109, 226, 255, 0.18);
+        background: #151515;
+        border-color: var(--accent);
+        color: var(--text);
+        box-shadow: 0 12px 24px rgba(255, 255, 255, 0.08);
       }
 
       .view {
@@ -127,14 +124,13 @@
 
       /* CARDS / HEADINGS */
       section.card {
-        background: linear-gradient(170deg, rgba(15, 23, 42, 0.96),
-            rgba(8, 12, 24, 0.95));
+        background: var(--panel-strong);
         border-radius: 14px;
         border: 1px solid var(--border);
         padding: 12px;
         margin-bottom: 12px;
         color: var(--text);
-        box-shadow: 0 16px 32px rgba(0, 0, 0, 0.4);
+        box-shadow: 0 16px 32px rgba(0, 0, 0, 0.45);
       }
 
       h2 {
@@ -152,9 +148,7 @@
       }
 
       .stat-card {
-        background: radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.08),
-            transparent 45%),
-          #0a1223;
+        background: var(--panel);
         border-radius: 12px;
         border: 1px solid var(--border);
         padding: 10px;
@@ -193,7 +187,7 @@
         border-radius: 9px;
         border: 1px solid var(--border);
         font-size: 13px;
-        background: #0a1223;
+        background: var(--panel);
         color: var(--text);
         transition: border-color 0.12s ease, box-shadow 0.12s ease;
       }
@@ -231,9 +225,9 @@
       button {
         border-radius: 999px;
         padding: 7px 12px;
-        border: 1px solid transparent;
-        background: linear-gradient(135deg, var(--accent), var(--accent-strong));
-        color: #051225;
+        border: 1px solid var(--border-strong);
+        background: #161616;
+        color: var(--text);
         font-size: 12px;
         font-weight: 700;
         text-transform: uppercase;
@@ -241,7 +235,7 @@
         cursor: pointer;
         transition: transform 0.12s ease, box-shadow 0.12s ease,
           filter 0.12s ease;
-        box-shadow: 0 12px 24px rgba(109, 226, 255, 0.18);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
       }
 
       button:hover {
@@ -250,24 +244,24 @@
       }
 
       button.secondary {
-        background: linear-gradient(180deg, #0f172a, #0b1224);
+        background: var(--panel-strong);
         color: var(--text);
         border-color: var(--border-strong);
         box-shadow: none;
       }
 
       button.danger {
-        background: linear-gradient(135deg, #ef4444, #b91c1c);
+        background: #8b1111;
         border-color: #b91c1c;
         color: #fff;
-        box-shadow: 0 10px 20px rgba(239, 68, 68, 0.22);
+        box-shadow: 0 10px 20px rgba(139, 17, 17, 0.24);
       }
 
       button.selected,
       button.active {
-        background: linear-gradient(135deg, var(--accent), var(--accent-strong)) !important;
-        color: #051225 !important;
-        border-color: transparent !important;
+        background: #1f1f1f !important;
+        color: var(--text) !important;
+        border-color: var(--accent) !important;
       }
 
       button.small {
@@ -299,15 +293,15 @@
         padding: 5px 12px;
         border-radius: 999px;
         border: 1px solid var(--border-strong);
-        background: #0b1224;
+        background: var(--panel);
         color: var(--text);
       }
 
       .step-pill.active {
-        background: linear-gradient(135deg, var(--accent), var(--accent-strong));
-        border-color: transparent;
-        color: #051225;
-        box-shadow: 0 8px 16px rgba(109, 226, 255, 0.15);
+        background: #1a1a1a;
+        border-color: var(--accent);
+        color: var(--text);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.35);
       }
 
       /* ORDER FLOW – STYLES GRID (step 1) */
@@ -318,7 +312,7 @@
       }
 
       .style-card {
-        background: #0a1223;
+        background: var(--panel);
         border-radius: 12px;
         border: 1px solid var(--border);
         padding: 8px;
@@ -345,7 +339,7 @@
         content: "";
         width: 100%;
         padding-bottom: 100%;
-        background: linear-gradient(160deg, #0f172a, #0b1224);
+        background: var(--panel-strong);
         border: 1px solid var(--border);
         border-radius: 10px;
         display: block;
@@ -367,7 +361,7 @@
 
       .style-meta {
         font-size: 10px;
-        color: #718096;
+        color: var(--muted);
         text-align: center;
       }
 
@@ -376,7 +370,7 @@
         border-radius: 12px;
         border: 1px solid var(--border);
         margin-bottom: 10px;
-        background: #0b1224;
+        background: var(--panel);
         box-shadow: 0 10px 20px rgba(0, 0, 0, 0.28);
       }
 
@@ -418,7 +412,7 @@
         border-radius: 999px;
         border: 1px solid var(--border-strong);
         padding: 8px 12px;
-        background: #0a1223;
+        background: var(--panel);
         cursor: pointer;
         font-size: 12px;
         color: var(--text);
@@ -430,10 +424,10 @@
       }
 
       .color-chip.selected {
-        background: linear-gradient(135deg, var(--accent), var(--accent-strong));
-        border-color: transparent;
-        color: #051225;
-        box-shadow: 0 10px 20px rgba(109, 226, 255, 0.18);
+        background: #1a1a1a;
+        border-color: var(--accent);
+        color: var(--text);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.32);
       }
 
       /* STEP 3 – QTY */
@@ -441,7 +435,7 @@
         border-radius: 12px;
         border: 1px solid var(--border);
         margin-bottom: 10px;
-        background: #0b1224;
+        background: var(--panel);
         padding: 10px;
         box-shadow: 0 10px 20px rgba(0, 0, 0, 0.28);
       }
@@ -461,7 +455,7 @@
       }
 
       .size-chip {
-        background: #0f172a;
+        background: var(--panel-strong);
         border-radius: 10px;
         border: 1px solid var(--border);
         padding: 6px 8px;
@@ -483,7 +477,7 @@
         padding: 6px 8px;
         border-radius: 8px;
         border: 1px solid var(--border);
-        background: #0a1223;
+        background: var(--panel);
         color: var(--text);
         font-size: 11px;
       }
@@ -514,7 +508,7 @@
         text-transform: uppercase;
         letter-spacing: 0.08em;
         color: var(--muted);
-        background: #0b1224;
+        background: var(--panel);
       }
 
       tr:last-child td {
@@ -531,28 +525,28 @@
       /* PRODUCTS GRID */
       .products-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-        gap: 12px;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 10px;
         margin-top: 8px;
       }
 
       .product-card {
-        background: #0a1223;
+        background: var(--panel);
         border-radius: 10px;
         border: 1px solid var(--border);
-        padding: 8px;
+        padding: 10px;
         display: flex;
         flex-direction: column;
-        gap: 5px;
-        text-align: center;
+        gap: 6px;
+        text-align: left;
         box-shadow: 0 10px 20px rgba(0, 0, 0, 0.28);
       }
 
       .product-image {
         width: 100%;
-        padding-bottom: 100%;
-        border-radius: 10px;
-        background: #0f172a;
+        padding-bottom: 68%;
+        border-radius: 12px;
+        background: var(--panel-strong);
         border: 1px solid var(--border);
         position: relative;
         overflow: hidden;
@@ -574,7 +568,7 @@
       .product-name {
         font-size: 11px;
         font-weight: 700;
-        color: #f8fafc;
+        color: var(--text);
       }
 
       .product-code,
@@ -586,7 +580,7 @@
       .product-actions {
         display: flex;
         gap: 6px;
-        justify-content: center;
+        justify-content: flex-start;
         margin-top: 4px;
       }
 
@@ -628,7 +622,7 @@
       }
 
       .modal-content {
-        background: linear-gradient(180deg, #0f172a, #0a0f1f);
+        background: var(--panel-strong);
         padding: 16px;
         border-radius: 14px;
         border: 1px solid var(--border);
@@ -658,14 +652,14 @@
         border: 1px solid var(--border);
         border-radius: 12px;
         padding: 10px;
-        background: #0b1224;
+        background: var(--panel);
         font-size: 12px;
         color: var(--text);
         margin-bottom: 8px;
       }
 
       .order-item-card {
-        background: #0b1224;
+        background: var(--panel);
         border-radius: 12px;
         border: 1px solid var(--border);
         padding: 10px 12px;
@@ -700,7 +694,7 @@
         padding: 4px 10px;
         border-radius: 999px;
         border: 1px solid var(--border);
-        background: #0a1223;
+        background: var(--panel);
         font-size: 11px;
         color: var(--text);
         margin-bottom: 6px;
@@ -718,8 +712,31 @@
         border-radius: 999px;
         border: 1px solid var(--border);
         font-size: 11px;
-        background: #0a1223;
+        background: var(--panel);
         color: var(--text);
+      }
+
+      /* ORDER EDITOR */
+      .edit-lines {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .edit-line {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 8px;
+        padding: 8px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: var(--panel);
+      }
+
+      .edit-line-actions {
+        display: flex;
+        align-items: flex-end;
+        justify-content: flex-end;
       }
     </style>
   </head>
@@ -908,7 +925,7 @@
           </div>
 
           <!-- Email template options -->
-          <div style="margin-top:12px;border-top:1px solid #1f2937;padding-top:8px;">
+          <div style="margin-top:12px;border-top:1px solid var(--border);padding-top:8px;">
             <h3 style="margin:0 0 4px;font-size:14px;">Email template options</h3>
             <p class="subtext" style="margin-bottom:4px;">
               Choose what to include when emailing orders.
@@ -932,7 +949,95 @@
               </div>
             </div>
           </div>
+
+          <!-- Online sync (optional) -->
+          <div style="margin-top:12px;border-top:1px solid var(--border);padding-top:8px;">
+            <h3 style="margin:0 0 4px;font-size:14px;">Online sync (optional)</h3>
+            <p class="subtext" style="margin-bottom:4px;">
+              App stays fully offline. If a webhook URL is set and you’re online, orders will auto-upload as CSV to that endpoint.
+            </p>
+            <div class="field-row">
+              <div>
+                <label for="syncEndpoint">Sync webhook URL</label>
+                <input
+                  id="syncEndpoint"
+                  placeholder="https://your-endpoint.example.com/orders"
+                />
+              </div>
+              <div>
+                <label>Auto-upload</label>
+                <div style="display:flex;align-items:center;gap:6px;padding-top:4px;">
+                  <input
+                    id="syncEnabled"
+                    type="checkbox"
+                    style="width:auto;margin:0;"
+                  />
+                  <span style="font-size:12px;">Upload when online</span>
+                </div>
+              </div>
+            </div>
+            <div class="actions" style="justify-content:space-between;align-items:center">
+              <button id="syncSave" class="secondary small">
+                Save & Sync now
+              </button>
+              <span id="syncStatus" class="subtext" style="margin-left:auto;"></span>
+            </div>
+          </div>
         </section>
+      </div>
+
+      <!-- ORDER EDIT MODAL -->
+      <div id="orderEditModal" class="modal" style="display:none">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 style="margin:0;font-size:14px">Edit order</h3>
+            <button id="orderEditClose" class="secondary small">✕</button>
+          </div>
+
+          <div class="modal-body">
+            <div class="field-row">
+              <div>
+                <label for="orderEditName">Customer</label>
+                <input id="orderEditName" placeholder="Customer name" />
+              </div>
+              <div>
+                <label for="orderEditEmail">Email</label>
+                <input
+                  id="orderEditEmail"
+                  type="email"
+                  placeholder="email@club.com"
+                />
+              </div>
+              <div>
+                <label for="orderEditPhone">Phone</label>
+                <input id="orderEditPhone" placeholder="+1 (555) 123-4567" />
+              </div>
+            </div>
+
+            <div class="field-full">
+              <label for="orderEditNotes">Order notes</label>
+              <textarea
+                id="orderEditNotes"
+                placeholder="Ship window, fit notes, event, etc."
+              ></textarea>
+            </div>
+
+            <h4 style="margin:6px 0;font-size:13px;">Products</h4>
+            <div id="orderEditLines" class="edit-lines"></div>
+            <div class="actions" style="justify-content:flex-start">
+              <button id="orderEditAddLine" class="secondary small">
+                + Add line
+              </button>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button id="orderEditCancel" class="secondary small">
+              Cancel
+            </button>
+            <button id="orderEditSave" class="small">Save changes</button>
+          </div>
+        </div>
       </div>
 
       <!-- PRODUCTS -->
@@ -1100,6 +1205,8 @@
       var CATALOG_KEY = "blanco_catalog_v1";
       var STYLE_META_KEY = "blanco_style_meta_v1";
       var EMAIL_OPTS_KEY = "blanco_email_opts_v1";
+      var SYNC_OPTS_KEY = "blanco_sync_opts_v1";
+      var SYNC_STATE_KEY = "blanco_sync_state_v1";
 
       var catalog = [];
       var styleMeta = {}; // styleKey -> {desc, category, imageDataUrl, in_stock}
@@ -1109,6 +1216,16 @@
       var emailOpts = {
         includeNotes: true,
         includeUnitPrice: false,
+      };
+      var syncOpts = {
+        enabled: false,
+        endpoint: "",
+      };
+      var syncState = {
+        lastCount: 0,
+        lastLatest: "",
+        lastSyncAt: "",
+        lastError: "",
       };
 
       function $(id) {
@@ -1133,6 +1250,7 @@
           console.log("saveOrders error", e);
         }
         updateDashboard();
+        syncOrdersOnline(false);
       }
 
       function getCatalog() {
@@ -1203,6 +1321,50 @@
             EMAIL_OPTS_KEY,
             JSON.stringify(emailOpts)
           );
+        } catch (e) {}
+      }
+
+      function loadSyncOpts() {
+        try {
+          var raw = localStorage.getItem(SYNC_OPTS_KEY);
+          if (raw) {
+            var obj = JSON.parse(raw);
+            syncOpts.enabled = !!obj.enabled;
+            syncOpts.endpoint = obj.endpoint || "";
+          }
+        } catch (e) {}
+
+        try {
+          var rawState = localStorage.getItem(SYNC_STATE_KEY);
+          if (rawState) {
+            syncState = JSON.parse(rawState);
+          }
+        } catch (e) {}
+
+        if ($("syncEnabled")) {
+          $("syncEnabled").checked = !!syncOpts.enabled;
+        }
+        if ($("syncEndpoint")) {
+          $("syncEndpoint").value = syncOpts.endpoint || "";
+        }
+        updateSyncStatus();
+      }
+
+      function saveSyncOptsFromUI() {
+        if ($("syncEnabled")) {
+          syncOpts.enabled = $("syncEnabled").checked;
+        }
+        if ($("syncEndpoint")) {
+          syncOpts.endpoint = ($("syncEndpoint").value || "").trim();
+        }
+        try {
+          localStorage.setItem(SYNC_OPTS_KEY, JSON.stringify(syncOpts));
+        } catch (e) {}
+      }
+
+      function saveSyncState() {
+        try {
+          localStorage.setItem(SYNC_STATE_KEY, JSON.stringify(syncState));
         } catch (e) {}
       }
 
@@ -1499,7 +1661,7 @@
           header.innerHTML =
             "<strong>" +
             (meta.name || meta.code || "Style") +
-            "</strong><br/><span style='font-size:11px;color:#9ca3af'>" +
+            "</strong><br/><span style='font-size:11px;color:var(--muted)'>" +
             (meta.code || "") +
             "</span>";
           card.appendChild(header);
@@ -1836,7 +1998,7 @@
         } else if (action === "view") {
           showOrderDetails(ts);
         } else if (action === "edit") {
-          editOrderMeta(ts);
+          openOrderEditor(ts);
         } else if (action === "email") {
           emailOrder(ts);
         }
@@ -1971,45 +2133,168 @@
         }
       }
 
-      function editOrderMeta(ts) {
+      var editingOrderTs = null;
+
+      function addOrderEditLineRow(line) {
+        var container = $("orderEditLines");
+        var row = document.createElement("div");
+        row.className = "edit-line";
+
+        var styleName = document.createElement("input");
+        styleName.placeholder = "Style name";
+        styleName.value = (line && line.style_name) || "";
+        styleName.setAttribute("data-field", "style-name");
+
+        var styleCode = document.createElement("input");
+        styleCode.placeholder = "Style code";
+        styleCode.value = (line && line.style_code) || "";
+        styleCode.setAttribute("data-field", "style-code");
+
+        var color = document.createElement("input");
+        color.placeholder = "Color";
+        color.value = (line && line.color) || "";
+        color.setAttribute("data-field", "color");
+
+        var size = document.createElement("input");
+        size.placeholder = "Size";
+        size.value = (line && line.size) || "";
+        size.setAttribute("data-field", "size");
+
+        var qty = document.createElement("input");
+        qty.type = "number";
+        qty.min = "0";
+        qty.step = "1";
+        qty.placeholder = "Qty";
+        qty.value = line && line.qty ? line.qty : "";
+        qty.setAttribute("data-field", "qty");
+
+        var actions = document.createElement("div");
+        actions.className = "edit-line-actions";
+        var removeBtn = document.createElement("button");
+        removeBtn.className = "secondary small";
+        removeBtn.innerHTML = "Remove";
+        removeBtn.onclick = function () {
+          container.removeChild(row);
+        };
+        actions.appendChild(removeBtn);
+
+        row.appendChild(styleName);
+        row.appendChild(styleCode);
+        row.appendChild(color);
+        row.appendChild(size);
+        row.appendChild(qty);
+        row.appendChild(actions);
+
+        container.appendChild(row);
+      }
+
+      function openOrderEditor(ts) {
         var orders = getOrders();
         var grouped = groupOrdersByTimestamp(orders);
         var g = grouped.map[ts];
         if (!g) return;
 
-        var newName = prompt(
-          "Edit customer name",
-          g.customer_name || ""
-        );
-        if (newName === null) return;
-        var newEmail = prompt(
-          "Edit customer email",
-          g.customer_email || ""
-        );
-        if (newEmail === null) return;
-        var newPhone = prompt(
-          "Edit customer phone",
-          g.customer_phone || ""
-        );
-        if (newPhone === null) return;
-        var newNotes = prompt(
-          "Edit order notes",
-          g.notes || ""
-        );
-        if (newNotes === null) return;
+        editingOrderTs = ts;
 
-        for (var i = 0; i < orders.length; i++) {
-          if (orders[i].created_at === ts) {
-            orders[i].customer_name = newName;
-            orders[i].customer_email = newEmail;
-            orders[i].customer_phone = newPhone;
-            orders[i].notes = newNotes;
+        $("orderEditName").value = g.customer_name || "";
+        $("orderEditEmail").value = g.customer_email || "";
+        $("orderEditPhone").value = g.customer_phone || "";
+        $("orderEditNotes").value = g.notes || "";
+
+        var container = $("orderEditLines");
+        container.innerHTML = "";
+        for (var i = 0; i < g.lines.length; i++) {
+          addOrderEditLineRow(g.lines[i]);
+        }
+        if (!g.lines.length) {
+          addOrderEditLineRow();
+        }
+
+        $("orderEditModal").style.display = "flex";
+      }
+
+      function closeOrderEditor() {
+        editingOrderTs = null;
+        $("orderEditModal").style.display = "none";
+      }
+
+      $("orderEditAddLine").onclick = function () {
+        addOrderEditLineRow();
+      };
+
+      $("orderEditClose").onclick = function () {
+        closeOrderEditor();
+      };
+
+      $("orderEditCancel").onclick = function () {
+        closeOrderEditor();
+      };
+
+      $("orderEditSave").onclick = function () {
+        if (!editingOrderTs) return;
+        var cust = $("orderEditName").value.replace(/\s+$/, "");
+        if (!cust) {
+          alert("Customer name is required.");
+          return;
+        }
+        var email = $("orderEditEmail").value;
+        var phone = $("orderEditPhone").value;
+        var notes = $("orderEditNotes").value;
+
+        var rows = $("orderEditLines").getElementsByClassName("edit-line");
+        var newLines = [];
+        for (var i = 0; i < rows.length; i++) {
+          var r = rows[i];
+          var styleName = (r.querySelector('[data-field=\"style-name\"]').value || "").trim();
+          var styleCode = (r.querySelector('[data-field=\"style-code\"]').value || "").trim();
+          var color = (r.querySelector('[data-field=\"color\"]').value || "").trim();
+          var size = (r.querySelector('[data-field=\"size\"]').value || "").trim();
+          var qtyVal = Number(r.querySelector('[data-field=\"qty\"]').value || 0);
+          if (!(qtyVal > 0)) continue;
+          if (!styleName && !styleCode) continue;
+          newLines.push({
+            style_name: styleName,
+            style_code: styleCode,
+            color: color,
+            size: size,
+            qty: qtyVal,
+          });
+        }
+
+        if (!newLines.length) {
+          alert("Add at least one product line with quantity.");
+          return;
+        }
+
+        var orders = getOrders();
+        var filtered = [];
+        for (var j = 0; j < orders.length; j++) {
+          if (orders[j].created_at !== editingOrderTs) {
+            filtered.push(orders[j]);
           }
         }
-        saveOrdersList(orders);
+
+        for (var k = 0; k < newLines.length; k++) {
+          var ln = newLines[k];
+          filtered.push({
+            created_at: editingOrderTs,
+            customer_name: cust,
+            customer_email: email,
+            customer_phone: phone,
+            style_code: ln.style_code || "",
+            style_name: ln.style_name || "",
+            color: ln.color || "",
+            size: ln.size || "",
+            qty: ln.qty,
+            notes: notes,
+          });
+        }
+
+        saveOrdersList(filtered);
         renderOrders();
-        showOrderDetails(ts);
-      }
+        showOrderDetails(editingOrderTs);
+        closeOrderEditor();
+      };
 
       function getLinePrice(o) {
         // look up in catalog by style + color + size
@@ -2161,7 +2446,7 @@
         );
       };
 
-      function downloadCSV(orders, filename) {
+      function buildOrdersCSV(orders) {
         var headers = [
           "created_at",
           "customer_name",
@@ -2201,7 +2486,11 @@
           }
           lines.push(row.join(","));
         }
-        var csv = lines.join("\n");
+        return lines.join("\n");
+      }
+
+      function downloadCSV(orders, filename) {
+        var csv = buildOrdersCSV(orders);
         var blob = new Blob([csv], {
           type: "text/csv;charset=utf-8;",
         });
@@ -2213,6 +2502,80 @@
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
+      }
+
+      function updateSyncStatus(text) {
+        if ($("syncStatus")) {
+          $("syncStatus").textContent = text || "";
+        }
+      }
+
+      function getOrdersVersion(orders) {
+        var latest = "";
+        for (var i = 0; i < orders.length; i++) {
+          var ts = orders[i].created_at || "";
+          if (!latest || ts > latest) latest = ts;
+        }
+        return { count: orders.length, latest: latest };
+      }
+
+      function syncOrdersOnline(manual) {
+        if (!syncOpts.enabled) {
+          updateSyncStatus("Auto-upload disabled.");
+          return;
+        }
+        if (!syncOpts.endpoint) {
+          updateSyncStatus("Set a sync webhook URL to upload.");
+          return;
+        }
+        if (!navigator.onLine) {
+          updateSyncStatus("Offline; will sync when online.");
+          return;
+        }
+
+        var orders = getOrders();
+        if (!orders.length) {
+          updateSyncStatus("No orders to sync.");
+          return;
+        }
+
+        var version = getOrdersVersion(orders);
+        if (
+          !manual &&
+          syncState.lastCount === version.count &&
+          syncState.lastLatest === version.latest
+        ) {
+          updateSyncStatus(
+            "All orders already synced" +
+              (syncState.lastSyncAt
+                ? " (" + syncState.lastSyncAt + ")"
+                : ".")
+          );
+          return;
+        }
+
+        var csv = buildOrdersCSV(orders);
+        updateSyncStatus("Uploading orders…");
+
+        fetch(syncOpts.endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "text/csv" },
+          body: csv,
+        })
+          .then(function (res) {
+            if (!res.ok) throw new Error("HTTP " + res.status);
+            syncState.lastCount = version.count;
+            syncState.lastLatest = version.latest;
+            syncState.lastSyncAt = new Date().toLocaleString();
+            syncState.lastError = "";
+            saveSyncState();
+            updateSyncStatus("Uploaded " + version.count + " rows.");
+          })
+          .catch(function (err) {
+            syncState.lastError = err.message || "Upload failed";
+            saveSyncState();
+            updateSyncStatus("Sync failed: " + syncState.lastError);
+          });
       }
 
       // ---------- CATALOG VIEW (cards + modal) ----------
@@ -2762,11 +3125,28 @@
         if ($("emailIncludeUnitPrice"))
           $("emailIncludeUnitPrice").onchange =
             saveEmailOptsFromUI;
+        loadSyncOpts();
+        if ($("syncSave")) {
+          $("syncSave").onclick = function () {
+            saveSyncOptsFromUI();
+            syncOrdersOnline(true);
+          };
+        }
+        if ($("syncEnabled")) {
+          $("syncEnabled").onchange = saveSyncOptsFromUI;
+        }
+        if ($("syncEndpoint")) {
+          $("syncEndpoint").onblur = saveSyncOptsFromUI;
+        }
+        window.addEventListener("online", function () {
+          syncOrdersOnline(false);
+        });
 
         renderProductsGrid();
         renderStylesGrid();
         updateDashboard();
         renderOrders();
+        syncOrdersOnline(false);
       })();
     </script>
   </body>
