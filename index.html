@@ -1571,11 +1571,19 @@
           var metaDiv = document.createElement("div");
           metaDiv.className = "style-meta";
           var colorCount = 0;
-          var sizeCount = 0;
+          var sizeSet = {};
           for (var c in meta.colors) {
             if (!meta.colors.hasOwnProperty(c)) continue;
             colorCount++;
-            sizeCount += meta.colors[c].sizes.length;
+            for (var i = 0; i < meta.colors[c].sizes.length; i++) {
+              var sizeVal = meta.colors[c].sizes[i];
+              if (!sizeSet[sizeVal]) sizeSet[sizeVal] = true;
+            }
+          }
+          var sizeCount = 0;
+          for (var s in sizeSet) {
+            if (!sizeSet.hasOwnProperty(s)) continue;
+            sizeCount++;
           }
           metaDiv.innerHTML =
             colorCount +
@@ -2632,11 +2640,19 @@
           var imgData = metaExtra.imageDataUrl || "";
 
           var colorCount = 0;
-          var sizeCount = 0;
+          var sizeSet = {};
           for (var c in meta.colors) {
             if (!meta.colors.hasOwnProperty(c)) continue;
             colorCount++;
-            sizeCount += meta.colors[c].length;
+            for (var i = 0; i < meta.colors[c].length; i++) {
+              var sizeVal = meta.colors[c][i];
+              if (!sizeSet[sizeVal]) sizeSet[sizeVal] = true;
+            }
+          }
+          var sizeCount = 0;
+          for (var s in sizeSet) {
+            if (!sizeSet.hasOwnProperty(s)) continue;
+            sizeCount++;
           }
 
           var card = document.createElement("div");
