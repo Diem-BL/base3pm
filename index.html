@@ -335,15 +335,27 @@
         box-shadow: 0 0 0 2px rgba(109, 226, 255, 0.35);
       }
 
-      .style-card::before {
-        content: "";
+      .style-thumb {
         width: 100%;
         padding-bottom: 100%;
         background: var(--panel-strong);
         border: 1px solid var(--border);
         border-radius: 10px;
-        display: block;
-        margin-bottom: 6px;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--muted);
+        font-size: 11px;
+      }
+
+      .style-thumb img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
       }
 
       .style-name {
@@ -665,6 +677,40 @@
         padding: 10px 12px;
         margin-bottom: 10px;
         box-shadow: 0 12px 24px rgba(0, 0, 0, 0.28);
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+      }
+
+      .order-item-thumb {
+        width: 78px;
+        height: 78px;
+        border-radius: 10px;
+        background: var(--panel-strong);
+        border: 1px solid var(--border);
+        position: relative;
+        overflow: hidden;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--muted);
+        font-size: 11px;
+      }
+
+      .order-item-thumb img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .order-item-body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
       }
 
       .order-item-header {
@@ -950,39 +996,6 @@
             </div>
           </div>
 
-          <!-- Online sync (optional) -->
-          <div style="margin-top:12px;border-top:1px solid var(--border);padding-top:8px;">
-            <h3 style="margin:0 0 4px;font-size:14px;">Online sync (optional)</h3>
-            <p class="subtext" style="margin-bottom:4px;">
-              App stays fully offline. If a webhook URL is set and you’re online, orders will auto-upload as CSV to that endpoint.
-            </p>
-            <div class="field-row">
-              <div>
-                <label for="syncEndpoint">Sync webhook URL</label>
-                <input
-                  id="syncEndpoint"
-                  placeholder="https://your-endpoint.example.com/orders"
-                />
-              </div>
-              <div>
-                <label>Auto-upload</label>
-                <div style="display:flex;align-items:center;gap:6px;padding-top:4px;">
-                  <input
-                    id="syncEnabled"
-                    type="checkbox"
-                    style="width:auto;margin:0;"
-                  />
-                  <span style="font-size:12px;">Upload when online</span>
-                </div>
-              </div>
-            </div>
-            <div class="actions" style="justify-content:space-between;align-items:center">
-              <button id="syncSave" class="secondary small">
-                Save & Sync now
-              </button>
-              <span id="syncStatus" class="subtext" style="margin-left:auto;"></span>
-            </div>
-          </div>
         </section>
       </div>
 
@@ -1205,8 +1218,6 @@
       var CATALOG_KEY = "blanco_catalog_v1";
       var STYLE_META_KEY = "blanco_style_meta_v1";
       var EMAIL_OPTS_KEY = "blanco_email_opts_v1";
-      var SYNC_OPTS_KEY = "blanco_sync_opts_v1";
-      var SYNC_STATE_KEY = "blanco_sync_state_v1";
 
       var catalog = [];
       var styleMeta = {}; // styleKey -> {desc, category, imageDataUrl, in_stock}
@@ -1217,17 +1228,6 @@
         includeNotes: true,
         includeUnitPrice: false,
       };
-      var syncOpts = {
-        enabled: false,
-        endpoint: "",
-      };
-      var syncState = {
-        lastCount: 0,
-        lastLatest: "",
-        lastSyncAt: "",
-        lastError: "",
-      };
-
       function $(id) {
         return document.getElementById(id);
       }
@@ -1250,7 +1250,6 @@
           console.log("saveOrders error", e);
         }
         updateDashboard();
-        syncOrdersOnline(false);
       }
 
       function getCatalog() {
@@ -1321,50 +1320,6 @@
             EMAIL_OPTS_KEY,
             JSON.stringify(emailOpts)
           );
-        } catch (e) {}
-      }
-
-      function loadSyncOpts() {
-        try {
-          var raw = localStorage.getItem(SYNC_OPTS_KEY);
-          if (raw) {
-            var obj = JSON.parse(raw);
-            syncOpts.enabled = !!obj.enabled;
-            syncOpts.endpoint = obj.endpoint || "";
-          }
-        } catch (e) {}
-
-        try {
-          var rawState = localStorage.getItem(SYNC_STATE_KEY);
-          if (rawState) {
-            syncState = JSON.parse(rawState);
-          }
-        } catch (e) {}
-
-        if ($("syncEnabled")) {
-          $("syncEnabled").checked = !!syncOpts.enabled;
-        }
-        if ($("syncEndpoint")) {
-          $("syncEndpoint").value = syncOpts.endpoint || "";
-        }
-        updateSyncStatus();
-      }
-
-      function saveSyncOptsFromUI() {
-        if ($("syncEnabled")) {
-          syncOpts.enabled = $("syncEnabled").checked;
-        }
-        if ($("syncEndpoint")) {
-          syncOpts.endpoint = ($("syncEndpoint").value || "").trim();
-        }
-        try {
-          localStorage.setItem(SYNC_OPTS_KEY, JSON.stringify(syncOpts));
-        } catch (e) {}
-      }
-
-      function saveSyncState() {
-        try {
-          localStorage.setItem(SYNC_STATE_KEY, JSON.stringify(syncState));
         } catch (e) {}
       }
 
@@ -1547,6 +1502,8 @@
         for (var key in stylesMap) {
           if (!stylesMap.hasOwnProperty(key)) continue;
           var meta = stylesMap[key];
+          var extra = styleMeta[key] || {};
+          var imgData = extra.imageDataUrl || "";
           var label =
             (meta.code || "") + " " + (meta.name || "");
           if (search && label.toLowerCase().indexOf(search) === -1) {
@@ -1559,6 +1516,16 @@
           card.setAttribute("data-style-key", key);
           if (selectedStyles.indexOf(key) !== -1)
             card.className += " selected";
+
+          var thumb = document.createElement("div");
+          thumb.className = "style-thumb";
+          if (imgData) {
+            var thumbImg = document.createElement("img");
+            thumbImg.src = imgData;
+            thumb.appendChild(thumbImg);
+          } else {
+            thumb.innerHTML = "<span>Photo</span>";
+          }
 
           var nameDiv = document.createElement("div");
           nameDiv.className = "style-name";
@@ -1584,6 +1551,7 @@
             " sizes" +
             (meta.price ? " • $" + meta.price + "/pc" : "");
 
+          card.appendChild(thumb);
           card.appendChild(nameDiv);
           card.appendChild(codeDiv);
           card.appendChild(metaDiv);
@@ -2074,8 +2042,27 @@
 
         for (var k = 0; k < keyOrder.length; k++) {
           var mapItem = itemMap[keyOrder[k]];
+          var itemKey = styleKeyFromParts(
+            mapItem.style_code,
+            mapItem.style_name
+          );
+          var itemMeta = styleMeta[itemKey] || {};
+          var itemImage = itemMeta.imageDataUrl || "";
           var card = document.createElement("div");
           card.className = "order-item-card";
+
+          var thumb = document.createElement("div");
+          thumb.className = "order-item-thumb";
+          if (itemImage) {
+            var thumbImg = document.createElement("img");
+            thumbImg.src = itemImage;
+            thumb.appendChild(thumbImg);
+          } else {
+            thumb.innerHTML = "<span>Photo</span>";
+          }
+
+          var body = document.createElement("div");
+          body.className = "order-item-body";
 
           var header = document.createElement("div");
           header.className = "order-item-header";
@@ -2110,12 +2097,12 @@
               " pcs</strong>";
           }
           header.appendChild(right);
-          card.appendChild(header);
+          body.appendChild(header);
 
           var tag = document.createElement("div");
           tag.className = "order-tag";
           tag.innerHTML = "Color: " + (mapItem.color || "—");
-          card.appendChild(tag);
+          body.appendChild(tag);
 
           var sizeRow = document.createElement("div");
           sizeRow.className = "order-sizes-row";
@@ -2127,7 +2114,10 @@
               size + ": " + mapItem.sizes[size] + " pcs";
             sizeRow.appendChild(chip);
           }
-          card.appendChild(sizeRow);
+          body.appendChild(sizeRow);
+
+          card.appendChild(thumb);
+          card.appendChild(body);
 
           container.appendChild(card);
         }
@@ -2502,80 +2492,6 @@
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-      }
-
-      function updateSyncStatus(text) {
-        if ($("syncStatus")) {
-          $("syncStatus").textContent = text || "";
-        }
-      }
-
-      function getOrdersVersion(orders) {
-        var latest = "";
-        for (var i = 0; i < orders.length; i++) {
-          var ts = orders[i].created_at || "";
-          if (!latest || ts > latest) latest = ts;
-        }
-        return { count: orders.length, latest: latest };
-      }
-
-      function syncOrdersOnline(manual) {
-        if (!syncOpts.enabled) {
-          updateSyncStatus("Auto-upload disabled.");
-          return;
-        }
-        if (!syncOpts.endpoint) {
-          updateSyncStatus("Set a sync webhook URL to upload.");
-          return;
-        }
-        if (!navigator.onLine) {
-          updateSyncStatus("Offline; will sync when online.");
-          return;
-        }
-
-        var orders = getOrders();
-        if (!orders.length) {
-          updateSyncStatus("No orders to sync.");
-          return;
-        }
-
-        var version = getOrdersVersion(orders);
-        if (
-          !manual &&
-          syncState.lastCount === version.count &&
-          syncState.lastLatest === version.latest
-        ) {
-          updateSyncStatus(
-            "All orders already synced" +
-              (syncState.lastSyncAt
-                ? " (" + syncState.lastSyncAt + ")"
-                : ".")
-          );
-          return;
-        }
-
-        var csv = buildOrdersCSV(orders);
-        updateSyncStatus("Uploading orders…");
-
-        fetch(syncOpts.endpoint, {
-          method: "POST",
-          headers: { "Content-Type": "text/csv" },
-          body: csv,
-        })
-          .then(function (res) {
-            if (!res.ok) throw new Error("HTTP " + res.status);
-            syncState.lastCount = version.count;
-            syncState.lastLatest = version.latest;
-            syncState.lastSyncAt = new Date().toLocaleString();
-            syncState.lastError = "";
-            saveSyncState();
-            updateSyncStatus("Uploaded " + version.count + " rows.");
-          })
-          .catch(function (err) {
-            syncState.lastError = err.message || "Upload failed";
-            saveSyncState();
-            updateSyncStatus("Sync failed: " + syncState.lastError);
-          });
       }
 
       // ---------- CATALOG VIEW (cards + modal) ----------
@@ -3125,28 +3041,10 @@
         if ($("emailIncludeUnitPrice"))
           $("emailIncludeUnitPrice").onchange =
             saveEmailOptsFromUI;
-        loadSyncOpts();
-        if ($("syncSave")) {
-          $("syncSave").onclick = function () {
-            saveSyncOptsFromUI();
-            syncOrdersOnline(true);
-          };
-        }
-        if ($("syncEnabled")) {
-          $("syncEnabled").onchange = saveSyncOptsFromUI;
-        }
-        if ($("syncEndpoint")) {
-          $("syncEndpoint").onblur = saveSyncOptsFromUI;
-        }
-        window.addEventListener("online", function () {
-          syncOrdersOnline(false);
-        });
-
         renderProductsGrid();
         renderStylesGrid();
         updateDashboard();
         renderOrders();
-        syncOrdersOnline(false);
       })();
     </script>
   </body>
