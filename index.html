@@ -798,7 +798,7 @@
 
       <div class="nav">
         <button id="nav-dashboard" class="active">Dashboard</button>
-        <button id="nav-order">+ Order</button>
+        <button id="nav-order">+ New</button>
         <button id="nav-orders">Orders</button>
         <button id="nav-products">Products</button>
       </div>
@@ -827,7 +827,7 @@
             </div>
           </div>
           <div class="actions" style="justify-content:flex-start;margin-top:8px">
-            <button id="dash-new-order">+ New order</button>
+            <button id="dash-new-order">+ New</button>
             <button id="dash-orders" class="secondary small">
               View orders
             </button>
@@ -946,7 +946,7 @@
             </button>
           </div>
           <div id="ordersEmpty" class="empty">
-            No orders yet – create one from the + Order tab.
+            No orders yet – create one from the + New tab.
           </div>
           <table id="ordersTable" style="display:none;margin-top:6px">
             <thead>
@@ -1062,7 +1062,7 @@
             <div>
               <h2>Products</h2>
               <p class="subtext">
-                Manage styles used in the + Order flow. Data is stored offline on
+                Manage styles used in the + New flow. Data is stored offline on
                 this device.
               </p>
             </div>
@@ -1361,7 +1361,7 @@
         if (viewId === "view-dashboard")
           $("viewLabel").innerHTML = "Dashboard";
         if (viewId === "view-order")
-          $("viewLabel").innerHTML = "+ Order";
+          $("viewLabel").innerHTML = "+ New";
         if (viewId === "view-orders")
           $("viewLabel").innerHTML = "Orders";
         if (viewId === "view-products")
@@ -1423,9 +1423,7 @@
 
       // ---------- CATALOG STRUCTURE ----------
       function getStyleKey(row) {
-        var code = (row.style_code || "").trim();
-        var name = (row.style_name || "").trim();
-        return code || name;
+        return styleKeyFromParts(row.style_code || "", row.style_name || "");
       }
 
       function buildStylesIndex() {
@@ -2504,7 +2502,10 @@
 
       // ---------- CATALOG VIEW (cards + modal) ----------
       function styleKeyFromParts(code, name) {
-        return (code || "").trim() + "::" + (name || "").trim();
+        var cleanCode = (code || "").trim();
+        var cleanName = (name || "").trim();
+        if (!cleanCode && !cleanName) return "";
+        return cleanCode + "::" + cleanName;
       }
 
       function buildStylesIndexForProducts() {
