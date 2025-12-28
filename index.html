@@ -601,6 +601,44 @@
         padding: 4px 9px;
       }
 
+      .chip-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 8px;
+        border-radius: 999px;
+        background: var(--panel-strong);
+        border: 1px solid var(--border);
+        font-size: 11px;
+        color: var(--text);
+      }
+
+      .chip-actions {
+        display: inline-flex;
+        gap: 4px;
+        align-items: center;
+      }
+
+      .chip-actions button {
+        padding: 2px 6px;
+        font-size: 10px;
+        letter-spacing: 0;
+        text-transform: none;
+        border-radius: 8px;
+        box-shadow: none;
+        background: var(--panel);
+      }
+
+      .chip-label {
+        font-weight: 600;
+      }
+
       /* PRODUCT FORM */
       .product-form {
         display: grid;
@@ -628,9 +666,10 @@
         inset: 0;
         background: rgba(0, 0, 0, 0.7);
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         justify-content: center;
         padding: 20px;
+        overflow-y: auto;
       }
 
       .modal-content {
@@ -641,6 +680,9 @@
         width: 100%;
         max-width: 460px;
         box-shadow: 0 18px 36px rgba(0, 0, 0, 0.45);
+        max-height: calc(100vh - 60px);
+        display: flex;
+        flex-direction: column;
       }
 
       .modal-header {
@@ -657,6 +699,12 @@
         justify-content: flex-end;
         gap: 8px;
         margin-top: 12px;
+      }
+
+      .modal-body {
+        flex: 1 1 auto;
+        overflow-y: auto;
+        padding-right: 4px;
       }
 
       /* ORDER DETAIL */
@@ -798,7 +846,7 @@
 
       <div class="nav">
         <button id="nav-dashboard" class="active">Dashboard</button>
-        <button id="nav-order">+ Order</button>
+        <button id="nav-order">+ New</button>
         <button id="nav-orders">Orders</button>
         <button id="nav-products">Products</button>
       </div>
@@ -827,7 +875,7 @@
             </div>
           </div>
           <div class="actions" style="justify-content:flex-start;margin-top:8px">
-            <button id="dash-new-order">+ New order</button>
+            <button id="dash-new-order">+ New</button>
             <button id="dash-orders" class="secondary small">
               View orders
             </button>
@@ -946,7 +994,7 @@
             </button>
           </div>
           <div id="ordersEmpty" class="empty">
-            No orders yet – create one from the + Order tab.
+            No orders yet – create one from the + New tab.
           </div>
           <table id="ordersTable" style="display:none;margin-top:6px">
             <thead>
@@ -974,7 +1022,7 @@
           <div style="margin-top:12px;border-top:1px solid var(--border);padding-top:8px;">
             <h3 style="margin:0 0 4px;font-size:14px;">Email template options</h3>
             <p class="subtext" style="margin-bottom:4px;">
-              Choose what to include when emailing orders.
+              Customize the outgoing order email.
             </p>
             <div class="field-row">
               <div style="display:flex;align-items:center;gap:6px;">
@@ -994,6 +1042,99 @@
                 <span style="font-size:12px;">Show unit price on items</span>
               </div>
             </div>
+            <div class="field-full" style="margin-top:6px;">
+              <label for="emailSubjectPrefix">Subject prefix</label>
+              <input
+                id="emailSubjectPrefix"
+                placeholder="BLANCO order"
+                style="font-size:12px;"
+              />
+              <p class="subtext" style="margin:2px 0 0;">
+                Appears before customer name and date in the subject line.
+              </p>
+            </div>
+            <div class="field-full" style="margin-top:6px;">
+              <label for="emailHeadingLine">Email heading</label>
+              <input
+                id="emailHeadingLine"
+                placeholder="BLANCO Clothing – Order"
+                style="font-size:12px;"
+              />
+            </div>
+            <div class="field-full" style="margin-top:6px;">
+              <label for="emailIntroMessage">Intro message (optional)</label>
+              <textarea
+                id="emailIntroMessage"
+                placeholder="Thank you for your order. Please see details below."
+                style="font-size:12px;"
+              ></textarea>
+            </div>
+            <div class="field-full" style="margin-top:6px;">
+              <label for="emailFooterLine">Footer line</label>
+              <input
+                id="emailFooterLine"
+                placeholder="Generated from BLANCO offline order app."
+                style="font-size:12px;"
+              />
+            </div>
+            <div class="field-full" style="margin-top:6px;">
+              <div style="display:flex;align-items:center;gap:6px;">
+                <input
+                  id="emailShowTotalsSummary"
+                  type="checkbox"
+                  style="width:auto;margin:0;"
+                />
+                <span style="font-size:12px;">Include totals summary</span>
+              </div>
+              <p class="subtext" style="margin:4px 0 0;">
+                Adds qty total, subtotal, tax, shipping, and final total to the
+                end of the email.
+              </p>
+            </div>
+            <div class="field-row" style="margin-top:6px;">
+              <div>
+                <div style="display:flex;align-items:center;gap:6px;margin:0 0 4px;">
+                  <input
+                    id="emailUseTaxAmount"
+                    type="checkbox"
+                    style="width:auto;margin:0;"
+                  />
+                  <span style="font-size:12px;">Use custom tax</span>
+                </div>
+                <label for="emailTaxAmount">Tax (amount or note)</label>
+                <input
+                  id="emailTaxAmount"
+                  type="text"
+                  placeholder="0.00 or Included"
+                  style="font-size:12px;"
+                />
+              </div>
+              <div>
+                <div style="display:flex;align-items:center;gap:6px;margin:0 0 4px;">
+                  <input
+                    id="emailUseShippingAmount"
+                    type="checkbox"
+                    style="width:auto;margin:0;"
+                  />
+                  <span style="font-size:12px;">Use custom shipping</span>
+                </div>
+                <label for="emailShippingAmount">Shipping (amount or note)</label>
+                <input
+                  id="emailShippingAmount"
+                  type="text"
+                  placeholder="0.00 or Waived"
+                  style="font-size:12px;"
+                />
+              </div>
+            </div>
+            <p class="subtext" style="margin:4px 0 0;">
+              Added a totals summary toggle plus tax and shipping inputs to the
+              email template settings. Order emails now calculate subtotals from
+              catalog pricing and append a summary block listing quantity total,
+              subtotal, tax, shipping, and final total figures.
+              Toggle tax and shipping on to add custom numbers or letters per
+              order email.
+            </p>
           </div>
 
         </section>
@@ -1062,7 +1203,7 @@
             <div>
               <h2>Products</h2>
               <p class="subtext">
-                Manage styles used in the + Order flow. Data is stored offline on
+                Manage styles used in the + New flow. Data is stored offline on
                 this device.
               </p>
             </div>
@@ -1227,6 +1368,15 @@
       var emailOpts = {
         includeNotes: true,
         includeUnitPrice: false,
+        subjectPrefix: "BLANCO order",
+        headingLine: "BLANCO Clothing – Order",
+        introMessage: "",
+        footerLine: "Generated from BLANCO offline order app.",
+        showTotalsSummary: true,
+        useTaxAmount: true,
+        useShippingAmount: true,
+        taxAmount: "",
+        shippingAmount: "",
       };
       function $(id) {
         return document.getElementById(id);
@@ -1295,6 +1445,31 @@
                 ? !!obj.includeNotes
                 : true;
             emailOpts.includeUnitPrice = !!obj.includeUnitPrice;
+            emailOpts.subjectPrefix =
+              obj.subjectPrefix || "BLANCO order";
+            emailOpts.headingLine =
+              obj.headingLine || "BLANCO Clothing – Order";
+            emailOpts.introMessage = obj.introMessage || "";
+            emailOpts.footerLine =
+              obj.footerLine || "Generated from BLANCO offline order app.";
+            emailOpts.showTotalsSummary =
+              obj.showTotalsSummary !== undefined
+                ? !!obj.showTotalsSummary
+                : true;
+            emailOpts.useTaxAmount =
+              obj.useTaxAmount !== undefined ? !!obj.useTaxAmount : true;
+            emailOpts.taxAmount =
+              obj.taxAmount !== undefined && obj.taxAmount !== null
+                ? String(obj.taxAmount)
+                : "";
+            emailOpts.useShippingAmount =
+              obj.useShippingAmount !== undefined
+                ? !!obj.useShippingAmount
+                : true;
+            emailOpts.shippingAmount =
+              obj.shippingAmount !== undefined && obj.shippingAmount !== null
+                ? String(obj.shippingAmount)
+                : "";
           }
         } catch (e) {}
 
@@ -1305,6 +1480,35 @@
           $("emailIncludeUnitPrice").checked =
             !!emailOpts.includeUnitPrice;
         }
+        if ($("emailSubjectPrefix")) {
+          $("emailSubjectPrefix").value = emailOpts.subjectPrefix || "";
+        }
+        if ($("emailHeadingLine")) {
+          $("emailHeadingLine").value = emailOpts.headingLine || "";
+        }
+        if ($("emailIntroMessage")) {
+          $("emailIntroMessage").value = emailOpts.introMessage || "";
+        }
+        if ($("emailFooterLine")) {
+          $("emailFooterLine").value = emailOpts.footerLine || "";
+        }
+        if ($("emailShowTotalsSummary")) {
+          $("emailShowTotalsSummary").checked = !!emailOpts.showTotalsSummary;
+        }
+        if ($("emailUseTaxAmount")) {
+          $("emailUseTaxAmount").checked = !!emailOpts.useTaxAmount;
+        }
+        if ($("emailTaxAmount")) {
+          $("emailTaxAmount").value = emailOpts.taxAmount || "";
+        }
+        if ($("emailUseShippingAmount")) {
+          $("emailUseShippingAmount").checked = !!emailOpts.useShippingAmount;
+        }
+        if ($("emailShippingAmount")) {
+          $("emailShippingAmount").value = emailOpts.shippingAmount || "";
+        }
+
+        updateEmailAmountInputsState();
       }
 
       function saveEmailOptsFromUI() {
@@ -1315,12 +1519,60 @@
           emailOpts.includeUnitPrice =
             $("emailIncludeUnitPrice").checked;
         }
+        if ($("emailSubjectPrefix")) {
+          emailOpts.subjectPrefix =
+            $("emailSubjectPrefix").value.trim() || "BLANCO order";
+        }
+        if ($("emailHeadingLine")) {
+          emailOpts.headingLine =
+            $("emailHeadingLine").value.trim() || "BLANCO Clothing – Order";
+        }
+        if ($("emailIntroMessage")) {
+          emailOpts.introMessage =
+            $("emailIntroMessage").value.trim();
+        }
+        if ($("emailFooterLine")) {
+          emailOpts.footerLine =
+            $("emailFooterLine").value.trim() ||
+            "Generated from BLANCO offline order app.";
+        }
+        if ($("emailShowTotalsSummary")) {
+          emailOpts.showTotalsSummary = $("emailShowTotalsSummary").checked;
+        }
+        if ($("emailUseTaxAmount")) {
+          emailOpts.useTaxAmount = $("emailUseTaxAmount").checked;
+        }
+        if ($("emailTaxAmount")) {
+          emailOpts.taxAmount = $("emailTaxAmount").value.trim();
+        }
+        if ($("emailUseShippingAmount")) {
+          emailOpts.useShippingAmount = $("emailUseShippingAmount").checked;
+        }
+        if ($("emailShippingAmount")) {
+          emailOpts.shippingAmount = $("emailShippingAmount").value.trim();
+        }
         try {
           localStorage.setItem(
             EMAIL_OPTS_KEY,
             JSON.stringify(emailOpts)
           );
         } catch (e) {}
+
+        updateEmailAmountInputsState();
+      }
+
+      function updateEmailAmountInputsState() {
+        var taxToggle = $("emailUseTaxAmount");
+        var taxInput = $("emailTaxAmount");
+        if (taxInput) {
+          taxInput.disabled = taxToggle ? !taxToggle.checked : false;
+        }
+
+        var shippingToggle = $("emailUseShippingAmount");
+        var shippingInput = $("emailShippingAmount");
+        if (shippingInput) {
+          shippingInput.disabled = shippingToggle ? !shippingToggle.checked : false;
+        }
       }
 
       // ---------- NAV ----------
@@ -1361,7 +1613,7 @@
         if (viewId === "view-dashboard")
           $("viewLabel").innerHTML = "Dashboard";
         if (viewId === "view-order")
-          $("viewLabel").innerHTML = "+ Order";
+          $("viewLabel").innerHTML = "+ New";
         if (viewId === "view-orders")
           $("viewLabel").innerHTML = "Orders";
         if (viewId === "view-products")
@@ -1423,9 +1675,7 @@
 
       // ---------- CATALOG STRUCTURE ----------
       function getStyleKey(row) {
-        var code = (row.style_code || "").trim();
-        var name = (row.style_name || "").trim();
-        return code || name;
+        return styleKeyFromParts(row.style_code || "", row.style_name || "");
       }
 
       function buildStylesIndex() {
@@ -1443,6 +1693,7 @@
               colors: {},
             };
           }
+
           var color = (row.color || "").trim();
           var size = (row.size || "").trim();
           if (color) {
@@ -1459,6 +1710,35 @@
           if (row.price && !map[key].price) map[key].price = row.price;
         }
         return map;
+      }
+
+      function orderSizesByPreference(styleKey, sizes) {
+        var list = sizes.slice();
+        if (!styleKey) return list;
+        var meta = styleMeta[styleKey] || {};
+        var preferred = meta.sizeOrder || [];
+        if (!preferred.length) return list;
+
+        var added = {};
+        var ordered = [];
+
+        for (var i = 0; i < preferred.length; i++) {
+          var val = preferred[i];
+          if (list.indexOf(val) !== -1 && !added[val]) {
+            ordered.push(val);
+            added[val] = true;
+          }
+        }
+
+        for (var j = 0; j < list.length; j++) {
+          var sz = list[j];
+          if (!added[sz]) {
+            ordered.push(sz);
+            added[sz] = true;
+          }
+        }
+
+        return ordered;
       }
 
       // ---------- ORDER FLOW ----------
@@ -1725,10 +2005,7 @@
             var grid = document.createElement("div");
             grid.className = "sizes-grid";
 
-            var sizes = sizesInfo.sizes.slice();
-            sizes.sort(function (a, b) {
-              return a.localeCompare(b, undefined, { numeric: true });
-            });
+            var sizes = orderSizesByPreference(key, sizesInfo.sizes);
 
             for (var s = 0; s < sizes.length; s++) {
               var size = sizes[s];
@@ -1955,6 +2232,9 @@
             "' data-action='csv'>CSV</button> " +
             "<button class='secondary small' data-ts='" +
             g.created_at +
+            "' data-action='pdf'>PDF</button> " +
+            "<button class='secondary small' data-ts='" +
+            g.created_at +
             "' data-action='email'>Email</button>" +
             "</td>";
 
@@ -1975,6 +2255,8 @@
           showOrderDetails(ts);
         } else if (action === "edit") {
           openOrderEditor(ts);
+        } else if (action === "pdf") {
+          exportOrderPDF(ts);
         } else if (action === "email") {
           emailOrder(ts);
         }
@@ -2316,13 +2598,16 @@
         var g = grouped.map[ts];
         if (!g) return;
 
+        var subjectPrefix =
+          (emailOpts && emailOpts.subjectPrefix) || "BLANCO order";
         var subject =
-          "BLANCO order – " +
+          subjectPrefix +
+          " – " +
           (g.customer_name || "Customer") +
           " – " +
           new Date(g.created_at).toLocaleDateString();
 
-        var body = buildOrderEmailBody(g, emailOpts);
+        var body = toPlainText(buildOrderEmailBody(g, emailOpts));
 
         var to = g.customer_email || "";
         var url =
@@ -2336,26 +2621,74 @@
         window.location.href = url;
       }
 
+      function escapeHtml(str) {
+        if (str === null || str === undefined) return "";
+        return String(str)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      function toPlainText(str) {
+        if (str === null || str === undefined) return "";
+        var text = String(str)
+          .replace(/<br\s*\/?>(\r\n|\n|\r)?/gi, "\n")
+          .replace(/<\/(p|div|li)>/gi, "\n")
+          .replace(/&nbsp;/gi, " ")
+          .replace(/<[^>]+>/g, "");
+        return text.replace(/\r/g, "");
+      }
+
+      function formatMoney(val) {
+        var num = Number(val || 0);
+        if (isNaN(num)) num = 0;
+        return "$" + num.toFixed(2);
+      }
+
+      function parseAmountValue(val) {
+        var raw = val === null || val === undefined ? "" : String(val).trim();
+        var num = parseFloat(raw);
+        var hasNumeric = !isNaN(num);
+        return {
+          raw: raw,
+          hasNumeric: hasNumeric,
+          numeric: hasNumeric ? num : 0,
+        };
+      }
+
       function buildOrderEmailBody(group, opts) {
         var lines = [];
-        lines.push("BLANCO Clothing – Order");
-        lines.push("");
-        lines.push("Customer: " + (group.customer_name || ""));
-        if (group.customer_email)
-          lines.push("Email: " + group.customer_email);
-        if (group.customer_phone)
-          lines.push("Phone: " + group.customer_phone);
-        lines.push(
-          "Date: " +
-            new Date(group.created_at).toLocaleString()
+
+        var heading = toPlainText(
+          (opts && opts.headingLine) || "BLANCO Clothing – Order"
         );
-        lines.push("");
+        if (heading) lines.push(heading);
+
+        if (opts && opts.introMessage) {
+          lines.push(toPlainText(opts.introMessage));
+          lines.push("");
+        }
+
+        lines.push("Customer: " + toPlainText(group.customer_name || ""));
+        if (group.customer_email)
+          lines.push("Email: " + toPlainText(group.customer_email));
+        if (group.customer_phone)
+          lines.push("Phone: " + toPlainText(group.customer_phone));
+        lines.push("Date: " + new Date(group.created_at).toLocaleString());
+
         lines.push("Total pieces: " + group.total_qty);
+        lines.push("");
+
+        lines.push("Items:");
         lines.push("");
 
         // group by style/color
         var itemMap = {};
         var keyOrder = [];
+        var subtotalAmount = 0;
+        var hasPricedLines = false;
         for (var i = 0; i < group.lines.length; i++) {
           var o = group.lines[i];
           var key =
@@ -2365,13 +2698,17 @@
             "|" +
             (o.color || "");
           if (!itemMap[key]) {
+            var metaKey = styleKeyFromParts(o.style_code || "", o.style_name || "");
+            var meta = (styleMeta && metaKey && styleMeta[metaKey]) || {};
             itemMap[key] = {
-              style_name: o.style_name || "",
-              style_code: o.style_code || "",
-              color: o.color || "",
+              style_name: toPlainText(o.style_name || ""),
+              style_code: toPlainText(o.style_code || ""),
+              styleKey: metaKey,
+              color: toPlainText(o.color || ""),
               sizes: {},
               total_qty: 0,
               unitPrice: getLinePrice(o),
+              image: meta.imageDataUrl || "",
             };
             keyOrder.push(key);
           }
@@ -2380,41 +2717,53 @@
           if (!item.sizes[size]) item.sizes[size] = 0;
           item.sizes[size] += Number(o.qty || 0);
           item.total_qty += Number(o.qty || 0);
+          var unitPriceNum = Number(
+            item.unitPrice === "" || item.unitPrice === null
+              ? NaN
+              : item.unitPrice
+          );
+          if (!isNaN(unitPriceNum)) {
+            hasPricedLines = true;
+            subtotalAmount += unitPriceNum * Number(o.qty || 0);
+          }
         }
 
-        lines.push("Items:");
         for (var k = 0; k < keyOrder.length; k++) {
           var item = itemMap[keyOrder[k]];
-          lines.push(
-            "- " +
-              (item.style_name || item.style_code || "Style") +
-              (item.style_code
-                ? " (" + item.style_code + ")"
-                : "") +
-              " – Color: " +
-              (item.color || "")
+          var amountTotal = 0;
+          if (opts && opts.includeUnitPrice && item.unitPrice) {
+            amountTotal = item.total_qty * Number(item.unitPrice || 0);
+          }
+          var orderedSizes = orderSizesByPreference(
+            item.styleKey,
+            Object.keys(item.sizes)
           );
 
-          var sizeParts = [];
-          for (var size in item.sizes) {
-            if (!item.sizes.hasOwnProperty(size)) continue;
-            sizeParts.push(size + ": " + item.sizes[size]);
-          }
-          if (sizeParts.length) {
-            lines.push("  Sizes: " + sizeParts.join(", "));
+          var styleLabel = item.style_name || item.style_code || "Style";
+          if (item.style_code) styleLabel += " (" + item.style_code + ")";
+          lines.push(styleLabel);
+          lines.push("Color: " + (item.color || ""));
+
+          if (orderedSizes.length) {
+            var sizeRow = [];
+            for (var h = 0; h < orderedSizes.length; h++) {
+              var sz = orderedSizes[h];
+              sizeRow.push((sz || "-") + ": " + (item.sizes[sz] || 0));
+            }
+            lines.push(sizeRow.join(" | "));
           }
 
           if (opts && opts.includeUnitPrice && item.unitPrice) {
-            var amount =
-              item.total_qty * Number(item.unitPrice || 0);
             lines.push(
-              "  Price: $" +
+              "Qty: " +
+                item.total_qty +
+                " · Unit: $" +
                 Number(item.unitPrice).toFixed(2) +
-                " each – Amount: $" +
-                amount.toFixed(2)
+                " · Amount: $" +
+                amountTotal.toFixed(2)
             );
           } else {
-            lines.push("  Total pieces: " + item.total_qty);
+            lines.push("Total pieces: " + item.total_qty);
           }
 
           lines.push("");
@@ -2422,12 +2771,364 @@
 
         if (opts && opts.includeNotes && group.notes) {
           lines.push("Order notes:");
-          lines.push(group.notes);
+          lines.push(toPlainText(group.notes));
           lines.push("");
         }
 
-        lines.push("Generated from BLANCO offline order app.");
+        var showSummary = !opts || opts.showTotalsSummary !== false;
+        var useTax = !opts || opts.useTaxAmount !== false;
+        var useShipping = !opts || opts.useShippingAmount !== false;
+        var taxInfo = parseAmountValue(useTax && opts ? opts.taxAmount : "");
+        var shippingInfo = parseAmountValue(
+          useShipping && opts ? opts.shippingAmount : ""
+        );
+        var hasNonNumericFee =
+          (taxInfo.raw && !taxInfo.hasNumeric) ||
+          (shippingInfo.raw && !shippingInfo.hasNumeric);
+
+        if (showSummary) {
+          var totalAmount = hasPricedLines
+            ? hasNonNumericFee
+              ? null
+              : subtotalAmount + taxInfo.numeric + shippingInfo.numeric
+            : null;
+          lines.push("Totals:");
+          lines.push("Qty total: " + group.total_qty);
+          lines.push(
+            "Subtotal: " +
+              (hasPricedLines ? "$" + subtotalAmount.toFixed(2) : "N/A")
+          );
+          lines.push(
+            "Tax: " +
+              (taxInfo.hasNumeric
+                ? "$" + taxInfo.numeric.toFixed(2)
+                : taxInfo.raw || "N/A")
+          );
+          lines.push(
+            "Shipping: " +
+              (shippingInfo.hasNumeric
+                ? "$" + shippingInfo.numeric.toFixed(2)
+                : shippingInfo.raw || "N/A")
+          );
+          lines.push(
+            "Total: " + (totalAmount !== null ? "$" + totalAmount.toFixed(2) : "N/A")
+          );
+          lines.push("");
+        }
+
+        var footer = toPlainText(
+          (opts && opts.footerLine) || "Generated from BLANCO offline order app."
+        );
+        if (footer) lines.push(footer);
+
         return lines.join("\n");
+      }
+
+      function buildOrderHTML(group, opts) {
+        var heading =
+          (opts && opts.headingLine) || "BLANCO Clothing – Order";
+        var intro = opts && opts.introMessage ? opts.introMessage : "";
+        var footer =
+          (opts && opts.footerLine) || "Generated from BLANCO offline order app.";
+
+        var itemMap = {};
+        var keyOrder = [];
+        var subtotalAmount = 0;
+        var hasPricedLines = false;
+
+        for (var i = 0; i < group.lines.length; i++) {
+          var o = group.lines[i];
+          var key =
+            (o.style_code || "") +
+            "|" +
+            (o.style_name || "") +
+            "|" +
+            (o.color || "");
+          if (!itemMap[key]) {
+            var metaKey = styleKeyFromParts(o.style_code || "", o.style_name || "");
+            var meta = (styleMeta && metaKey && styleMeta[metaKey]) || {};
+            itemMap[key] = {
+              style_name: o.style_name || "",
+              style_code: o.style_code || "",
+              styleKey: metaKey,
+              color: o.color || "",
+              sizes: {},
+              total_qty: 0,
+              unitPrice: getLinePrice(o),
+              image: meta.imageDataUrl || "",
+            };
+            keyOrder.push(key);
+          }
+          var item = itemMap[key];
+          var size = o.size || "";
+          if (!item.sizes[size]) item.sizes[size] = 0;
+          item.sizes[size] += Number(o.qty || 0);
+          item.total_qty += Number(o.qty || 0);
+          var unitPriceNum = Number(
+            item.unitPrice === "" || item.unitPrice === null
+              ? NaN
+              : item.unitPrice
+          );
+          if (!isNaN(unitPriceNum)) {
+            hasPricedLines = true;
+            subtotalAmount += unitPriceNum * Number(o.qty || 0);
+          }
+        }
+
+        var itemsHtml = "";
+        for (var k = 0; k < keyOrder.length; k++) {
+          var item = itemMap[keyOrder[k]];
+          var orderedSizes = orderSizesByPreference(
+            item.styleKey,
+            Object.keys(item.sizes)
+          );
+          var amountTotal = 0;
+          if (opts && opts.includeUnitPrice && item.unitPrice) {
+            amountTotal = item.total_qty * Number(item.unitPrice || 0);
+          }
+
+          var styleLabel = escapeHtml(item.style_name || item.style_code || "Style");
+          var styleCodeTag = item.style_code
+            ? " <span class='muted'>(" + escapeHtml(item.style_code) + ")</span>"
+            : "";
+
+          var sizeHead = "";
+          var sizeRow = "";
+          for (var h = 0; h < orderedSizes.length; h++) {
+            var sz = orderedSizes[h];
+            sizeHead +=
+              "<th>" + escapeHtml(sz || "-") + "</th>";
+            sizeRow +=
+              "<td>" + escapeHtml(item.sizes[sz] || 0) + "</td>";
+          }
+
+          itemsHtml += "<div class='item-card'>";
+          itemsHtml += "  <div class='item-body'>";
+          if (item.image) {
+            itemsHtml +=
+              "<div class='item-photo'><img src='" +
+              item.image +
+              "' alt='Style photo' /></div>";
+          }
+          itemsHtml += "    <div class='item-content'>";
+          itemsHtml +=
+            "      <div class='item-title'>" +
+            styleLabel +
+            styleCodeTag +
+            "</div>";
+          itemsHtml +=
+            "      <div class='item-sub'>Color: " +
+            escapeHtml(item.color || "") +
+            "</div>";
+
+          if (orderedSizes.length) {
+            itemsHtml += "      <table class='size-table'><thead><tr>" + sizeHead + "</tr></thead>";
+            itemsHtml += "      <tbody><tr>" + sizeRow + "</tr></tbody></table>";
+          }
+
+          if (opts && opts.includeUnitPrice && item.unitPrice) {
+            itemsHtml +=
+              "      <div class='item-meta'>Qty: " +
+              item.total_qty +
+              " • Unit: " +
+              formatMoney(item.unitPrice) +
+              " • Amount: " +
+              formatMoney(amountTotal) +
+              "</div>";
+          } else {
+            itemsHtml +=
+              "      <div class='item-meta'>Total pieces: " +
+              item.total_qty +
+              "</div>";
+          }
+
+          itemsHtml += "    </div>";
+          itemsHtml += "  </div>";
+          itemsHtml += "</div>";
+        }
+
+        var showSummary = !opts || opts.showTotalsSummary !== false;
+        var useTax = !opts || opts.useTaxAmount !== false;
+        var useShipping = !opts || opts.useShippingAmount !== false;
+        var taxInfo = parseAmountValue(useTax && opts ? opts.taxAmount : "");
+        var shippingInfo = parseAmountValue(
+          useShipping && opts ? opts.shippingAmount : ""
+        );
+        var hasNonNumericFee =
+          (taxInfo.raw && !taxInfo.hasNumeric) ||
+          (shippingInfo.raw && !shippingInfo.hasNumeric);
+        var totalAmount = hasPricedLines
+          ? hasNonNumericFee
+            ? null
+            : subtotalAmount + taxInfo.numeric + shippingInfo.numeric
+          : null;
+
+        var summaryHtml = "";
+        if (showSummary) {
+          summaryHtml += "<div class='summary'>";
+          summaryHtml += "  <div class='summary-title'>Totals</div>";
+          summaryHtml +=
+            "  <div class='summary-row'><span>Qty total</span><strong>" +
+            escapeHtml(group.total_qty || 0) +
+            "</strong></div>";
+          summaryHtml +=
+            "  <div class='summary-row'><span>Subtotal</span><strong>" +
+            (hasPricedLines ? formatMoney(subtotalAmount) : "N/A") +
+            "</strong></div>";
+          summaryHtml +=
+            "  <div class='summary-row'><span>Tax</span><strong>" +
+            (taxInfo.hasNumeric
+              ? formatMoney(taxInfo.numeric)
+              : escapeHtml(taxInfo.raw || "N/A")) +
+            "</strong></div>";
+          summaryHtml +=
+            "  <div class='summary-row'><span>Shipping</span><strong>" +
+            (shippingInfo.hasNumeric
+              ? formatMoney(shippingInfo.numeric)
+              : escapeHtml(shippingInfo.raw || "N/A")) +
+            "</strong></div>";
+          summaryHtml +=
+            "  <div class='summary-row'><span>Total</span><strong>" +
+            (totalAmount !== null ? formatMoney(totalAmount) : "N/A") +
+            "</strong></div>";
+          summaryHtml += "</div>";
+        }
+
+        var notesHtml = "";
+        if (opts && opts.includeNotes && group.notes) {
+          notesHtml += "<div class='notes'>";
+          notesHtml += "  <div class='notes-title'>Order notes</div>";
+          notesHtml +=
+            "  <div class='notes-body'>" +
+            escapeHtml(group.notes).replace(/\n/g, "<br />") +
+            "</div>";
+          notesHtml += "</div>";
+        }
+
+        var html = "";
+        html += "<div class='doc'>";
+        html += "  <div class='heading'>" + escapeHtml(heading) + "</div>";
+        if (intro) {
+          html += "  <p class='intro'>" + escapeHtml(intro) + "</p>";
+        }
+        html += "  <div class='meta-grid'>";
+        html +=
+          "    <div><div class='label'>Customer</div><div class='value'>" +
+          escapeHtml(group.customer_name || "") +
+          "</div></div>";
+        if (group.customer_email)
+          html +=
+            "    <div><div class='label'>Email</div><div class='value'>" +
+            escapeHtml(group.customer_email) +
+            "</div></div>";
+        if (group.customer_phone)
+          html +=
+            "    <div><div class='label'>Phone</div><div class='value'>" +
+            escapeHtml(group.customer_phone) +
+            "</div></div>";
+        html +=
+          "    <div><div class='label'>Date</div><div class='value'>" +
+          escapeHtml(new Date(group.created_at).toLocaleString()) +
+          "</div></div>";
+        html +=
+          "    <div><div class='label'>Total pieces</div><div class='value'>" +
+          escapeHtml(group.total_qty || 0) +
+          "</div></div>";
+        html += "  </div>";
+
+        html += "  <div class='section-title'>Items</div>";
+        html += itemsHtml;
+
+        html += notesHtml;
+        html += summaryHtml;
+
+        if (footer) {
+          html += "  <div class='footer'>" + escapeHtml(footer) + "</div>";
+        }
+        html += "</div>";
+
+        return html;
+      }
+
+      function exportOrderPDF(ts) {
+        var orders = getOrders();
+        var grouped = groupOrdersByTimestamp(orders);
+        var group = grouped.map[ts];
+
+        if (!group) {
+          alert("Order not found.");
+          return;
+        }
+
+        var htmlContent = buildOrderHTML(group, emailOpts || {});
+
+        var docHtml =
+          "<!doctype html><html><head><meta charset='UTF-8'>" +
+          "<title>" +
+          escapeHtml((emailOpts && emailOpts.headingLine) || "BLANCO Clothing – Order") +
+          "</title>" +
+          "<style>" +
+          "body{font-family:Inter,system-ui,-apple-system,sans-serif;background:#f4f4f5;color:#0f172a;padding:18px;}" +
+          "*{box-sizing:border-box;}" +
+          ".doc{max-width:820px;margin:0 auto;background:#fff;border:1px solid #e4e4e7;border-radius:14px;padding:18px;}" +
+          ".heading{font-size:18px;font-weight:700;margin-bottom:6px;}" +
+          ".intro{color:#475569;margin:0 0 10px;}" +
+          ".meta-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;margin:10px 0 6px;}" +
+          ".label{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#94a3b8;margin-bottom:2px;}" +
+          ".value{font-weight:600;color:#0f172a;}" +
+          ".section-title{margin:14px 0 8px;font-weight:700;font-size:15px;}" +
+          ".item-card{border:1px solid #e4e4e7;border-radius:12px;padding:10px;margin-bottom:12px;}" +
+          ".item-body{display:flex;gap:12px;align-items:flex-start;}" +
+          ".item-photo img{width:120px;height:120px;object-fit:cover;border-radius:10px;border:1px solid #e5e7eb;}" +
+          ".item-content{flex:1;min-width:0;}" +
+          ".item-title{font-weight:700;margin-bottom:4px;}" +
+          ".item-title .muted{color:#6b7280;font-weight:600;}" +
+          ".item-sub{margin-bottom:8px;color:#475569;}" +
+          ".size-table{border-collapse:collapse;width:100%;margin-bottom:8px;}" +
+          ".size-table th,.size-table td{border:1px solid #e4e4e7;padding:7px;text-align:center;font-size:12px;}" +
+          ".item-meta{font-size:13px;font-weight:600;color:#0f172a;}" +
+          ".summary{border-top:1px solid #e4e4e7;margin-top:14px;padding-top:10px;}" +
+          ".summary-title{font-weight:700;margin-bottom:6px;}" +
+          ".summary-row{display:flex;justify-content:space-between;padding:4px 0;font-size:13px;}" +
+          ".notes{border-top:1px solid #e4e4e7;margin-top:12px;padding-top:10px;}" +
+          ".notes-title{font-weight:700;margin-bottom:4px;}" +
+          ".notes-body{white-space:pre-wrap;color:#0f172a;}" +
+          ".footer{margin-top:16px;color:#475569;font-size:12px;}" +
+          "</style></head><body>" +
+          htmlContent +
+          "</body></html>";
+
+        var blob = new Blob([docHtml], { type: "text/html" });
+        var blobUrl = URL.createObjectURL(blob);
+        var w = window.open(blobUrl, "_blank");
+        if (!w) {
+          URL.revokeObjectURL(blobUrl);
+          alert("Please allow popups to save the PDF.");
+          return;
+        }
+
+        var triggerPrint = function () {
+          try {
+            w.focus();
+            w.print();
+          } catch (e) {
+            // If the window is blocked or closed, fail silently after revoking the URL.
+          } finally {
+            URL.revokeObjectURL(blobUrl);
+          }
+        };
+
+        var whenReady = function () {
+          if (!w || w.closed) return;
+          if (w.document && w.document.readyState === "complete") {
+            triggerPrint();
+          } else {
+            setTimeout(whenReady, 30);
+          }
+        };
+
+        w.addEventListener("load", triggerPrint);
+        whenReady();
       }
 
       $("exportOrders").onclick = function () {
@@ -2504,7 +3205,10 @@
 
       // ---------- CATALOG VIEW (cards + modal) ----------
       function styleKeyFromParts(code, name) {
-        return (code || "").trim() + "::" + (name || "").trim();
+        var cleanCode = (code || "").trim();
+        var cleanName = (name || "").trim();
+        if (!cleanCode && !cleanName) return "";
+        return cleanCode + "::" + cleanName;
       }
 
       function buildStylesIndexForProducts() {
@@ -2686,6 +3390,8 @@
                 modalSizes.push(size);
             }
           }
+
+          modalSizes = orderSizesByPreference(styleKey, modalSizes);
         } else {
           $("modalTitle").innerHTML = "New style";
           $("modalStyleName").value = "";
@@ -2731,10 +3437,19 @@
             var chip = document.createElement("span");
             chip.className = "chip";
             chip.innerHTML =
+              '<span class="chip-label">' +
               modalSizes[idx2] +
-              ' <button type="button" data-type="size" data-idx="' +
+              '</span><span class="chip-actions">' +
+              ' <button type="button" data-action="up" data-idx="' +
               idx2 +
-              '">×</button>';
+              '">↑</button>' +
+              ' <button type="button" data-action="down" data-idx="' +
+              idx2 +
+              '">↓</button>' +
+              ' <button type="button" data-action="remove" data-idx="' +
+              idx2 +
+              '">×</button>' +
+              "</span>";
             sizesRow.appendChild(chip);
           })(i);
         }
@@ -2747,13 +3462,29 @@
         var idx = Number(t.getAttribute("data-idx"));
         if (type === "color") {
           modalColors.splice(idx, 1);
-        } else if (type === "size") {
-          modalSizes.splice(idx, 1);
         }
         renderModalChips();
       };
 
-      $("modalSizesRow").onclick = $("modalColorsRow").onclick;
+      $("modalSizesRow").onclick = function (e) {
+        var t = e.target || e.srcElement;
+        if (t.tagName.toLowerCase() !== "button") return;
+        var action = t.getAttribute("data-action");
+        var idx = Number(t.getAttribute("data-idx"));
+
+        if (action === "remove") {
+          modalSizes.splice(idx, 1);
+        } else if (action === "up" && idx > 0) {
+          var tmp = modalSizes[idx - 1];
+          modalSizes[idx - 1] = modalSizes[idx];
+          modalSizes[idx] = tmp;
+        } else if (action === "down" && idx < modalSizes.length - 1) {
+          var tmp2 = modalSizes[idx + 1];
+          modalSizes[idx + 1] = modalSizes[idx];
+          modalSizes[idx] = tmp2;
+        }
+        renderModalChips();
+      };
 
       $("addColorBtn").onclick = function () {
         var v = $("modalColorInput").value.replace(/\s+$/, "");
@@ -2865,7 +3596,14 @@
 
         catalog = newCatalog;
         saveCatalog(catalog);
-        saveStyleMetaEntry(newKey, desc, cat, inStock, modalImageDataUrl);
+        saveStyleMetaEntry(
+          newKey,
+          desc,
+          cat,
+          inStock,
+          modalImageDataUrl,
+          modalSizes
+        );
 
         renderProductsGrid();
         renderStylesGrid();
@@ -2874,13 +3612,22 @@
         alert("Style saved.");
       };
 
-      function saveStyleMetaEntry(key, desc, cat, inStock, imageDataUrl) {
+      function saveStyleMetaEntry(
+        key,
+        desc,
+        cat,
+        inStock,
+        imageDataUrl,
+        sizeOrder
+      ) {
         if (!key) return;
         if (!styleMeta[key]) styleMeta[key] = {};
         styleMeta[key].description = desc || "";
         styleMeta[key].category = cat || "";
         styleMeta[key].in_stock = !!inStock;
         if (imageDataUrl) styleMeta[key].imageDataUrl = imageDataUrl;
+        if (sizeOrder && sizeOrder.length)
+          styleMeta[key].sizeOrder = sizeOrder.slice();
         saveStyleMeta();
       }
 
@@ -3057,6 +3804,24 @@
         if ($("emailIncludeUnitPrice"))
           $("emailIncludeUnitPrice").onchange =
             saveEmailOptsFromUI;
+        if ($("emailSubjectPrefix"))
+          $("emailSubjectPrefix").oninput = saveEmailOptsFromUI;
+        if ($("emailHeadingLine"))
+          $("emailHeadingLine").oninput = saveEmailOptsFromUI;
+        if ($("emailIntroMessage"))
+          $("emailIntroMessage").oninput = saveEmailOptsFromUI;
+        if ($("emailFooterLine"))
+          $("emailFooterLine").oninput = saveEmailOptsFromUI;
+        if ($("emailShowTotalsSummary"))
+          $("emailShowTotalsSummary").onchange = saveEmailOptsFromUI;
+        if ($("emailUseTaxAmount"))
+          $("emailUseTaxAmount").onchange = saveEmailOptsFromUI;
+        if ($("emailTaxAmount"))
+          $("emailTaxAmount").oninput = saveEmailOptsFromUI;
+        if ($("emailUseShippingAmount"))
+          $("emailUseShippingAmount").onchange = saveEmailOptsFromUI;
+        if ($("emailShippingAmount"))
+          $("emailShippingAmount").oninput = saveEmailOptsFromUI;
         renderProductsGrid();
         renderStylesGrid();
         updateDashboard();
