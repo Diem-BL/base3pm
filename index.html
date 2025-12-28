@@ -1077,64 +1077,6 @@
                 style="font-size:12px;"
               />
             </div>
-            <div class="field-full" style="margin-top:6px;">
-              <div style="display:flex;align-items:center;gap:6px;">
-                <input
-                  id="emailShowTotalsSummary"
-                  type="checkbox"
-                  style="width:auto;margin:0;"
-                />
-                <span style="font-size:12px;">Include totals summary</span>
-              </div>
-              <p class="subtext" style="margin:4px 0 0;">
-                Adds qty total, subtotal, tax, shipping, and final total to the
-                end of the email.
-              </p>
-            </div>
-            <div class="field-row" style="margin-top:6px;">
-              <div>
-                <div style="display:flex;align-items:center;gap:6px;margin:0 0 4px;">
-                  <input
-                    id="emailUseTaxAmount"
-                    type="checkbox"
-                    style="width:auto;margin:0;"
-                  />
-                  <span style="font-size:12px;">Use custom tax</span>
-                </div>
-                <label for="emailTaxAmount">Tax (amount or note)</label>
-                <input
-                  id="emailTaxAmount"
-                  type="text"
-                  placeholder="0.00 or Included"
-                  style="font-size:12px;"
-                />
-              </div>
-              <div>
-                <div style="display:flex;align-items:center;gap:6px;margin:0 0 4px;">
-                  <input
-                    id="emailUseShippingAmount"
-                    type="checkbox"
-                    style="width:auto;margin:0;"
-                  />
-                  <span style="font-size:12px;">Use custom shipping</span>
-                </div>
-                <label for="emailShippingAmount">Shipping (amount or note)</label>
-                <input
-                  id="emailShippingAmount"
-                  type="text"
-                  placeholder="0.00 or Waived"
-                  style="font-size:12px;"
-                />
-              </div>
-            </div>
-            <p class="subtext" style="margin:4px 0 0;">
-              Added a totals summary toggle plus tax and shipping inputs to the
-              email template settings. Order emails now calculate subtotals from
-              catalog pricing and append a summary block listing quantity total,
-              subtotal, tax, shipping, and final total figures.
-              Toggle tax and shipping on to add custom numbers or letters per
-              order email.
-            </p>
           </div>
 
         </section>
@@ -1372,11 +1314,6 @@
         headingLine: "BLANCO Clothing – Order",
         introMessage: "",
         footerLine: "Generated from BLANCO offline order app.",
-        showTotalsSummary: true,
-        useTaxAmount: true,
-        useShippingAmount: true,
-        taxAmount: "",
-        shippingAmount: "",
       };
       function $(id) {
         return document.getElementById(id);
@@ -1452,24 +1389,6 @@
             emailOpts.introMessage = obj.introMessage || "";
             emailOpts.footerLine =
               obj.footerLine || "Generated from BLANCO offline order app.";
-            emailOpts.showTotalsSummary =
-              obj.showTotalsSummary !== undefined
-                ? !!obj.showTotalsSummary
-                : true;
-            emailOpts.useTaxAmount =
-              obj.useTaxAmount !== undefined ? !!obj.useTaxAmount : true;
-            emailOpts.taxAmount =
-              obj.taxAmount !== undefined && obj.taxAmount !== null
-                ? String(obj.taxAmount)
-                : "";
-            emailOpts.useShippingAmount =
-              obj.useShippingAmount !== undefined
-                ? !!obj.useShippingAmount
-                : true;
-            emailOpts.shippingAmount =
-              obj.shippingAmount !== undefined && obj.shippingAmount !== null
-                ? String(obj.shippingAmount)
-                : "";
           }
         } catch (e) {}
 
@@ -1492,23 +1411,6 @@
         if ($("emailFooterLine")) {
           $("emailFooterLine").value = emailOpts.footerLine || "";
         }
-        if ($("emailShowTotalsSummary")) {
-          $("emailShowTotalsSummary").checked = !!emailOpts.showTotalsSummary;
-        }
-        if ($("emailUseTaxAmount")) {
-          $("emailUseTaxAmount").checked = !!emailOpts.useTaxAmount;
-        }
-        if ($("emailTaxAmount")) {
-          $("emailTaxAmount").value = emailOpts.taxAmount || "";
-        }
-        if ($("emailUseShippingAmount")) {
-          $("emailUseShippingAmount").checked = !!emailOpts.useShippingAmount;
-        }
-        if ($("emailShippingAmount")) {
-          $("emailShippingAmount").value = emailOpts.shippingAmount || "";
-        }
-
-        updateEmailAmountInputsState();
       }
 
       function saveEmailOptsFromUI() {
@@ -1535,21 +1437,6 @@
           emailOpts.footerLine =
             $("emailFooterLine").value.trim() ||
             "Generated from BLANCO offline order app.";
-        }
-        if ($("emailShowTotalsSummary")) {
-          emailOpts.showTotalsSummary = $("emailShowTotalsSummary").checked;
-        }
-        if ($("emailUseTaxAmount")) {
-          emailOpts.useTaxAmount = $("emailUseTaxAmount").checked;
-        }
-        if ($("emailTaxAmount")) {
-          emailOpts.taxAmount = $("emailTaxAmount").value.trim();
-        }
-        if ($("emailUseShippingAmount")) {
-          emailOpts.useShippingAmount = $("emailUseShippingAmount").checked;
-        }
-        if ($("emailShippingAmount")) {
-          emailOpts.shippingAmount = $("emailShippingAmount").value.trim();
         }
         try {
           localStorage.setItem(
@@ -2631,54 +2518,74 @@
           .replace(/'/g, "&#039;");
       }
 
-      function toPlainText(str) {
-        if (str === null || str === undefined) return "";
-        var text = String(str)
-          .replace(/<br\s*\/?>(\r\n|\n|\r)?/gi, "\n")
-          .replace(/<\/(p|div|li)>/gi, "\n")
-          .replace(/&nbsp;/gi, " ")
-          .replace(/<[^>]+>/g, "");
-        return text.replace(/\r/g, "");
-      }
-
       function formatMoney(val) {
         var num = Number(val || 0);
         if (isNaN(num)) num = 0;
         return "$" + num.toFixed(2);
       }
 
-      function parseAmountValue(val) {
-        var raw = val === null || val === undefined ? "" : String(val).trim();
-        var num = parseFloat(raw);
-        var hasNumeric = !isNaN(num);
-        return {
-          raw: raw,
-          hasNumeric: hasNumeric,
-          numeric: hasNumeric ? num : 0,
-        };
-      }
-
       function buildOrderEmailBody(group, opts) {
-        var lines = [];
-
-        var heading = toPlainText(
-          (opts && opts.headingLine) || "BLANCO Clothing – Order"
-        );
-        if (heading) lines.push(heading);
-
-        if (opts && opts.introMessage) {
-          lines.push(toPlainText(opts.introMessage));
-          lines.push("");
+        function escapeHtml(str) {
+          return String(str || "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/\"/g, "&quot;")
+            .replace(/'/g, "&#39;");
         }
 
-        lines.push("Customer: " + toPlainText(group.customer_name || ""));
+        var lines = [];
+        var heading = (opts && opts.headingLine) || "BLANCO Clothing – Order";
+        if (heading) lines.push(heading);
+        lines.push("");
+        if (opts && opts.introMessage) {
+          lines.push(opts.introMessage);
+          lines.push("");
+        }
+        lines.push("Customer: " + (group.customer_name || ""));
         if (group.customer_email)
-          lines.push("Email: " + toPlainText(group.customer_email));
+          lines.push(
+            '<p style="margin: 0 0 4px;">Email: ' +
+              escapeHtml(group.customer_email) +
+              "</p>"
+          );
         if (group.customer_phone)
-          lines.push("Phone: " + toPlainText(group.customer_phone));
-        lines.push("Date: " + new Date(group.created_at).toLocaleString());
+          lines.push(
+            '<p style="margin: 0 0 4px;">Phone: ' +
+              escapeHtml(group.customer_phone) +
+              "</p>"
+          );
+        lines.push(
+          '<p style="margin: 0 0 10px;">Date: ' +
+            escapeHtml(new Date(group.created_at).toLocaleString()) +
+            "</p>"
+        );
 
-        lines.push("Total pieces: " + group.total_qty);
+        lines.push(
+          '<p style="margin: 0 0 12px; font-weight: 600;">Total pieces: ' +
+            escapeHtml(group.total_qty) +
+            "</p>"
+        );
+
+        lines.push("Items:");
+        lines.push("");
+
+        lines.push("Items:");
+        lines.push("");
+
+        lines.push("Items:");
+        lines.push("");
+
+        lines.push("Items:");
+        lines.push("");
+
+        lines.push("Items:");
+        lines.push("");
+
+        lines.push("Items:");
+        lines.push("");
+
+        lines.push("Items:");
         lines.push("");
 
         lines.push("Items:");
@@ -2688,7 +2595,6 @@
         var itemMap = {};
         var keyOrder = [];
         var subtotalAmount = 0;
-        var hasPricedLines = false;
         for (var i = 0; i < group.lines.length; i++) {
           var o = group.lines[i];
           var key =
@@ -2701,10 +2607,10 @@
             var metaKey = styleKeyFromParts(o.style_code || "", o.style_name || "");
             var meta = (styleMeta && metaKey && styleMeta[metaKey]) || {};
             itemMap[key] = {
-              style_name: toPlainText(o.style_name || ""),
-              style_code: toPlainText(o.style_code || ""),
+              style_name: o.style_name || "",
+              style_code: o.style_code || "",
               styleKey: metaKey,
-              color: toPlainText(o.color || ""),
+              color: o.color || "",
               sizes: {},
               total_qty: 0,
               unitPrice: getLinePrice(o),
@@ -2717,17 +2623,13 @@
           if (!item.sizes[size]) item.sizes[size] = 0;
           item.sizes[size] += Number(o.qty || 0);
           item.total_qty += Number(o.qty || 0);
-          var unitPriceNum = Number(
-            item.unitPrice === "" || item.unitPrice === null
-              ? NaN
-              : item.unitPrice
-          );
+          var unitPriceNum = Number(item.unitPrice || 0);
           if (!isNaN(unitPriceNum)) {
-            hasPricedLines = true;
             subtotalAmount += unitPriceNum * Number(o.qty || 0);
           }
         }
 
+        lines.push('<div style="margin: 0 0 14px; font-weight: 700;">Items</div>');
         for (var k = 0; k < keyOrder.length; k++) {
           var item = itemMap[keyOrder[k]];
           var amountTotal = 0;
@@ -2739,88 +2641,96 @@
             Object.keys(item.sizes)
           );
 
-          var styleLabel = item.style_name || item.style_code || "Style";
-          if (item.style_code) styleLabel += " (" + item.style_code + ")";
-          lines.push(styleLabel);
-          lines.push("Color: " + (item.color || ""));
+          lines.push(
+            '<div style="border: 1px solid #d4d4d8; border-radius: 10px; padding: 10px; margin-bottom: 12px;">'
+          );
+          lines.push('<div style="display: flex; gap: 12px; align-items: flex-start;">');
+          if (item.image) {
+            lines.push(
+              '<div style="width: 120px; flex: 0 0 120px;">' +
+                '<img style="width: 100%; border-radius: 8px; display: block;" src="' +
+                item.image +
+                '" alt="Style photo" />' +
+                "</div>"
+            );
+          }
+
+          lines.push('<div style="flex: 1; min-width: 0;">');
+          lines.push(
+            '<div style="font-weight: 700; margin-bottom: 4px;">' +
+              escapeHtml(item.style_name || item.style_code || "Style") +
+              (item.style_code
+                ? ' <span style="color: #6b7280;">(' +
+                  escapeHtml(item.style_code) +
+                  ")</span>"
+                : "") +
+              "</div>"
+          );
+          lines.push(
+            '<div style="margin-bottom: 8px; color: #374151;">Color: ' +
+              escapeHtml(item.color || "") +
+              "</div>"
+          );
 
           if (orderedSizes.length) {
-            var sizeRow = [];
+            lines.push('<table style="border-collapse: collapse; width: 100%; margin-bottom: 8px;">');
+            lines.push("<thead><tr>");
             for (var h = 0; h < orderedSizes.length; h++) {
-              var sz = orderedSizes[h];
-              sizeRow.push((sz || "-") + ": " + (item.sizes[sz] || 0));
+              lines.push(
+                '<th style="border: 1px solid #d4d4d8; padding: 6px; text-align: center; font-size: 12px;">' +
+                  escapeHtml(orderedSizes[h] || "-") +
+                  "</th>"
+              );
             }
-            lines.push(sizeRow.join(" | "));
+            lines.push("</tr></thead><tbody><tr>");
+            for (var b = 0; b < orderedSizes.length; b++) {
+              var sz = orderedSizes[b];
+              lines.push(
+                '<td style="border: 1px solid #d4d4d8; padding: 8px; text-align: center; font-weight: 700; font-size: 12px;">' +
+                  escapeHtml(item.sizes[sz] || 0) +
+                  "</td>"
+              );
+            }
+            lines.push("</tr></tbody></table>");
           }
 
           if (opts && opts.includeUnitPrice && item.unitPrice) {
             lines.push(
-              "Qty: " +
-                item.total_qty +
-                " · Unit: $" +
-                Number(item.unitPrice).toFixed(2) +
-                " · Amount: $" +
-                amountTotal.toFixed(2)
+              '<div style="font-size: 13px;">Qty: ' +
+                escapeHtml(item.total_qty) +
+                ' · Unit: $' +
+                escapeHtml(Number(item.unitPrice).toFixed(2)) +
+                ' · Amount: $' +
+                escapeHtml(amountTotal.toFixed(2)) +
+                "</div>"
             );
           } else {
-            lines.push("Total pieces: " + item.total_qty);
+            lines.push(
+              '<div style="font-size: 13px;">Total pieces: ' +
+                escapeHtml(item.total_qty) +
+                "</div>"
+            );
           }
 
-          lines.push("");
+          lines.push("</div>");
+          lines.push("</div>");
+          lines.push("</div>");
         }
 
         if (opts && opts.includeNotes && group.notes) {
-          lines.push("Order notes:");
-          lines.push(toPlainText(group.notes));
-          lines.push("");
+          lines.push(
+            '<div style="margin: 10px 0 12px;">' +
+              '<div style="font-weight: 700; margin-bottom: 4px;">Order notes:</div>' +
+              '<div style="white-space: pre-wrap;">' +
+              escapeHtml(group.notes) +
+              "</div>" +
+              "</div>"
+          );
         }
 
-        var showSummary = !opts || opts.showTotalsSummary !== false;
-        var useTax = !opts || opts.useTaxAmount !== false;
-        var useShipping = !opts || opts.useShippingAmount !== false;
-        var taxInfo = parseAmountValue(useTax && opts ? opts.taxAmount : "");
-        var shippingInfo = parseAmountValue(
-          useShipping && opts ? opts.shippingAmount : ""
-        );
-        var hasNonNumericFee =
-          (taxInfo.raw && !taxInfo.hasNumeric) ||
-          (shippingInfo.raw && !shippingInfo.hasNumeric);
-
-        if (showSummary) {
-          var totalAmount = hasPricedLines
-            ? hasNonNumericFee
-              ? null
-              : subtotalAmount + taxInfo.numeric + shippingInfo.numeric
-            : null;
-          lines.push("Totals:");
-          lines.push("Qty total: " + group.total_qty);
-          lines.push(
-            "Subtotal: " +
-              (hasPricedLines ? "$" + subtotalAmount.toFixed(2) : "N/A")
-          );
-          lines.push(
-            "Tax: " +
-              (taxInfo.hasNumeric
-                ? "$" + taxInfo.numeric.toFixed(2)
-                : taxInfo.raw || "N/A")
-          );
-          lines.push(
-            "Shipping: " +
-              (shippingInfo.hasNumeric
-                ? "$" + shippingInfo.numeric.toFixed(2)
-                : shippingInfo.raw || "N/A")
-          );
-          lines.push(
-            "Total: " + (totalAmount !== null ? "$" + totalAmount.toFixed(2) : "N/A")
-          );
-          lines.push("");
-        }
-
-        var footer = toPlainText(
-          (opts && opts.footerLine) || "Generated from BLANCO offline order app."
-        );
+        var footer =
+          (opts && opts.footerLine) || "Generated from BLANCO offline order app.";
         if (footer) lines.push(footer);
-
         return lines.join("\n");
       }
 
@@ -2948,19 +2858,18 @@
         }
 
         var showSummary = !opts || opts.showTotalsSummary !== false;
-        var useTax = !opts || opts.useTaxAmount !== false;
-        var useShipping = !opts || opts.useShippingAmount !== false;
-        var taxInfo = parseAmountValue(useTax && opts ? opts.taxAmount : "");
-        var shippingInfo = parseAmountValue(
-          useShipping && opts ? opts.shippingAmount : ""
-        );
-        var hasNonNumericFee =
-          (taxInfo.raw && !taxInfo.hasNumeric) ||
-          (shippingInfo.raw && !shippingInfo.hasNumeric);
+        var taxAmount =
+          opts && opts.taxAmount !== undefined
+            ? Number(opts.taxAmount || 0)
+            : 0;
+        var shippingAmount =
+          opts && opts.shippingAmount !== undefined
+            ? Number(opts.shippingAmount || 0)
+            : 0;
+        if (isNaN(taxAmount)) taxAmount = 0;
+        if (isNaN(shippingAmount)) shippingAmount = 0;
         var totalAmount = hasPricedLines
-          ? hasNonNumericFee
-            ? null
-            : subtotalAmount + taxInfo.numeric + shippingInfo.numeric
+          ? subtotalAmount + taxAmount + shippingAmount
           : null;
 
         var summaryHtml = "";
@@ -2977,15 +2886,11 @@
             "</strong></div>";
           summaryHtml +=
             "  <div class='summary-row'><span>Tax</span><strong>" +
-            (taxInfo.hasNumeric
-              ? formatMoney(taxInfo.numeric)
-              : escapeHtml(taxInfo.raw || "N/A")) +
+            formatMoney(taxAmount) +
             "</strong></div>";
           summaryHtml +=
             "  <div class='summary-row'><span>Shipping</span><strong>" +
-            (shippingInfo.hasNumeric
-              ? formatMoney(shippingInfo.numeric)
-              : escapeHtml(shippingInfo.raw || "N/A")) +
+            formatMoney(shippingAmount) +
             "</strong></div>";
           summaryHtml +=
             "  <div class='summary-row'><span>Total</span><strong>" +
@@ -3052,15 +2957,19 @@
 
       function exportOrderPDF(ts) {
         var orders = getOrders();
-        var grouped = groupOrdersByTimestamp(orders);
-        var group = grouped.map[ts];
-
-        if (!group) {
+        var match = null;
+        for (var i = 0; i < orders.length; i++) {
+          if (orders[i].created_at === ts) {
+            match = orders[i];
+            break;
+          }
+        }
+        if (!match) {
           alert("Order not found.");
           return;
         }
 
-        var htmlContent = buildOrderHTML(group, emailOpts || {});
+        var htmlContent = buildOrderHTML(match, emailOpts || {});
 
         var docHtml =
           "<!doctype html><html><head><meta charset='UTF-8'>" +
@@ -3098,37 +3007,23 @@
           htmlContent +
           "</body></html>";
 
-        var blob = new Blob([docHtml], { type: "text/html" });
-        var blobUrl = URL.createObjectURL(blob);
-        var w = window.open(blobUrl, "_blank");
+        var w = window.open("", "_blank");
         if (!w) {
-          URL.revokeObjectURL(blobUrl);
           alert("Please allow popups to save the PDF.");
           return;
         }
-
         var triggerPrint = function () {
-          try {
-            w.focus();
-            w.print();
-          } catch (e) {
-            // If the window is blocked or closed, fail silently after revoking the URL.
-          } finally {
-            URL.revokeObjectURL(blobUrl);
-          }
+          w.focus();
+          w.print();
         };
 
-        var whenReady = function () {
-          if (!w || w.closed) return;
-          if (w.document && w.document.readyState === "complete") {
-            triggerPrint();
-          } else {
-            setTimeout(whenReady, 30);
-          }
-        };
+        w.onload = triggerPrint;
+        w.document.write(docHtml);
+        w.document.close();
 
-        w.addEventListener("load", triggerPrint);
-        whenReady();
+        if (w.document.readyState === "complete") {
+          setTimeout(triggerPrint, 30);
+        }
       }
 
       $("exportOrders").onclick = function () {
@@ -3812,16 +3707,6 @@
           $("emailIntroMessage").oninput = saveEmailOptsFromUI;
         if ($("emailFooterLine"))
           $("emailFooterLine").oninput = saveEmailOptsFromUI;
-        if ($("emailShowTotalsSummary"))
-          $("emailShowTotalsSummary").onchange = saveEmailOptsFromUI;
-        if ($("emailUseTaxAmount"))
-          $("emailUseTaxAmount").onchange = saveEmailOptsFromUI;
-        if ($("emailTaxAmount"))
-          $("emailTaxAmount").oninput = saveEmailOptsFromUI;
-        if ($("emailUseShippingAmount"))
-          $("emailUseShippingAmount").onchange = saveEmailOptsFromUI;
-        if ($("emailShippingAmount"))
-          $("emailShippingAmount").oninput = saveEmailOptsFromUI;
         renderProductsGrid();
         renderStylesGrid();
         updateDashboard();
