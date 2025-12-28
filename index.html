@@ -1077,44 +1077,6 @@
                 style="font-size:12px;"
               />
             </div>
-            <div class="field-full" style="margin-top:6px;">
-              <div style="display:flex;align-items:center;gap:6px;">
-                <input
-                  id="emailShowTotalsSummary"
-                  type="checkbox"
-                  style="width:auto;margin:0;"
-                />
-                <span style="font-size:12px;">Include totals summary</span>
-              </div>
-              <p class="subtext" style="margin:4px 0 0;">
-                Adds qty total, subtotal, tax, shipping, and final total to the
-                end of the email.
-              </p>
-            </div>
-            <div class="field-row" style="margin-top:6px;">
-              <div>
-                <label for="emailTaxAmount">Tax ($)</label>
-                <input
-                  id="emailTaxAmount"
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  placeholder="0.00"
-                  style="font-size:12px;"
-                />
-              </div>
-              <div>
-                <label for="emailShippingAmount">Shipping ($)</label>
-                <input
-                  id="emailShippingAmount"
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  placeholder="0.00"
-                  style="font-size:12px;"
-                />
-              </div>
-            </div>
           </div>
 
         </section>
@@ -1352,9 +1314,6 @@
         headingLine: "BLANCO Clothing – Order",
         introMessage: "",
         footerLine: "Generated from BLANCO offline order app.",
-        showTotalsSummary: true,
-        taxAmount: 0,
-        shippingAmount: 0,
       };
       function $(id) {
         return document.getElementById(id);
@@ -1430,12 +1389,6 @@
             emailOpts.introMessage = obj.introMessage || "";
             emailOpts.footerLine =
               obj.footerLine || "Generated from BLANCO offline order app.";
-            emailOpts.showTotalsSummary =
-              obj.showTotalsSummary !== undefined
-                ? !!obj.showTotalsSummary
-                : true;
-            emailOpts.taxAmount = Number(obj.taxAmount || 0);
-            emailOpts.shippingAmount = Number(obj.shippingAmount || 0);
           }
         } catch (e) {}
 
@@ -1457,21 +1410,6 @@
         }
         if ($("emailFooterLine")) {
           $("emailFooterLine").value = emailOpts.footerLine || "";
-        }
-        if ($("emailShowTotalsSummary")) {
-          $("emailShowTotalsSummary").checked = !!emailOpts.showTotalsSummary;
-        }
-        if ($("emailTaxAmount")) {
-          $("emailTaxAmount").value =
-            emailOpts.taxAmount || emailOpts.taxAmount === 0
-              ? Number(emailOpts.taxAmount || 0).toFixed(2)
-              : "";
-        }
-        if ($("emailShippingAmount")) {
-          $("emailShippingAmount").value =
-            emailOpts.shippingAmount || emailOpts.shippingAmount === 0
-              ? Number(emailOpts.shippingAmount || 0).toFixed(2)
-              : "";
         }
       }
 
@@ -1499,19 +1437,6 @@
           emailOpts.footerLine =
             $("emailFooterLine").value.trim() ||
             "Generated from BLANCO offline order app.";
-        }
-        if ($("emailShowTotalsSummary")) {
-          emailOpts.showTotalsSummary = $("emailShowTotalsSummary").checked;
-        }
-        if ($("emailTaxAmount")) {
-          var rawTax = $("emailTaxAmount").value.trim();
-          var parsedTax = Number(rawTax || 0);
-          emailOpts.taxAmount = isNaN(parsedTax) ? 0 : parsedTax;
-        }
-        if ($("emailShippingAmount")) {
-          var rawShip = $("emailShippingAmount").value.trim();
-          var parsedShip = Number(rawShip || 0);
-          emailOpts.shippingAmount = isNaN(parsedShip) ? 0 : parsedShip;
         }
         try {
           localStorage.setItem(
@@ -2662,29 +2587,6 @@
           lines.push("");
         }
 
-        var showSummary = !opts || opts.showTotalsSummary !== false;
-        var taxAmount =
-          opts && opts.taxAmount !== undefined
-            ? Number(opts.taxAmount || 0)
-            : 0;
-        var shippingAmount =
-          opts && opts.shippingAmount !== undefined
-            ? Number(opts.shippingAmount || 0)
-            : 0;
-        if (isNaN(taxAmount)) taxAmount = 0;
-        if (isNaN(shippingAmount)) shippingAmount = 0;
-
-        if (showSummary) {
-          var totalAmount = subtotalAmount + taxAmount + shippingAmount;
-          lines.push("Summary:");
-          lines.push("Qty total: " + group.total_qty);
-          lines.push("Subtotal: $" + subtotalAmount.toFixed(2));
-          lines.push("Tax: $" + taxAmount.toFixed(2));
-          lines.push("Shipping: $" + shippingAmount.toFixed(2));
-          lines.push("Total: $" + totalAmount.toFixed(2));
-          lines.push("");
-        }
-
         var footer =
           (opts && opts.footerLine) || "Generated from BLANCO offline order app.";
         if (footer) lines.push(footer);
@@ -3372,12 +3274,6 @@
           $("emailIntroMessage").oninput = saveEmailOptsFromUI;
         if ($("emailFooterLine"))
           $("emailFooterLine").oninput = saveEmailOptsFromUI;
-        if ($("emailShowTotalsSummary"))
-          $("emailShowTotalsSummary").onchange = saveEmailOptsFromUI;
-        if ($("emailTaxAmount"))
-          $("emailTaxAmount").oninput = saveEmailOptsFromUI;
-        if ($("emailShippingAmount"))
-          $("emailShippingAmount").oninput = saveEmailOptsFromUI;
         renderProductsGrid();
         renderStylesGrid();
         updateDashboard();
