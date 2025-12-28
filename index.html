@@ -2103,6 +2103,9 @@
             "' data-action='csv'>CSV</button> " +
             "<button class='secondary small' data-ts='" +
             g.created_at +
+            "' data-action='pdf'>PDF</button> " +
+            "<button class='secondary small' data-ts='" +
+            g.created_at +
             "' data-action='email'>Email</button>" +
             "</td>";
 
@@ -2123,6 +2126,8 @@
           showOrderDetails(ts);
         } else if (action === "edit") {
           openOrderEditor(ts);
+        } else if (action === "pdf") {
+          exportOrderPDF(ts);
         } else if (action === "email") {
           emailOrder(ts);
         }
@@ -2487,6 +2492,22 @@
         window.location.href = url;
       }
 
+      function escapeHtml(str) {
+        if (str === null || str === undefined) return "";
+        return String(str)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      function formatMoney(val) {
+        var num = Number(val || 0);
+        if (isNaN(num)) num = 0;
+        return "$" + num.toFixed(2);
+      }
+
       function buildOrderEmailBody(group, opts) {
         function escapeHtml(str) {
           return String(str || "")
@@ -2529,6 +2550,9 @@
             escapeHtml(group.total_qty) +
             "</p>"
         );
+
+        lines.push("Items:");
+        lines.push("");
 
         lines.push("Items:");
         lines.push("");
@@ -2674,6 +2698,298 @@
           (opts && opts.footerLine) || "Generated from BLANCO offline order app.";
         if (footer) lines.push(footer);
         return lines.join("\n");
+      }
+
+      function buildOrderHTML(group, opts) {
+        var heading =
+          (opts && opts.headingLine) || "BLANCO Clothing – Order";
+        var intro = opts && opts.introMessage ? opts.introMessage : "";
+        var footer =
+          (opts && opts.footerLine) || "Generated from BLANCO offline order app.";
+
+        var itemMap = {};
+        var keyOrder = [];
+        var subtotalAmount = 0;
+        var hasPricedLines = false;
+
+        for (var i = 0; i < group.lines.length; i++) {
+          var o = group.lines[i];
+          var key =
+            (o.style_code || "") +
+            "|" +
+            (o.style_name || "") +
+            "|" +
+            (o.color || "");
+          if (!itemMap[key]) {
+            var metaKey = styleKeyFromParts(o.style_code || "", o.style_name || "");
+            var meta = (styleMeta && metaKey && styleMeta[metaKey]) || {};
+            itemMap[key] = {
+              style_name: o.style_name || "",
+              style_code: o.style_code || "",
+              styleKey: metaKey,
+              color: o.color || "",
+              sizes: {},
+              total_qty: 0,
+              unitPrice: getLinePrice(o),
+              image: meta.imageDataUrl || "",
+            };
+            keyOrder.push(key);
+          }
+          var item = itemMap[key];
+          var size = o.size || "";
+          if (!item.sizes[size]) item.sizes[size] = 0;
+          item.sizes[size] += Number(o.qty || 0);
+          item.total_qty += Number(o.qty || 0);
+          var unitPriceNum = Number(
+            item.unitPrice === "" || item.unitPrice === null
+              ? NaN
+              : item.unitPrice
+          );
+          if (!isNaN(unitPriceNum)) {
+            hasPricedLines = true;
+            subtotalAmount += unitPriceNum * Number(o.qty || 0);
+          }
+        }
+
+        var itemsHtml = "";
+        for (var k = 0; k < keyOrder.length; k++) {
+          var item = itemMap[keyOrder[k]];
+          var orderedSizes = orderSizesByPreference(
+            item.styleKey,
+            Object.keys(item.sizes)
+          );
+          var amountTotal = 0;
+          if (opts && opts.includeUnitPrice && item.unitPrice) {
+            amountTotal = item.total_qty * Number(item.unitPrice || 0);
+          }
+
+          var styleLabel = escapeHtml(item.style_name || item.style_code || "Style");
+          var styleCodeTag = item.style_code
+            ? " <span class='muted'>(" + escapeHtml(item.style_code) + ")</span>"
+            : "";
+
+          var sizeHead = "";
+          var sizeRow = "";
+          for (var h = 0; h < orderedSizes.length; h++) {
+            var sz = orderedSizes[h];
+            sizeHead +=
+              "<th>" + escapeHtml(sz || "-") + "</th>";
+            sizeRow +=
+              "<td>" + escapeHtml(item.sizes[sz] || 0) + "</td>";
+          }
+
+          itemsHtml += "<div class='item-card'>";
+          itemsHtml += "  <div class='item-body'>";
+          if (item.image) {
+            itemsHtml +=
+              "<div class='item-photo'><img src='" +
+              item.image +
+              "' alt='Style photo' /></div>";
+          }
+          itemsHtml += "    <div class='item-content'>";
+          itemsHtml +=
+            "      <div class='item-title'>" +
+            styleLabel +
+            styleCodeTag +
+            "</div>";
+          itemsHtml +=
+            "      <div class='item-sub'>Color: " +
+            escapeHtml(item.color || "") +
+            "</div>";
+
+          if (orderedSizes.length) {
+            itemsHtml += "      <table class='size-table'><thead><tr>" + sizeHead + "</tr></thead>";
+            itemsHtml += "      <tbody><tr>" + sizeRow + "</tr></tbody></table>";
+          }
+
+          if (opts && opts.includeUnitPrice && item.unitPrice) {
+            itemsHtml +=
+              "      <div class='item-meta'>Qty: " +
+              item.total_qty +
+              " • Unit: " +
+              formatMoney(item.unitPrice) +
+              " • Amount: " +
+              formatMoney(amountTotal) +
+              "</div>";
+          } else {
+            itemsHtml +=
+              "      <div class='item-meta'>Total pieces: " +
+              item.total_qty +
+              "</div>";
+          }
+
+          itemsHtml += "    </div>";
+          itemsHtml += "  </div>";
+          itemsHtml += "</div>";
+        }
+
+        var showSummary = !opts || opts.showTotalsSummary !== false;
+        var taxAmount =
+          opts && opts.taxAmount !== undefined
+            ? Number(opts.taxAmount || 0)
+            : 0;
+        var shippingAmount =
+          opts && opts.shippingAmount !== undefined
+            ? Number(opts.shippingAmount || 0)
+            : 0;
+        if (isNaN(taxAmount)) taxAmount = 0;
+        if (isNaN(shippingAmount)) shippingAmount = 0;
+        var totalAmount = hasPricedLines
+          ? subtotalAmount + taxAmount + shippingAmount
+          : null;
+
+        var summaryHtml = "";
+        if (showSummary) {
+          summaryHtml += "<div class='summary'>";
+          summaryHtml += "  <div class='summary-title'>Totals</div>";
+          summaryHtml +=
+            "  <div class='summary-row'><span>Qty total</span><strong>" +
+            escapeHtml(group.total_qty || 0) +
+            "</strong></div>";
+          summaryHtml +=
+            "  <div class='summary-row'><span>Subtotal</span><strong>" +
+            (hasPricedLines ? formatMoney(subtotalAmount) : "N/A") +
+            "</strong></div>";
+          summaryHtml +=
+            "  <div class='summary-row'><span>Tax</span><strong>" +
+            formatMoney(taxAmount) +
+            "</strong></div>";
+          summaryHtml +=
+            "  <div class='summary-row'><span>Shipping</span><strong>" +
+            formatMoney(shippingAmount) +
+            "</strong></div>";
+          summaryHtml +=
+            "  <div class='summary-row'><span>Total</span><strong>" +
+            (totalAmount !== null ? formatMoney(totalAmount) : "N/A") +
+            "</strong></div>";
+          summaryHtml += "</div>";
+        }
+
+        var notesHtml = "";
+        if (opts && opts.includeNotes && group.notes) {
+          notesHtml += "<div class='notes'>";
+          notesHtml += "  <div class='notes-title'>Order notes</div>";
+          notesHtml +=
+            "  <div class='notes-body'>" +
+            escapeHtml(group.notes).replace(/\n/g, "<br />") +
+            "</div>";
+          notesHtml += "</div>";
+        }
+
+        var html = "";
+        html += "<div class='doc'>";
+        html += "  <div class='heading'>" + escapeHtml(heading) + "</div>";
+        if (intro) {
+          html += "  <p class='intro'>" + escapeHtml(intro) + "</p>";
+        }
+        html += "  <div class='meta-grid'>";
+        html +=
+          "    <div><div class='label'>Customer</div><div class='value'>" +
+          escapeHtml(group.customer_name || "") +
+          "</div></div>";
+        if (group.customer_email)
+          html +=
+            "    <div><div class='label'>Email</div><div class='value'>" +
+            escapeHtml(group.customer_email) +
+            "</div></div>";
+        if (group.customer_phone)
+          html +=
+            "    <div><div class='label'>Phone</div><div class='value'>" +
+            escapeHtml(group.customer_phone) +
+            "</div></div>";
+        html +=
+          "    <div><div class='label'>Date</div><div class='value'>" +
+          escapeHtml(new Date(group.created_at).toLocaleString()) +
+          "</div></div>";
+        html +=
+          "    <div><div class='label'>Total pieces</div><div class='value'>" +
+          escapeHtml(group.total_qty || 0) +
+          "</div></div>";
+        html += "  </div>";
+
+        html += "  <div class='section-title'>Items</div>";
+        html += itemsHtml;
+
+        html += notesHtml;
+        html += summaryHtml;
+
+        if (footer) {
+          html += "  <div class='footer'>" + escapeHtml(footer) + "</div>";
+        }
+        html += "</div>";
+
+        return html;
+      }
+
+      function exportOrderPDF(ts) {
+        var orders = getOrders();
+        var match = null;
+        for (var i = 0; i < orders.length; i++) {
+          if (orders[i].created_at === ts) {
+            match = orders[i];
+            break;
+          }
+        }
+        if (!match) {
+          alert("Order not found.");
+          return;
+        }
+
+        var htmlContent = buildOrderHTML(match, emailOpts || {});
+
+        var docHtml =
+          "<!doctype html><html><head><meta charset='UTF-8'>" +
+          "<title>" +
+          escapeHtml((emailOpts && emailOpts.headingLine) || "BLANCO Clothing – Order") +
+          "</title>" +
+          "<style>" +
+          "body{font-family:Inter,system-ui,-apple-system,sans-serif;background:#f4f4f5;color:#0f172a;padding:18px;}" +
+          "*{box-sizing:border-box;}" +
+          ".doc{max-width:820px;margin:0 auto;background:#fff;border:1px solid #e4e4e7;border-radius:14px;padding:18px;}" +
+          ".heading{font-size:18px;font-weight:700;margin-bottom:6px;}" +
+          ".intro{color:#475569;margin:0 0 10px;}" +
+          ".meta-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;margin:10px 0 6px;}" +
+          ".label{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#94a3b8;margin-bottom:2px;}" +
+          ".value{font-weight:600;color:#0f172a;}" +
+          ".section-title{margin:14px 0 8px;font-weight:700;font-size:15px;}" +
+          ".item-card{border:1px solid #e4e4e7;border-radius:12px;padding:10px;margin-bottom:12px;}" +
+          ".item-body{display:flex;gap:12px;align-items:flex-start;}" +
+          ".item-photo img{width:120px;height:120px;object-fit:cover;border-radius:10px;border:1px solid #e5e7eb;}" +
+          ".item-content{flex:1;min-width:0;}" +
+          ".item-title{font-weight:700;margin-bottom:4px;}" +
+          ".item-title .muted{color:#6b7280;font-weight:600;}" +
+          ".item-sub{margin-bottom:8px;color:#475569;}" +
+          ".size-table{border-collapse:collapse;width:100%;margin-bottom:8px;}" +
+          ".size-table th,.size-table td{border:1px solid #e4e4e7;padding:7px;text-align:center;font-size:12px;}" +
+          ".item-meta{font-size:13px;font-weight:600;color:#0f172a;}" +
+          ".summary{border-top:1px solid #e4e4e7;margin-top:14px;padding-top:10px;}" +
+          ".summary-title{font-weight:700;margin-bottom:6px;}" +
+          ".summary-row{display:flex;justify-content:space-between;padding:4px 0;font-size:13px;}" +
+          ".notes{border-top:1px solid #e4e4e7;margin-top:12px;padding-top:10px;}" +
+          ".notes-title{font-weight:700;margin-bottom:4px;}" +
+          ".notes-body{white-space:pre-wrap;color:#0f172a;}" +
+          ".footer{margin-top:16px;color:#475569;font-size:12px;}" +
+          "</style></head><body>" +
+          htmlContent +
+          "</body></html>";
+
+        var w = window.open("", "_blank");
+        if (!w) {
+          alert("Please allow popups to save the PDF.");
+          return;
+        }
+        var triggerPrint = function () {
+          w.focus();
+          w.print();
+        };
+
+        w.onload = triggerPrint;
+        w.document.write(docHtml);
+        w.document.close();
+
+        if (w.document.readyState === "complete") {
+          setTimeout(triggerPrint, 30);
+        }
       }
 
       $("exportOrders").onclick = function () {
