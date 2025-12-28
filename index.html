@@ -1077,44 +1077,6 @@
                 style="font-size:12px;"
               />
             </div>
-            <div class="field-full" style="margin-top:6px;">
-              <div style="display:flex;align-items:center;gap:6px;">
-                <input
-                  id="emailShowTotalsSummary"
-                  type="checkbox"
-                  style="width:auto;margin:0;"
-                />
-                <span style="font-size:12px;">Include totals summary</span>
-              </div>
-              <p class="subtext" style="margin:4px 0 0;">
-                Adds qty total, subtotal, tax, shipping, and final total to the
-                end of the email.
-              </p>
-            </div>
-            <div class="field-row" style="margin-top:6px;">
-              <div>
-                <label for="emailTaxAmount">Tax ($)</label>
-                <input
-                  id="emailTaxAmount"
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  placeholder="0.00"
-                  style="font-size:12px;"
-                />
-              </div>
-              <div>
-                <label for="emailShippingAmount">Shipping ($)</label>
-                <input
-                  id="emailShippingAmount"
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  placeholder="0.00"
-                  style="font-size:12px;"
-                />
-              </div>
-            </div>
           </div>
 
         </section>
@@ -1352,9 +1314,6 @@
         headingLine: "BLANCO Clothing – Order",
         introMessage: "",
         footerLine: "Generated from BLANCO offline order app.",
-        showTotalsSummary: true,
-        taxAmount: 0,
-        shippingAmount: 0,
       };
       function $(id) {
         return document.getElementById(id);
@@ -1430,12 +1389,6 @@
             emailOpts.introMessage = obj.introMessage || "";
             emailOpts.footerLine =
               obj.footerLine || "Generated from BLANCO offline order app.";
-            emailOpts.showTotalsSummary =
-              obj.showTotalsSummary !== undefined
-                ? !!obj.showTotalsSummary
-                : true;
-            emailOpts.taxAmount = Number(obj.taxAmount || 0);
-            emailOpts.shippingAmount = Number(obj.shippingAmount || 0);
           }
         } catch (e) {}
 
@@ -1457,21 +1410,6 @@
         }
         if ($("emailFooterLine")) {
           $("emailFooterLine").value = emailOpts.footerLine || "";
-        }
-        if ($("emailShowTotalsSummary")) {
-          $("emailShowTotalsSummary").checked = !!emailOpts.showTotalsSummary;
-        }
-        if ($("emailTaxAmount")) {
-          $("emailTaxAmount").value =
-            emailOpts.taxAmount || emailOpts.taxAmount === 0
-              ? Number(emailOpts.taxAmount || 0).toFixed(2)
-              : "";
-        }
-        if ($("emailShippingAmount")) {
-          $("emailShippingAmount").value =
-            emailOpts.shippingAmount || emailOpts.shippingAmount === 0
-              ? Number(emailOpts.shippingAmount || 0).toFixed(2)
-              : "";
         }
       }
 
@@ -1499,19 +1437,6 @@
           emailOpts.footerLine =
             $("emailFooterLine").value.trim() ||
             "Generated from BLANCO offline order app.";
-        }
-        if ($("emailShowTotalsSummary")) {
-          emailOpts.showTotalsSummary = $("emailShowTotalsSummary").checked;
-        }
-        if ($("emailTaxAmount")) {
-          var rawTax = $("emailTaxAmount").value.trim();
-          var parsedTax = Number(rawTax || 0);
-          emailOpts.taxAmount = isNaN(parsedTax) ? 0 : parsedTax;
-        }
-        if ($("emailShippingAmount")) {
-          var rawShip = $("emailShippingAmount").value.trim();
-          var parsedShip = Number(rawShip || 0);
-          emailOpts.shippingAmount = isNaN(parsedShip) ? 0 : parsedShip;
         }
         try {
           localStorage.setItem(
@@ -2577,16 +2502,6 @@
           .replace(/'/g, "&#039;");
       }
 
-      function toPlainText(str) {
-        if (str === null || str === undefined) return "";
-        var text = String(str)
-          .replace(/<br\s*\/?>(\r\n|\n|\r)?/gi, "\n")
-          .replace(/<\/(p|div|li)>/gi, "\n")
-          .replace(/&nbsp;/gi, " ")
-          .replace(/<[^>]+>/g, "");
-        return text.replace(/\r/g, "");
-      }
-
       function formatMoney(val) {
         var num = Number(val || 0);
         if (isNaN(num)) num = 0;
@@ -2594,26 +2509,55 @@
       }
 
       function buildOrderEmailBody(group, opts) {
-        var lines = [];
-
-        var heading = toPlainText(
-          (opts && opts.headingLine) || "BLANCO Clothing – Order"
-        );
-        if (heading) lines.push(heading);
-
-        if (opts && opts.introMessage) {
-          lines.push(toPlainText(opts.introMessage));
-          lines.push("");
+        function escapeHtml(str) {
+          return String(str || "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/\"/g, "&quot;")
+            .replace(/'/g, "&#39;");
         }
 
-        lines.push("Customer: " + toPlainText(group.customer_name || ""));
+        var lines = [];
+        var heading = (opts && opts.headingLine) || "BLANCO Clothing – Order";
+        if (heading) lines.push(heading);
+        lines.push("");
+        if (opts && opts.introMessage) {
+          lines.push(opts.introMessage);
+          lines.push("");
+        }
+        lines.push("Customer: " + (group.customer_name || ""));
         if (group.customer_email)
-          lines.push("Email: " + toPlainText(group.customer_email));
+          lines.push(
+            '<p style="margin: 0 0 4px;">Email: ' +
+              escapeHtml(group.customer_email) +
+              "</p>"
+          );
         if (group.customer_phone)
-          lines.push("Phone: " + toPlainText(group.customer_phone));
-        lines.push("Date: " + new Date(group.created_at).toLocaleString());
+          lines.push(
+            '<p style="margin: 0 0 4px;">Phone: ' +
+              escapeHtml(group.customer_phone) +
+              "</p>"
+          );
+        lines.push(
+          '<p style="margin: 0 0 10px;">Date: ' +
+            escapeHtml(new Date(group.created_at).toLocaleString()) +
+            "</p>"
+        );
 
-        lines.push("Total pieces: " + group.total_qty);
+        lines.push(
+          '<p style="margin: 0 0 12px; font-weight: 600;">Total pieces: ' +
+            escapeHtml(group.total_qty) +
+            "</p>"
+        );
+
+        lines.push("Items:");
+        lines.push("");
+
+        lines.push("Items:");
+        lines.push("");
+
+        lines.push("Items:");
         lines.push("");
 
         lines.push("Items:");
@@ -2623,7 +2567,6 @@
         var itemMap = {};
         var keyOrder = [];
         var subtotalAmount = 0;
-        var hasPricedLines = false;
         for (var i = 0; i < group.lines.length; i++) {
           var o = group.lines[i];
           var key =
@@ -2636,10 +2579,10 @@
             var metaKey = styleKeyFromParts(o.style_code || "", o.style_name || "");
             var meta = (styleMeta && metaKey && styleMeta[metaKey]) || {};
             itemMap[key] = {
-              style_name: toPlainText(o.style_name || ""),
-              style_code: toPlainText(o.style_code || ""),
+              style_name: o.style_name || "",
+              style_code: o.style_code || "",
               styleKey: metaKey,
-              color: toPlainText(o.color || ""),
+              color: o.color || "",
               sizes: {},
               total_qty: 0,
               unitPrice: getLinePrice(o),
@@ -2652,17 +2595,13 @@
           if (!item.sizes[size]) item.sizes[size] = 0;
           item.sizes[size] += Number(o.qty || 0);
           item.total_qty += Number(o.qty || 0);
-          var unitPriceNum = Number(
-            item.unitPrice === "" || item.unitPrice === null
-              ? NaN
-              : item.unitPrice
-          );
+          var unitPriceNum = Number(item.unitPrice || 0);
           if (!isNaN(unitPriceNum)) {
-            hasPricedLines = true;
             subtotalAmount += unitPriceNum * Number(o.qty || 0);
           }
         }
 
+        lines.push('<div style="margin: 0 0 14px; font-weight: 700;">Items</div>');
         for (var k = 0; k < keyOrder.length; k++) {
           var item = itemMap[keyOrder[k]];
           var amountTotal = 0;
@@ -2674,77 +2613,96 @@
             Object.keys(item.sizes)
           );
 
-          var styleLabel = item.style_name || item.style_code || "Style";
-          if (item.style_code) styleLabel += " (" + item.style_code + ")";
-          lines.push(styleLabel);
-          lines.push("Color: " + (item.color || ""));
+          lines.push(
+            '<div style="border: 1px solid #d4d4d8; border-radius: 10px; padding: 10px; margin-bottom: 12px;">'
+          );
+          lines.push('<div style="display: flex; gap: 12px; align-items: flex-start;">');
+          if (item.image) {
+            lines.push(
+              '<div style="width: 120px; flex: 0 0 120px;">' +
+                '<img style="width: 100%; border-radius: 8px; display: block;" src="' +
+                item.image +
+                '" alt="Style photo" />' +
+                "</div>"
+            );
+          }
+
+          lines.push('<div style="flex: 1; min-width: 0;">');
+          lines.push(
+            '<div style="font-weight: 700; margin-bottom: 4px;">' +
+              escapeHtml(item.style_name || item.style_code || "Style") +
+              (item.style_code
+                ? ' <span style="color: #6b7280;">(' +
+                  escapeHtml(item.style_code) +
+                  ")</span>"
+                : "") +
+              "</div>"
+          );
+          lines.push(
+            '<div style="margin-bottom: 8px; color: #374151;">Color: ' +
+              escapeHtml(item.color || "") +
+              "</div>"
+          );
 
           if (orderedSizes.length) {
-            var sizeRow = [];
+            lines.push('<table style="border-collapse: collapse; width: 100%; margin-bottom: 8px;">');
+            lines.push("<thead><tr>");
             for (var h = 0; h < orderedSizes.length; h++) {
-              var sz = orderedSizes[h];
-              sizeRow.push((sz || "-") + ": " + (item.sizes[sz] || 0));
+              lines.push(
+                '<th style="border: 1px solid #d4d4d8; padding: 6px; text-align: center; font-size: 12px;">' +
+                  escapeHtml(orderedSizes[h] || "-") +
+                  "</th>"
+              );
             }
-            lines.push(sizeRow.join(" | "));
+            lines.push("</tr></thead><tbody><tr>");
+            for (var b = 0; b < orderedSizes.length; b++) {
+              var sz = orderedSizes[b];
+              lines.push(
+                '<td style="border: 1px solid #d4d4d8; padding: 8px; text-align: center; font-weight: 700; font-size: 12px;">' +
+                  escapeHtml(item.sizes[sz] || 0) +
+                  "</td>"
+              );
+            }
+            lines.push("</tr></tbody></table>");
           }
 
           if (opts && opts.includeUnitPrice && item.unitPrice) {
             lines.push(
-              "Qty: " +
-                item.total_qty +
-                " · Unit: $" +
-                Number(item.unitPrice).toFixed(2) +
-                " · Amount: $" +
-                amountTotal.toFixed(2)
+              '<div style="font-size: 13px;">Qty: ' +
+                escapeHtml(item.total_qty) +
+                ' · Unit: $' +
+                escapeHtml(Number(item.unitPrice).toFixed(2)) +
+                ' · Amount: $' +
+                escapeHtml(amountTotal.toFixed(2)) +
+                "</div>"
             );
           } else {
-            lines.push("Total pieces: " + item.total_qty);
+            lines.push(
+              '<div style="font-size: 13px;">Total pieces: ' +
+                escapeHtml(item.total_qty) +
+                "</div>"
+            );
           }
 
-          lines.push("");
+          lines.push("</div>");
+          lines.push("</div>");
+          lines.push("</div>");
         }
 
         if (opts && opts.includeNotes && group.notes) {
-          lines.push("Order notes:");
-          lines.push(toPlainText(group.notes));
-          lines.push("");
+          lines.push(
+            '<div style="margin: 10px 0 12px;">' +
+              '<div style="font-weight: 700; margin-bottom: 4px;">Order notes:</div>' +
+              '<div style="white-space: pre-wrap;">' +
+              escapeHtml(group.notes) +
+              "</div>" +
+              "</div>"
+          );
         }
 
-        var showSummary = !opts || opts.showTotalsSummary !== false;
-        var taxAmount =
-          opts && opts.taxAmount !== undefined
-            ? Number(opts.taxAmount || 0)
-            : 0;
-        var shippingAmount =
-          opts && opts.shippingAmount !== undefined
-            ? Number(opts.shippingAmount || 0)
-            : 0;
-        if (isNaN(taxAmount)) taxAmount = 0;
-        if (isNaN(shippingAmount)) shippingAmount = 0;
-
-        if (showSummary) {
-          var totalAmount = hasPricedLines
-            ? subtotalAmount + taxAmount + shippingAmount
-            : null;
-          lines.push("Totals:");
-          lines.push("Qty total: " + group.total_qty);
-          lines.push(
-            "Subtotal: " +
-              (hasPricedLines ? "$" + subtotalAmount.toFixed(2) : "N/A")
-          );
-          lines.push("Tax: $" + taxAmount.toFixed(2));
-          lines.push("Shipping: $" + shippingAmount.toFixed(2));
-          lines.push(
-            "Total: " + (totalAmount !== null ? "$" + totalAmount.toFixed(2) : "N/A")
-          );
-          lines.push("");
-        }
-
-        var footer = toPlainText(
-          (opts && opts.footerLine) || "Generated from BLANCO offline order app."
-        );
+        var footer =
+          (opts && opts.footerLine) || "Generated from BLANCO offline order app.";
         if (footer) lines.push(footer);
-
         return lines.join("\n");
       }
 
@@ -3721,12 +3679,6 @@
           $("emailIntroMessage").oninput = saveEmailOptsFromUI;
         if ($("emailFooterLine"))
           $("emailFooterLine").oninput = saveEmailOptsFromUI;
-        if ($("emailShowTotalsSummary"))
-          $("emailShowTotalsSummary").onchange = saveEmailOptsFromUI;
-        if ($("emailTaxAmount"))
-          $("emailTaxAmount").oninput = saveEmailOptsFromUI;
-        if ($("emailShippingAmount"))
-          $("emailShippingAmount").oninput = saveEmailOptsFromUI;
         renderProductsGrid();
         renderStylesGrid();
         updateDashboard();
