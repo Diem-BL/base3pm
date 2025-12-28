@@ -1448,26 +1448,40 @@
         } catch (e) {}
       }
 
+      function toBoolean(val, defaultVal) {
+        if (val === undefined || val === null) return defaultVal;
+        if (typeof val === "string") {
+          var lower = val.toLowerCase();
+          if (lower === "true") return true;
+          if (lower === "false") return false;
+          if (lower === "1") return true;
+          if (lower === "0") return false;
+        }
+        return !!val;
+      }
+
       function loadEmailOpts() {
         try {
           var raw = localStorage.getItem(EMAIL_OPTS_KEY);
           if (raw) {
             var obj = JSON.parse(raw);
-            emailOpts.includeTotalQty =
-              obj.includeTotalQty !== undefined ? !!obj.includeTotalQty : true;
-            emailOpts.includeTotalsSummary =
-              obj.includeTotalsSummary !== undefined
-                ? !!obj.includeTotalsSummary
-                : true;
-            emailOpts.includeTaxAmount = !!obj.includeTaxAmount;
+            emailOpts.includeTotalQty = toBoolean(
+              obj.includeTotalQty,
+              true
+            );
+            emailOpts.includeTotalsSummary = toBoolean(
+              obj.includeTotalsSummary,
+              true
+            );
+            emailOpts.includeTaxAmount = toBoolean(obj.includeTaxAmount, false);
             emailOpts.taxAmount = obj.taxAmount || 0;
-            emailOpts.includeShippingAmount = !!obj.includeShippingAmount;
+            emailOpts.includeShippingAmount = toBoolean(
+              obj.includeShippingAmount,
+              false
+            );
             emailOpts.shippingAmount = obj.shippingAmount || 0;
-            emailOpts.includeNotes =
-              obj.includeNotes !== undefined
-                ? !!obj.includeNotes
-                : true;
-            emailOpts.includeUnitPrice = !!obj.includeUnitPrice;
+            emailOpts.includeNotes = toBoolean(obj.includeNotes, true);
+            emailOpts.includeUnitPrice = toBoolean(obj.includeUnitPrice, false);
             emailOpts.subjectPrefix =
               obj.subjectPrefix || "BLANCO order";
             emailOpts.headingLine =
@@ -1522,19 +1536,19 @@
       }
 
       function saveEmailOptsFromUI() {
+        var totalsEnabled = isButtonActive("emailToggleTotals");
+
         emailOpts.includeTotalQty = isButtonActive("emailToggleTotalQty");
-        emailOpts.includeTotalsSummary = isButtonActive("emailToggleTotals");
-        emailOpts.includeTaxAmount = isButtonActive("emailUseTaxAmount");
-        emailOpts.includeShippingAmount = isButtonActive(
-          "emailUseShippingAmount"
-        );
+        emailOpts.includeTotalsSummary = totalsEnabled;
+        emailOpts.includeTaxAmount =
+          totalsEnabled && isButtonActive("emailUseTaxAmount");
+        emailOpts.includeShippingAmount =
+          totalsEnabled && isButtonActive("emailUseShippingAmount");
         if ($("emailTaxAmount")) {
           emailOpts.taxAmount = Number($("emailTaxAmount").value || 0);
         }
         if ($("emailShippingAmount")) {
-          emailOpts.shippingAmount = Number(
-            $("emailShippingAmount").value || 0
-          );
+          emailOpts.shippingAmount = Number($("emailShippingAmount").value || 0);
         }
         if ($("emailIncludeNotes")) {
           emailOpts.includeNotes = $("emailIncludeNotes").checked;
@@ -1596,17 +1610,24 @@
       }
 
       function updateEmailAmountInputsState() {
+        var totalsToggle = $("emailToggleTotals");
+        var totalsEnabled = totalsToggle
+          ? isButtonActive("emailToggleTotals")
+          : true;
+
         var taxToggle = $("emailUseTaxAmount");
         var taxInput = $("emailTaxAmount");
         if (taxInput) {
-          taxInput.disabled = taxToggle ? !isButtonActive("emailUseTaxAmount") : false;
+          taxInput.disabled = taxToggle
+            ? !(totalsEnabled && isButtonActive("emailUseTaxAmount"))
+            : false;
         }
 
         var shippingToggle = $("emailUseShippingAmount");
         var shippingInput = $("emailShippingAmount");
         if (shippingInput) {
           shippingInput.disabled = shippingToggle
-            ? !isButtonActive("emailUseShippingAmount")
+            ? !(totalsEnabled && isButtonActive("emailUseShippingAmount"))
             : false;
         }
       }
