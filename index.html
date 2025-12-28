@@ -601,6 +601,44 @@
         padding: 4px 9px;
       }
 
+      .chip-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 8px;
+        border-radius: 999px;
+        background: var(--panel-strong);
+        border: 1px solid var(--border);
+        font-size: 11px;
+        color: var(--text);
+      }
+
+      .chip-actions {
+        display: inline-flex;
+        gap: 4px;
+        align-items: center;
+      }
+
+      .chip-actions button {
+        padding: 2px 6px;
+        font-size: 10px;
+        letter-spacing: 0;
+        text-transform: none;
+        border-radius: 8px;
+        box-shadow: none;
+        background: var(--panel);
+      }
+
+      .chip-label {
+        font-weight: 600;
+      }
+
       /* PRODUCT FORM */
       .product-form {
         display: grid;
@@ -798,7 +836,7 @@
 
       <div class="nav">
         <button id="nav-dashboard" class="active">Dashboard</button>
-        <button id="nav-order">+ Order</button>
+        <button id="nav-order">+ New</button>
         <button id="nav-orders">Orders</button>
         <button id="nav-products">Products</button>
       </div>
@@ -827,7 +865,7 @@
             </div>
           </div>
           <div class="actions" style="justify-content:flex-start;margin-top:8px">
-            <button id="dash-new-order">+ New order</button>
+            <button id="dash-new-order">+ New</button>
             <button id="dash-orders" class="secondary small">
               View orders
             </button>
@@ -946,7 +984,7 @@
             </button>
           </div>
           <div id="ordersEmpty" class="empty">
-            No orders yet – create one from the + Order tab.
+            No orders yet – create one from the + New tab.
           </div>
           <table id="ordersTable" style="display:none;margin-top:6px">
             <thead>
@@ -1062,7 +1100,7 @@
             <div>
               <h2>Products</h2>
               <p class="subtext">
-                Manage styles used in the + Order flow. Data is stored offline on
+                Manage styles used in the + New flow. Data is stored offline on
                 this device.
               </p>
             </div>
@@ -1361,7 +1399,7 @@
         if (viewId === "view-dashboard")
           $("viewLabel").innerHTML = "Dashboard";
         if (viewId === "view-order")
-          $("viewLabel").innerHTML = "+ Order";
+          $("viewLabel").innerHTML = "+ New";
         if (viewId === "view-orders")
           $("viewLabel").innerHTML = "Orders";
         if (viewId === "view-products")
@@ -1423,9 +1461,7 @@
 
       // ---------- CATALOG STRUCTURE ----------
       function getStyleKey(row) {
-        var code = (row.style_code || "").trim();
-        var name = (row.style_name || "").trim();
-        return code || name;
+        return styleKeyFromParts(row.style_code || "", row.style_name || "");
       }
 
       function buildStylesIndex() {
@@ -1443,6 +1479,7 @@
               colors: {},
             };
           }
+
           var color = (row.color || "").trim();
           var size = (row.size || "").trim();
           if (color) {
@@ -1459,6 +1496,35 @@
           if (row.price && !map[key].price) map[key].price = row.price;
         }
         return map;
+      }
+
+      function orderSizesByPreference(styleKey, sizes) {
+        var list = sizes.slice();
+        if (!styleKey) return list;
+        var meta = styleMeta[styleKey] || {};
+        var preferred = meta.sizeOrder || [];
+        if (!preferred.length) return list;
+
+        var added = {};
+        var ordered = [];
+
+        for (var i = 0; i < preferred.length; i++) {
+          var val = preferred[i];
+          if (list.indexOf(val) !== -1 && !added[val]) {
+            ordered.push(val);
+            added[val] = true;
+          }
+        }
+
+        for (var j = 0; j < list.length; j++) {
+          var sz = list[j];
+          if (!added[sz]) {
+            ordered.push(sz);
+            added[sz] = true;
+          }
+        }
+
+        return ordered;
       }
 
       // ---------- ORDER FLOW ----------
@@ -1725,10 +1791,7 @@
             var grid = document.createElement("div");
             grid.className = "sizes-grid";
 
-            var sizes = sizesInfo.sizes.slice();
-            sizes.sort(function (a, b) {
-              return a.localeCompare(b, undefined, { numeric: true });
-            });
+            var sizes = orderSizesByPreference(key, sizesInfo.sizes);
 
             for (var s = 0; s < sizes.length; s++) {
               var size = sizes[s];
@@ -2504,7 +2567,10 @@
 
       // ---------- CATALOG VIEW (cards + modal) ----------
       function styleKeyFromParts(code, name) {
-        return (code || "").trim() + "::" + (name || "").trim();
+        var cleanCode = (code || "").trim();
+        var cleanName = (name || "").trim();
+        if (!cleanCode && !cleanName) return "";
+        return cleanCode + "::" + cleanName;
       }
 
       function buildStylesIndexForProducts() {
@@ -2686,6 +2752,8 @@
                 modalSizes.push(size);
             }
           }
+
+          modalSizes = orderSizesByPreference(styleKey, modalSizes);
         } else {
           $("modalTitle").innerHTML = "New style";
           $("modalStyleName").value = "";
@@ -2731,10 +2799,19 @@
             var chip = document.createElement("span");
             chip.className = "chip";
             chip.innerHTML =
+              '<span class="chip-label">' +
               modalSizes[idx2] +
-              ' <button type="button" data-type="size" data-idx="' +
+              '</span><span class="chip-actions">' +
+              ' <button type="button" data-action="up" data-idx="' +
               idx2 +
-              '">×</button>';
+              '">↑</button>' +
+              ' <button type="button" data-action="down" data-idx="' +
+              idx2 +
+              '">↓</button>' +
+              ' <button type="button" data-action="remove" data-idx="' +
+              idx2 +
+              '">×</button>' +
+              "</span>";
             sizesRow.appendChild(chip);
           })(i);
         }
@@ -2747,13 +2824,29 @@
         var idx = Number(t.getAttribute("data-idx"));
         if (type === "color") {
           modalColors.splice(idx, 1);
-        } else if (type === "size") {
-          modalSizes.splice(idx, 1);
         }
         renderModalChips();
       };
 
-      $("modalSizesRow").onclick = $("modalColorsRow").onclick;
+      $("modalSizesRow").onclick = function (e) {
+        var t = e.target || e.srcElement;
+        if (t.tagName.toLowerCase() !== "button") return;
+        var action = t.getAttribute("data-action");
+        var idx = Number(t.getAttribute("data-idx"));
+
+        if (action === "remove") {
+          modalSizes.splice(idx, 1);
+        } else if (action === "up" && idx > 0) {
+          var tmp = modalSizes[idx - 1];
+          modalSizes[idx - 1] = modalSizes[idx];
+          modalSizes[idx] = tmp;
+        } else if (action === "down" && idx < modalSizes.length - 1) {
+          var tmp2 = modalSizes[idx + 1];
+          modalSizes[idx + 1] = modalSizes[idx];
+          modalSizes[idx] = tmp2;
+        }
+        renderModalChips();
+      };
 
       $("addColorBtn").onclick = function () {
         var v = $("modalColorInput").value.replace(/\s+$/, "");
@@ -2865,7 +2958,14 @@
 
         catalog = newCatalog;
         saveCatalog(catalog);
-        saveStyleMetaEntry(newKey, desc, cat, inStock, modalImageDataUrl);
+        saveStyleMetaEntry(
+          newKey,
+          desc,
+          cat,
+          inStock,
+          modalImageDataUrl,
+          modalSizes
+        );
 
         renderProductsGrid();
         renderStylesGrid();
@@ -2874,13 +2974,22 @@
         alert("Style saved.");
       };
 
-      function saveStyleMetaEntry(key, desc, cat, inStock, imageDataUrl) {
+      function saveStyleMetaEntry(
+        key,
+        desc,
+        cat,
+        inStock,
+        imageDataUrl,
+        sizeOrder
+      ) {
         if (!key) return;
         if (!styleMeta[key]) styleMeta[key] = {};
         styleMeta[key].description = desc || "";
         styleMeta[key].category = cat || "";
         styleMeta[key].in_stock = !!inStock;
         if (imageDataUrl) styleMeta[key].imageDataUrl = imageDataUrl;
+        if (sizeOrder && sizeOrder.length)
+          styleMeta[key].sizeOrder = sizeOrder.slice();
         saveStyleMeta();
       }
 
