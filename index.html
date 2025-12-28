@@ -666,9 +666,10 @@
         inset: 0;
         background: rgba(0, 0, 0, 0.7);
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         justify-content: center;
         padding: 20px;
+        overflow-y: auto;
       }
 
       .modal-content {
@@ -679,6 +680,9 @@
         width: 100%;
         max-width: 460px;
         box-shadow: 0 18px 36px rgba(0, 0, 0, 0.45);
+        max-height: calc(100vh - 60px);
+        display: flex;
+        flex-direction: column;
       }
 
       .modal-header {
@@ -695,6 +699,12 @@
         justify-content: flex-end;
         gap: 8px;
         margin-top: 12px;
+      }
+
+      .modal-body {
+        flex: 1 1 auto;
+        overflow-y: auto;
+        padding-right: 4px;
       }
 
       /* ORDER DETAIL */
@@ -1012,7 +1022,7 @@
           <div style="margin-top:12px;border-top:1px solid var(--border);padding-top:8px;">
             <h3 style="margin:0 0 4px;font-size:14px;">Email template options</h3>
             <p class="subtext" style="margin-bottom:4px;">
-              Choose what to include when emailing orders.
+              Customize the outgoing order email.
             </p>
             <div class="field-row">
               <div style="display:flex;align-items:center;gap:6px;">
@@ -1031,6 +1041,41 @@
                 />
                 <span style="font-size:12px;">Show unit price on items</span>
               </div>
+            </div>
+            <div class="field-full" style="margin-top:6px;">
+              <label for="emailSubjectPrefix">Subject prefix</label>
+              <input
+                id="emailSubjectPrefix"
+                placeholder="BLANCO order"
+                style="font-size:12px;"
+              />
+              <p class="subtext" style="margin:2px 0 0;">
+                Appears before customer name and date in the subject line.
+              </p>
+            </div>
+            <div class="field-full" style="margin-top:6px;">
+              <label for="emailHeadingLine">Email heading</label>
+              <input
+                id="emailHeadingLine"
+                placeholder="BLANCO Clothing – Order"
+                style="font-size:12px;"
+              />
+            </div>
+            <div class="field-full" style="margin-top:6px;">
+              <label for="emailIntroMessage">Intro message (optional)</label>
+              <textarea
+                id="emailIntroMessage"
+                placeholder="Thank you for your order. Please see details below."
+                style="font-size:12px;"
+              ></textarea>
+            </div>
+            <div class="field-full" style="margin-top:6px;">
+              <label for="emailFooterLine">Footer line</label>
+              <input
+                id="emailFooterLine"
+                placeholder="Generated from BLANCO offline order app."
+                style="font-size:12px;"
+              />
             </div>
           </div>
 
@@ -1265,6 +1310,10 @@
       var emailOpts = {
         includeNotes: true,
         includeUnitPrice: false,
+        subjectPrefix: "BLANCO order",
+        headingLine: "BLANCO Clothing – Order",
+        introMessage: "",
+        footerLine: "Generated from BLANCO offline order app.",
       };
       function $(id) {
         return document.getElementById(id);
@@ -1333,6 +1382,13 @@
                 ? !!obj.includeNotes
                 : true;
             emailOpts.includeUnitPrice = !!obj.includeUnitPrice;
+            emailOpts.subjectPrefix =
+              obj.subjectPrefix || "BLANCO order";
+            emailOpts.headingLine =
+              obj.headingLine || "BLANCO Clothing – Order";
+            emailOpts.introMessage = obj.introMessage || "";
+            emailOpts.footerLine =
+              obj.footerLine || "Generated from BLANCO offline order app.";
           }
         } catch (e) {}
 
@@ -1343,6 +1399,18 @@
           $("emailIncludeUnitPrice").checked =
             !!emailOpts.includeUnitPrice;
         }
+        if ($("emailSubjectPrefix")) {
+          $("emailSubjectPrefix").value = emailOpts.subjectPrefix || "";
+        }
+        if ($("emailHeadingLine")) {
+          $("emailHeadingLine").value = emailOpts.headingLine || "";
+        }
+        if ($("emailIntroMessage")) {
+          $("emailIntroMessage").value = emailOpts.introMessage || "";
+        }
+        if ($("emailFooterLine")) {
+          $("emailFooterLine").value = emailOpts.footerLine || "";
+        }
       }
 
       function saveEmailOptsFromUI() {
@@ -1352,6 +1420,23 @@
         if ($("emailIncludeUnitPrice")) {
           emailOpts.includeUnitPrice =
             $("emailIncludeUnitPrice").checked;
+        }
+        if ($("emailSubjectPrefix")) {
+          emailOpts.subjectPrefix =
+            $("emailSubjectPrefix").value.trim() || "BLANCO order";
+        }
+        if ($("emailHeadingLine")) {
+          emailOpts.headingLine =
+            $("emailHeadingLine").value.trim() || "BLANCO Clothing – Order";
+        }
+        if ($("emailIntroMessage")) {
+          emailOpts.introMessage =
+            $("emailIntroMessage").value.trim();
+        }
+        if ($("emailFooterLine")) {
+          emailOpts.footerLine =
+            $("emailFooterLine").value.trim() ||
+            "Generated from BLANCO offline order app.";
         }
         try {
           localStorage.setItem(
@@ -2379,8 +2464,11 @@
         var g = grouped.map[ts];
         if (!g) return;
 
+        var subjectPrefix =
+          (emailOpts && emailOpts.subjectPrefix) || "BLANCO order";
         var subject =
-          "BLANCO order – " +
+          subjectPrefix +
+          " – " +
           (g.customer_name || "Customer") +
           " – " +
           new Date(g.created_at).toLocaleDateString();
@@ -2401,8 +2489,13 @@
 
       function buildOrderEmailBody(group, opts) {
         var lines = [];
-        lines.push("BLANCO Clothing – Order");
+        var heading = (opts && opts.headingLine) || "BLANCO Clothing – Order";
+        if (heading) lines.push(heading);
         lines.push("");
+        if (opts && opts.introMessage) {
+          lines.push(opts.introMessage);
+          lines.push("");
+        }
         lines.push("Customer: " + (group.customer_name || ""));
         if (group.customer_email)
           lines.push("Email: " + group.customer_email);
@@ -2489,7 +2582,9 @@
           lines.push("");
         }
 
-        lines.push("Generated from BLANCO offline order app.");
+        var footer =
+          (opts && opts.footerLine) || "Generated from BLANCO offline order app.";
+        if (footer) lines.push(footer);
         return lines.join("\n");
       }
 
@@ -3166,6 +3261,14 @@
         if ($("emailIncludeUnitPrice"))
           $("emailIncludeUnitPrice").onchange =
             saveEmailOptsFromUI;
+        if ($("emailSubjectPrefix"))
+          $("emailSubjectPrefix").oninput = saveEmailOptsFromUI;
+        if ($("emailHeadingLine"))
+          $("emailHeadingLine").oninput = saveEmailOptsFromUI;
+        if ($("emailIntroMessage"))
+          $("emailIntroMessage").oninput = saveEmailOptsFromUI;
+        if ($("emailFooterLine"))
+          $("emailFooterLine").oninput = saveEmailOptsFromUI;
         renderProductsGrid();
         renderStylesGrid();
         updateDashboard();
