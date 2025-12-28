@@ -1444,6 +1444,22 @@
             JSON.stringify(emailOpts)
           );
         } catch (e) {}
+
+        updateEmailAmountInputsState();
+      }
+
+      function updateEmailAmountInputsState() {
+        var taxToggle = $("emailUseTaxAmount");
+        var taxInput = $("emailTaxAmount");
+        if (taxInput) {
+          taxInput.disabled = taxToggle ? !taxToggle.checked : false;
+        }
+
+        var shippingToggle = $("emailUseShippingAmount");
+        var shippingInput = $("emailShippingAmount");
+        if (shippingInput) {
+          shippingInput.disabled = shippingToggle ? !shippingToggle.checked : false;
+        }
       }
 
       // ---------- NAV ----------
@@ -2550,6 +2566,9 @@
             escapeHtml(group.total_qty) +
             "</p>"
         );
+
+        lines.push("Items:");
+        lines.push("");
 
         lines.push("Items:");
         lines.push("");
