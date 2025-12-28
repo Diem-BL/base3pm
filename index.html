@@ -2478,7 +2478,7 @@
           " – " +
           new Date(g.created_at).toLocaleDateString();
 
-        var body = buildOrderEmailBody(g, emailOpts);
+        var body = toPlainText(buildOrderEmailBody(g, emailOpts));
 
         var to = g.customer_email || "";
         var url =
@@ -2550,6 +2550,9 @@
             escapeHtml(group.total_qty) +
             "</p>"
         );
+
+        lines.push("Items:");
+        lines.push("");
 
         lines.push("Items:");
         lines.push("");
