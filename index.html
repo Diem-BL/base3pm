@@ -2488,6 +2488,15 @@
       }
 
       function buildOrderEmailBody(group, opts) {
+        function escapeHtml(str) {
+          return String(str || "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/\"/g, "&quot;")
+            .replace(/'/g, "&#39;");
+        }
+
         var lines = [];
         var heading = (opts && opts.headingLine) || "BLANCO Clothing – Order";
         if (heading) lines.push(heading);
@@ -2498,16 +2507,28 @@
         }
         lines.push("Customer: " + (group.customer_name || ""));
         if (group.customer_email)
-          lines.push("Email: " + group.customer_email);
+          lines.push(
+            '<p style="margin: 0 0 4px;">Email: ' +
+              escapeHtml(group.customer_email) +
+              "</p>"
+          );
         if (group.customer_phone)
-          lines.push("Phone: " + group.customer_phone);
+          lines.push(
+            '<p style="margin: 0 0 4px;">Phone: ' +
+              escapeHtml(group.customer_phone) +
+              "</p>"
+          );
         lines.push(
-          "Date: " +
-            new Date(group.created_at).toLocaleString()
+          '<p style="margin: 0 0 10px;">Date: ' +
+            escapeHtml(new Date(group.created_at).toLocaleString()) +
+            "</p>"
         );
-        lines.push("");
-        lines.push("Total pieces: " + group.total_qty);
-        lines.push("");
+
+        lines.push(
+          '<p style="margin: 0 0 12px; font-weight: 600;">Total pieces: ' +
+            escapeHtml(group.total_qty) +
+            "</p>"
+        );
 
         // group by style/color
         var itemMap = {};
@@ -2522,13 +2543,17 @@
             "|" +
             (o.color || "");
           if (!itemMap[key]) {
+            var metaKey = styleKeyFromParts(o.style_code || "", o.style_name || "");
+            var meta = (styleMeta && metaKey && styleMeta[metaKey]) || {};
             itemMap[key] = {
               style_name: o.style_name || "",
               style_code: o.style_code || "",
+              styleKey: metaKey,
               color: o.color || "",
               sizes: {},
               total_qty: 0,
               unitPrice: getLinePrice(o),
+              image: meta.imageDataUrl || "",
             };
             keyOrder.push(key);
           }
@@ -2543,48 +2568,103 @@
           }
         }
 
-        lines.push("Items:");
+        lines.push('<div style="margin: 0 0 14px; font-weight: 700;">Items</div>');
         for (var k = 0; k < keyOrder.length; k++) {
           var item = itemMap[keyOrder[k]];
-          lines.push(
-            "- " +
-              (item.style_name || item.style_code || "Style") +
-              (item.style_code
-                ? " (" + item.style_code + ")"
-                : "") +
-              " – Color: " +
-              (item.color || "")
+          var amountTotal = 0;
+          if (opts && opts.includeUnitPrice && item.unitPrice) {
+            amountTotal = item.total_qty * Number(item.unitPrice || 0);
+          }
+          var orderedSizes = orderSizesByPreference(
+            item.styleKey,
+            Object.keys(item.sizes)
           );
 
-          var sizeParts = [];
-          for (var size in item.sizes) {
-            if (!item.sizes.hasOwnProperty(size)) continue;
-            sizeParts.push(size + ": " + item.sizes[size]);
+          lines.push(
+            '<div style="border: 1px solid #d4d4d8; border-radius: 10px; padding: 10px; margin-bottom: 12px;">'
+          );
+          lines.push('<div style="display: flex; gap: 12px; align-items: flex-start;">');
+          if (item.image) {
+            lines.push(
+              '<div style="width: 120px; flex: 0 0 120px;">' +
+                '<img style="width: 100%; border-radius: 8px; display: block;" src="' +
+                item.image +
+                '" alt="Style photo" />' +
+                "</div>"
+            );
           }
-          if (sizeParts.length) {
-            lines.push("  Sizes: " + sizeParts.join(", "));
+
+          lines.push('<div style="flex: 1; min-width: 0;">');
+          lines.push(
+            '<div style="font-weight: 700; margin-bottom: 4px;">' +
+              escapeHtml(item.style_name || item.style_code || "Style") +
+              (item.style_code
+                ? ' <span style="color: #6b7280;">(' +
+                  escapeHtml(item.style_code) +
+                  ")</span>"
+                : "") +
+              "</div>"
+          );
+          lines.push(
+            '<div style="margin-bottom: 8px; color: #374151;">Color: ' +
+              escapeHtml(item.color || "") +
+              "</div>"
+          );
+
+          if (orderedSizes.length) {
+            lines.push('<table style="border-collapse: collapse; width: 100%; margin-bottom: 8px;">');
+            lines.push("<thead><tr>");
+            for (var h = 0; h < orderedSizes.length; h++) {
+              lines.push(
+                '<th style="border: 1px solid #d4d4d8; padding: 6px; text-align: center; font-size: 12px;">' +
+                  escapeHtml(orderedSizes[h] || "-") +
+                  "</th>"
+              );
+            }
+            lines.push("</tr></thead><tbody><tr>");
+            for (var b = 0; b < orderedSizes.length; b++) {
+              var sz = orderedSizes[b];
+              lines.push(
+                '<td style="border: 1px solid #d4d4d8; padding: 8px; text-align: center; font-weight: 700; font-size: 12px;">' +
+                  escapeHtml(item.sizes[sz] || 0) +
+                  "</td>"
+              );
+            }
+            lines.push("</tr></tbody></table>");
           }
 
           if (opts && opts.includeUnitPrice && item.unitPrice) {
-            var amount =
-              item.total_qty * Number(item.unitPrice || 0);
             lines.push(
-              "  Price: $" +
-                Number(item.unitPrice).toFixed(2) +
-                " each – Amount: $" +
-                amount.toFixed(2)
+              '<div style="font-size: 13px;">Qty: ' +
+                escapeHtml(item.total_qty) +
+                ' · Unit: $' +
+                escapeHtml(Number(item.unitPrice).toFixed(2)) +
+                ' · Amount: $' +
+                escapeHtml(amountTotal.toFixed(2)) +
+                "</div>"
             );
           } else {
-            lines.push("  Total pieces: " + item.total_qty);
+            lines.push(
+              '<div style="font-size: 13px;">Total pieces: ' +
+                escapeHtml(item.total_qty) +
+                "</div>"
+            );
           }
 
-          lines.push("");
+          lines.push("</div>");
+          lines.push("</div>");
+          lines.push("</div>");
         }
 
         if (opts && opts.includeNotes && group.notes) {
-          lines.push("Order notes:");
-          lines.push(group.notes);
-          lines.push("");
+          lines.push(
+            '<div style="margin: 10px 0 12px;">' +
+              '<div style="font-weight: 700; margin-bottom: 4px;">Order notes:</div>' +
+              '<div style="white-space: pre-wrap;">' +
+              escapeHtml(group.notes) +
+              "</div>" +
+              "</div>"
+          );
         }
 
         var footer =
