@@ -2694,6 +2694,7 @@
         var itemMap = {};
         var keyOrder = [];
         var subtotalAmount = 0;
+        var hasPricedLines = false;
         for (var i = 0; i < group.lines.length; i++) {
           var o = group.lines[i];
           var key =
@@ -2722,8 +2723,13 @@
           if (!item.sizes[size]) item.sizes[size] = 0;
           item.sizes[size] += Number(o.qty || 0);
           item.total_qty += Number(o.qty || 0);
-          var unitPriceNum = Number(item.unitPrice || 0);
+          var unitPriceNum = Number(
+            item.unitPrice === "" || item.unitPrice === null
+              ? NaN
+              : item.unitPrice
+          );
           if (!isNaN(unitPriceNum)) {
+            hasPricedLines = true;
             subtotalAmount += unitPriceNum * Number(o.qty || 0);
           }
         }
@@ -2763,11 +2769,11 @@
                 formatMoney(amountTotal)
             );
           } else {
-          lines.push("  Total pieces: " + item.total_qty);
-        }
+            lines.push("  Total pieces: " + item.total_qty);
+          }
 
-        lines.push("");
-      }
+          lines.push("");
+        }
 
         if (opts && opts.includeTotalsSummary) {
           var taxAmount = opts.includeTaxAmount ? Number(opts.taxAmount || 0) : 0;
