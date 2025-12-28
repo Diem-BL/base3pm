@@ -1025,6 +1025,76 @@
               Customize the outgoing order email.
             </p>
             <div class="field-row">
+              <button
+                id="emailToggleTotalQty"
+                type="button"
+                class="secondary small"
+                style="width:100%;"
+                data-active="1"
+              >
+                Total quantity of items
+              </button>
+              <button
+                id="emailToggleTotals"
+                type="button"
+                class="secondary small"
+                style="width:100%;"
+                data-active="1"
+              >
+                Total cost summary
+              </button>
+            </div>
+            <div class="field-row" style="margin-top:6px;align-items:flex-end;">
+              <div>
+                <label for="emailUseTaxAmount" style="margin-bottom:4px;">Tax</label>
+                <div style="display:flex;gap:6px;align-items:center;">
+                  <button
+                    id="emailUseTaxAmount"
+                    type="button"
+                    class="secondary small"
+                    data-active="0"
+                    style="white-space:nowrap;"
+                  >
+                    Include tax
+                  </button>
+                  <input
+                    id="emailTaxAmount"
+                    type="number"
+                    step="0.01"
+                    placeholder="0.00"
+                    style="font-size:12px;"
+                  />
+                </div>
+                <p class="subtext" style="margin:2px 0 0;">
+                  Added to totals when enabled.
+                </p>
+              </div>
+              <div>
+                <label for="emailUseShippingAmount" style="margin-bottom:4px;">Shipping</label>
+                <div style="display:flex;gap:6px;align-items:center;">
+                  <button
+                    id="emailUseShippingAmount"
+                    type="button"
+                    class="secondary small"
+                    data-active="0"
+                    style="white-space:nowrap;"
+                  >
+                    Include shipping
+                  </button>
+                  <input
+                    id="emailShippingAmount"
+                    type="number"
+                    step="0.01"
+                    placeholder="0.00"
+                    style="font-size:12px;"
+                  />
+                </div>
+                <p class="subtext" style="margin:2px 0 0;">
+                  Added to totals when enabled.
+                </p>
+              </div>
+            </div>
+            <div class="field-row" style="margin-top:6px;">
               <div style="display:flex;align-items:center;gap:6px;">
                 <input
                   id="emailIncludeNotes"
@@ -1308,6 +1378,12 @@
       var selectedColors = {}; // styleKey -> { color: true }
       var currentStep = 1;
       var emailOpts = {
+        includeTotalQty: true,
+        includeTotalsSummary: true,
+        includeTaxAmount: false,
+        taxAmount: 0,
+        includeShippingAmount: false,
+        shippingAmount: 0,
         includeNotes: true,
         includeUnitPrice: false,
         subjectPrefix: "BLANCO order",
@@ -1377,6 +1453,16 @@
           var raw = localStorage.getItem(EMAIL_OPTS_KEY);
           if (raw) {
             var obj = JSON.parse(raw);
+            emailOpts.includeTotalQty =
+              obj.includeTotalQty !== undefined ? !!obj.includeTotalQty : true;
+            emailOpts.includeTotalsSummary =
+              obj.includeTotalsSummary !== undefined
+                ? !!obj.includeTotalsSummary
+                : true;
+            emailOpts.includeTaxAmount = !!obj.includeTaxAmount;
+            emailOpts.taxAmount = obj.taxAmount || 0;
+            emailOpts.includeShippingAmount = !!obj.includeShippingAmount;
+            emailOpts.shippingAmount = obj.shippingAmount || 0;
             emailOpts.includeNotes =
               obj.includeNotes !== undefined
                 ? !!obj.includeNotes
@@ -1391,6 +1477,26 @@
               obj.footerLine || "Generated from BLANCO offline order app.";
           }
         } catch (e) {}
+
+        setToggleButtonState("emailToggleTotalQty", !!emailOpts.includeTotalQty);
+        setToggleButtonState(
+          "emailToggleTotals",
+          !!emailOpts.includeTotalsSummary
+        );
+        setToggleButtonState(
+          "emailUseTaxAmount",
+          !!emailOpts.includeTaxAmount
+        );
+        setToggleButtonState(
+          "emailUseShippingAmount",
+          !!emailOpts.includeShippingAmount
+        );
+        if ($("emailTaxAmount")) {
+          $("emailTaxAmount").value = emailOpts.taxAmount || 0;
+        }
+        if ($("emailShippingAmount")) {
+          $("emailShippingAmount").value = emailOpts.shippingAmount || 0;
+        }
 
         if ($("emailIncludeNotes")) {
           $("emailIncludeNotes").checked = !!emailOpts.includeNotes;
@@ -1411,9 +1517,25 @@
         if ($("emailFooterLine")) {
           $("emailFooterLine").value = emailOpts.footerLine || "";
         }
+
+        updateEmailAmountInputsState();
       }
 
       function saveEmailOptsFromUI() {
+        emailOpts.includeTotalQty = isButtonActive("emailToggleTotalQty");
+        emailOpts.includeTotalsSummary = isButtonActive("emailToggleTotals");
+        emailOpts.includeTaxAmount = isButtonActive("emailUseTaxAmount");
+        emailOpts.includeShippingAmount = isButtonActive(
+          "emailUseShippingAmount"
+        );
+        if ($("emailTaxAmount")) {
+          emailOpts.taxAmount = Number($("emailTaxAmount").value || 0);
+        }
+        if ($("emailShippingAmount")) {
+          emailOpts.shippingAmount = Number(
+            $("emailShippingAmount").value || 0
+          );
+        }
         if ($("emailIncludeNotes")) {
           emailOpts.includeNotes = $("emailIncludeNotes").checked;
         }
@@ -1448,17 +1570,44 @@
         updateEmailAmountInputsState();
       }
 
+      function setToggleButtonState(id, active) {
+        var el = $(id);
+        if (!el) return;
+        el.setAttribute("data-active", active ? "1" : "0");
+        if (active) {
+          if (el.className.indexOf("active") === -1)
+            el.className += " active";
+        } else {
+          el.className = el.className.replace("active", "").trim();
+        }
+      }
+
+      function isButtonActive(id) {
+        var el = $(id);
+        if (!el) return false;
+        return el.getAttribute("data-active") === "1";
+      }
+
+      function toggleButton(id) {
+        var el = $(id);
+        if (!el) return;
+        var next = !isButtonActive(id);
+        setToggleButtonState(id, next);
+      }
+
       function updateEmailAmountInputsState() {
         var taxToggle = $("emailUseTaxAmount");
         var taxInput = $("emailTaxAmount");
         if (taxInput) {
-          taxInput.disabled = taxToggle ? !taxToggle.checked : false;
+          taxInput.disabled = taxToggle ? !isButtonActive("emailUseTaxAmount") : false;
         }
 
         var shippingToggle = $("emailUseShippingAmount");
         var shippingInput = $("emailShippingAmount");
         if (shippingInput) {
-          shippingInput.disabled = shippingToggle ? !shippingToggle.checked : false;
+          shippingInput.disabled = shippingToggle
+            ? !isButtonActive("emailUseShippingAmount")
+            : false;
         }
       }
 
@@ -2533,7 +2682,9 @@
         if (group.customer_phone) lines.push("Phone: " + group.customer_phone);
         lines.push("Date: " + new Date(group.created_at).toLocaleString());
 
-        lines.push("Total pieces: " + (group.total_qty || 0));
+        if (!opts || opts.includeTotalQty !== false) {
+          lines.push("Total pieces: " + (group.total_qty || 0));
+        }
 
         lines.push("");
         lines.push("Items:");
@@ -2612,9 +2763,35 @@
                 formatMoney(amountTotal)
             );
           } else {
-            lines.push("  Total pieces: " + item.total_qty);
-          }
+          lines.push("  Total pieces: " + item.total_qty);
+        }
 
+        lines.push("");
+      }
+
+        if (opts && opts.includeTotalsSummary) {
+          var taxAmount = opts.includeTaxAmount ? Number(opts.taxAmount || 0) : 0;
+          var shippingAmount = opts.includeShippingAmount
+            ? Number(opts.shippingAmount || 0)
+            : 0;
+          if (isNaN(taxAmount)) taxAmount = 0;
+          if (isNaN(shippingAmount)) shippingAmount = 0;
+          var totalAmount = hasPricedLines
+            ? subtotalAmount + taxAmount + shippingAmount
+            : null;
+          lines.push("Totals:");
+          lines.push(
+            "Subtotal: " + (hasPricedLines ? formatMoney(subtotalAmount) : "N/A")
+          );
+          if (opts.includeTaxAmount) {
+            lines.push("Tax: " + formatMoney(taxAmount));
+          }
+          if (opts.includeShippingAmount) {
+            lines.push("Shipping: " + formatMoney(shippingAmount));
+          }
+          lines.push(
+            "Total: " + (totalAmount !== null ? formatMoney(totalAmount) : "N/A")
+          );
           lines.push("");
         }
 
@@ -2754,12 +2931,19 @@
         }
 
         var showSummary = !opts || opts.showTotalsSummary !== false;
+        if (
+          opts &&
+          opts.includeTotalQty === false &&
+          opts.includeTotalsSummary === false
+        ) {
+          showSummary = false;
+        }
         var taxAmount =
-          opts && opts.taxAmount !== undefined
+          opts && opts.includeTaxAmount
             ? Number(opts.taxAmount || 0)
             : 0;
         var shippingAmount =
-          opts && opts.shippingAmount !== undefined
+          opts && opts.includeShippingAmount
             ? Number(opts.shippingAmount || 0)
             : 0;
         if (isNaN(taxAmount)) taxAmount = 0;
@@ -2772,26 +2956,34 @@
         if (showSummary) {
           summaryHtml += "<div class='summary'>";
           summaryHtml += "  <div class='summary-title'>Totals</div>";
-          summaryHtml +=
-            "  <div class='summary-row'><span>Qty total</span><strong>" +
-            escapeHtml(group.total_qty || 0) +
-            "</strong></div>";
-          summaryHtml +=
-            "  <div class='summary-row'><span>Subtotal</span><strong>" +
-            (hasPricedLines ? formatMoney(subtotalAmount) : "N/A") +
-            "</strong></div>";
-          summaryHtml +=
-            "  <div class='summary-row'><span>Tax</span><strong>" +
-            formatMoney(taxAmount) +
-            "</strong></div>";
-          summaryHtml +=
-            "  <div class='summary-row'><span>Shipping</span><strong>" +
-            formatMoney(shippingAmount) +
-            "</strong></div>";
-          summaryHtml +=
-            "  <div class='summary-row'><span>Total</span><strong>" +
-            (totalAmount !== null ? formatMoney(totalAmount) : "N/A") +
-            "</strong></div>";
+          if (!opts || opts.includeTotalQty !== false) {
+            summaryHtml +=
+              "  <div class='summary-row'><span>Qty total</span><strong>" +
+              escapeHtml(group.total_qty || 0) +
+              "</strong></div>";
+          }
+          if (!opts || opts.includeTotalsSummary) {
+            summaryHtml +=
+              "  <div class='summary-row'><span>Subtotal</span><strong>" +
+              (hasPricedLines ? formatMoney(subtotalAmount) : "N/A") +
+              "</strong></div>";
+            if (opts.includeTaxAmount) {
+              summaryHtml +=
+                "  <div class='summary-row'><span>Tax</span><strong>" +
+                formatMoney(taxAmount) +
+                "</strong></div>";
+            }
+            if (opts.includeShippingAmount) {
+              summaryHtml +=
+                "  <div class='summary-row'><span>Shipping</span><strong>" +
+                formatMoney(shippingAmount) +
+                "</strong></div>";
+            }
+            summaryHtml +=
+              "  <div class='summary-row'><span>Total</span><strong>" +
+              (totalAmount !== null ? formatMoney(totalAmount) : "N/A") +
+              "</strong></div>";
+          }
           summaryHtml += "</div>";
         }
 
@@ -2831,10 +3023,11 @@
           "    <div><div class='label'>Date</div><div class='value'>" +
           escapeHtml(new Date(group.created_at).toLocaleString()) +
           "</div></div>";
-        html +=
-          "    <div><div class='label'>Total pieces</div><div class='value'>" +
-          escapeHtml(group.total_qty || 0) +
-          "</div></div>";
+        if (!opts || opts.includeTotalQty !== false)
+          html +=
+            "    <div><div class='label'>Total pieces</div><div class='value'>" +
+            escapeHtml(group.total_qty || 0) +
+            "</div></div>";
         html += "  </div>";
 
         html += "  <div class='section-title'>Items</div>";
@@ -3518,6 +3711,30 @@
         catalog = getCatalog();
         loadStyleMeta();
         loadEmailOpts();
+        if ($("emailToggleTotalQty"))
+          $("emailToggleTotalQty").onclick = function () {
+            toggleButton("emailToggleTotalQty");
+            saveEmailOptsFromUI();
+          };
+        if ($("emailToggleTotals"))
+          $("emailToggleTotals").onclick = function () {
+            toggleButton("emailToggleTotals");
+            saveEmailOptsFromUI();
+          };
+        if ($("emailUseTaxAmount"))
+          $("emailUseTaxAmount").onclick = function () {
+            toggleButton("emailUseTaxAmount");
+            saveEmailOptsFromUI();
+          };
+        if ($("emailUseShippingAmount"))
+          $("emailUseShippingAmount").onclick = function () {
+            toggleButton("emailUseShippingAmount");
+            saveEmailOptsFromUI();
+          };
+        if ($("emailTaxAmount"))
+          $("emailTaxAmount").oninput = saveEmailOptsFromUI;
+        if ($("emailShippingAmount"))
+          $("emailShippingAmount").oninput = saveEmailOptsFromUI;
         if ($("emailIncludeNotes"))
           $("emailIncludeNotes").onchange =
             saveEmailOptsFromUI;
