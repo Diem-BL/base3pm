@@ -3376,7 +3376,8 @@
 
       function downloadCSV(orders, filename) {
         var csv = buildOrdersCSV(orders);
-        var blob = new Blob([csv], {
+        var bom = new Uint8Array([0xef, 0xbb, 0xbf]);
+        var blob = new Blob([bom, csv], {
           type: "text/csv;charset=utf-8;",
         });
         var url = URL.createObjectURL(blob);
