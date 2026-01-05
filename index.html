@@ -2302,6 +2302,31 @@
         return { map: groups, keys: keys };
       }
 
+      function escapeRegExp(str) {
+        return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      }
+
+      function buildDuplicateCustomerName(baseName, grouped) {
+        var name = (baseName || "Order").trim();
+        if (!name) name = "Order";
+
+        var pattern = new RegExp(
+          "^" + escapeRegExp(name) + "( \\((\\d+)\\))?$"
+        );
+        var highest = 1;
+
+        for (var i = 0; i < grouped.keys.length; i++) {
+          var existingName = (grouped.map[grouped.keys[i]].customer_name || "").trim();
+          var match = pattern.exec(existingName);
+          if (match) {
+            var num = match[2] ? Number(match[2]) : 1;
+            if (num >= highest) highest = num;
+          }
+        }
+
+        return name + " (" + (highest + 1) + ")";
+      }
+
       function renderOrders() {
         var orders = getOrders();
         var table = $("ordersTable");
@@ -2402,6 +2427,9 @@
             "' data-action='edit'>Edit</button> " +
             "<button class='secondary small' data-ts='" +
             g.created_at +
+            "' data-action='duplicate'>Duplicate</button> " +
+            "<button class='secondary small' data-ts='" +
+            g.created_at +
             "' data-action='csv'>CSV</button> " +
             "<button class='secondary small' data-ts='" +
             g.created_at +
@@ -2425,10 +2453,41 @@
           showOrderDetails(ts);
         } else if (action === "edit") {
           openOrderEditor(ts);
+        } else if (action === "duplicate") {
+          duplicateOrder(ts);
         } else if (action === "email") {
           emailOrder(ts);
         }
       };
+
+      function duplicateOrder(ts) {
+        var orders = getOrders();
+        var grouped = groupOrdersByTimestamp(orders);
+        var group = grouped.map[ts];
+        if (!group) return;
+
+        var newTs = new Date().toISOString();
+        var newName = buildDuplicateCustomerName(group.customer_name || "", grouped);
+
+        for (var i = 0; i < group.lines.length; i++) {
+          var ln = group.lines[i];
+          orders.push({
+            created_at: newTs,
+            customer_name: newName,
+            customer_email: group.customer_email,
+            customer_phone: group.customer_phone,
+            style_code: ln.style_code || "",
+            style_name: ln.style_name || "",
+            color: ln.color || "",
+            size: ln.size || "",
+            qty: ln.qty,
+            notes: group.notes,
+          });
+        }
+
+        saveOrdersList(orders);
+        renderOrders();
+      }
 
       function exportSingleOrderCSV(ts) {
         var orders = getOrders();
