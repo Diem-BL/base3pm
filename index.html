@@ -839,7 +839,6 @@
         background: var(--panel-strong);
         overflow: hidden;
         height: 190px;
-        touch-action: none;
       }
 
       .signature-box canvas,
@@ -847,8 +846,6 @@
         width: 100%;
         height: 100%;
         display: block;
-        touch-action: none;
-        user-select: none;
       }
 
       .signature-placeholder {
@@ -966,6 +963,10 @@
             <div>
               <label for="custName">Customer</label>
               <input id="custName" placeholder="Customer name" />
+            </div>
+            <div>
+              <label for="custClub">Country club</label>
+              <input id="custClub" placeholder="Club name" />
             </div>
             <div>
               <label for="custEmail">Email</label>
@@ -1259,6 +1260,10 @@
                 <input id="orderEditName" placeholder="Customer name" />
               </div>
               <div>
+                <label for="orderEditClub">Country club</label>
+                <input id="orderEditClub" placeholder="Club name" />
+              </div>
+              <div>
                 <label for="orderEditEmail">Email</label>
                 <input
                   id="orderEditEmail"
@@ -1490,7 +1495,6 @@
       var signatureHasDrawing = false;
       var signatureDrawing = false;
       var signatureCtx = null;
-      var signatureTouchBlockersAttached = false;
       function $(id) {
         return document.getElementById(id);
       }
@@ -1934,6 +1938,7 @@
       function resetOrderFlow() {
         setStep(1);
         $("custName").value = "";
+        $("custClub").value = "";
         $("custEmail").value = "";
         $("custPhone").value = "";
         $("orderNotes").value = "";
@@ -2221,6 +2226,11 @@
           alert("Customer name is required.");
           return;
         }
+        var club = $("custClub").value.replace(/\s+$/, "");
+        if (!club) {
+          alert("Country club is required.");
+          return;
+        }
         var email = $("custEmail").value;
         var phone = $("custPhone").value;
         var notes = $("orderNotes").value;
@@ -2254,6 +2264,7 @@
           orders.push({
             created_at: nowIso,
             customer_name: cust,
+            customer_club: club,
             customer_email: email,
             customer_phone: phone,
             style_code: meta.code || "",
@@ -2282,6 +2293,7 @@
             groups[key] = {
               created_at: o.created_at,
               customer_name: o.customer_name,
+              customer_club: o.customer_club,
               customer_email: o.customer_email,
               customer_phone: o.customer_phone,
               notes: o.notes,
@@ -2296,6 +2308,9 @@
           var g = groups[key];
           g.lines.push(o);
           g.total_qty += Number(o.qty || 0);
+          if (!g.customer_club && o.customer_club) {
+            g.customer_club = o.customer_club;
+          }
 
           var sName = o.style_name || o.style_code || "";
           if (sName) g.styles[sName] = true;
@@ -2304,6 +2319,31 @@
         }
         keys.sort();
         return { map: groups, keys: keys };
+      }
+
+      function escapeRegExp(str) {
+        return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      }
+
+      function buildDuplicateCustomerName(baseName, grouped) {
+        var name = (baseName || "Order").trim();
+        if (!name) name = "Order";
+
+        var pattern = new RegExp(
+          "^" + escapeRegExp(name) + "( \\((\\d+)\\))?$"
+        );
+        var highest = 1;
+
+        for (var i = 0; i < grouped.keys.length; i++) {
+          var existingName = (grouped.map[grouped.keys[i]].customer_name || "").trim();
+          var match = pattern.exec(existingName);
+          if (match) {
+            var num = match[2] ? Number(match[2]) : 1;
+            if (num >= highest) highest = num;
+          }
+        }
+
+        return name + " (" + (highest + 1) + ")";
       }
 
       function renderOrders() {
@@ -2384,11 +2424,15 @@
             minute: "2-digit",
           });
 
+          var customerLabel =
+            (g.customer_name || "") +
+            (g.customer_club ? " • " + g.customer_club : "");
+
           tr.innerHTML =
             "<td>" +
             time +
             "</td><td>" +
-            (g.customer_name || "") +
+            customerLabel +
             "</td><td>" +
             styleLabel +
             "</td><td>" +
@@ -2404,6 +2448,9 @@
             "<button class='secondary small' data-ts='" +
             g.created_at +
             "' data-action='edit'>Edit</button> " +
+            "<button class='secondary small' data-ts='" +
+            g.created_at +
+            "' data-action='duplicate'>Duplicate</button> " +
             "<button class='secondary small' data-ts='" +
             g.created_at +
             "' data-action='csv'>CSV</button> " +
@@ -2429,10 +2476,42 @@
           showOrderDetails(ts);
         } else if (action === "edit") {
           openOrderEditor(ts);
+        } else if (action === "duplicate") {
+          duplicateOrder(ts);
         } else if (action === "email") {
           emailOrder(ts);
         }
       };
+
+      function duplicateOrder(ts) {
+        var orders = getOrders();
+        var grouped = groupOrdersByTimestamp(orders);
+        var group = grouped.map[ts];
+        if (!group) return;
+
+        var newTs = new Date().toISOString();
+        var newName = buildDuplicateCustomerName(group.customer_name || "", grouped);
+
+        for (var i = 0; i < group.lines.length; i++) {
+          var ln = group.lines[i];
+          orders.push({
+            created_at: newTs,
+            customer_name: newName,
+            customer_club: group.customer_club,
+            customer_email: group.customer_email,
+            customer_phone: group.customer_phone,
+            style_code: ln.style_code || "",
+            style_name: ln.style_name || "",
+            color: ln.color || "",
+            size: ln.size || "",
+            qty: ln.qty,
+            notes: group.notes,
+          });
+        }
+
+        saveOrdersList(orders);
+        renderOrders();
+      }
 
       function exportSingleOrderCSV(ts) {
         var orders = getOrders();
@@ -2457,16 +2536,13 @@
         $("orderDetailPanel").style.display = "block";
 
         var dateStr = new Date(g.created_at).toLocaleString();
-        var metaText =
-          (g.customer_name || "Customer") +
-          " • " +
-          dateStr +
-          (g.customer_email ? " • " + g.customer_email : "") +
-          (g.customer_phone ? " • " + g.customer_phone : "");
-        if (g.notes) {
-          metaText += " • Notes: " + g.notes;
-        }
-        $("orderDetailMeta").innerHTML = metaText;
+        var metaParts = [g.customer_name || "Customer"];
+        if (g.customer_club) metaParts.push(g.customer_club);
+        metaParts.push(dateStr);
+        if (g.customer_email) metaParts.push(g.customer_email);
+        if (g.customer_phone) metaParts.push(g.customer_phone);
+        if (g.notes) metaParts.push("Notes: " + g.notes);
+        $("orderDetailMeta").innerHTML = metaParts.join(" • ");
 
         var container = $("orderDetailItems");
         container.innerHTML = "";
@@ -2671,31 +2747,10 @@
         }
       }
 
-      function attachSignatureTouchBlockers() {
-        if (signatureTouchBlockersAttached) return;
-        var canvas = $("signatureCanvas");
-        var box = $("signatureBox");
-        if (!canvas || !box) return;
-
-        var blockTouch = function (e) {
-          if (e.cancelable) e.preventDefault();
-        };
-
-        ["touchstart", "touchmove", "touchend", "touchcancel"].forEach(
-          function (evt) {
-            canvas.addEventListener(evt, blockTouch, { passive: false });
-            box.addEventListener(evt, blockTouch, { passive: false });
-          }
-        );
-
-        signatureTouchBlockersAttached = true;
-      }
-
       function startSignatureDraw(e) {
         if (signatureMode !== "edit") return;
         if (!signatureCtx) resizeSignatureCanvas();
         if (!signatureCtx) return;
-        if (e.preventDefault) e.preventDefault();
         signatureDrawing = true;
         signatureHasDrawing = true;
         var rect = $("signatureCanvas").getBoundingClientRect();
@@ -2707,7 +2762,7 @@
       function continueSignatureDraw(e) {
         if (!signatureDrawing || signatureMode !== "edit") return;
         if (!signatureCtx) return;
-        if (e.preventDefault) e.preventDefault();
+        e.preventDefault();
         var rect = $("signatureCanvas").getBoundingClientRect();
         signatureCtx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
         signatureCtx.stroke();
@@ -2800,6 +2855,7 @@
         editingOrderTs = ts;
 
         $("orderEditName").value = g.customer_name || "";
+        $("orderEditClub").value = g.customer_club || "";
         $("orderEditEmail").value = g.customer_email || "";
         $("orderEditPhone").value = g.customer_phone || "";
         $("orderEditNotes").value = g.notes || "";
@@ -2838,6 +2894,11 @@
         var cust = $("orderEditName").value.replace(/\s+$/, "");
         if (!cust) {
           alert("Customer name is required.");
+          return;
+        }
+        var club = $("orderEditClub").value.replace(/\s+$/, "");
+        if (!club) {
+          alert("Country club is required.");
           return;
         }
         var email = $("orderEditEmail").value;
@@ -2882,6 +2943,7 @@
           filtered.push({
             created_at: editingOrderTs,
             customer_name: cust,
+            customer_club: club,
             customer_email: email,
             customer_phone: phone,
             style_code: ln.style_code || "",
@@ -2970,6 +3032,8 @@
           lines.push("");
         }
         lines.push("Customer: " + (group.customer_name || ""));
+        if (group.customer_club)
+          lines.push("Country club: " + group.customer_club);
         if (group.customer_email) lines.push("Email: " + group.customer_email);
         if (group.customer_phone) lines.push("Phone: " + group.customer_phone);
         lines.push("Date: " + new Date(group.created_at).toLocaleString());
@@ -3307,6 +3371,11 @@
           "    <div><div class='label'>Customer</div><div class='value'>" +
           escapeHtml(group.customer_name || "") +
           "</div></div>";
+        if (group.customer_club)
+          html +=
+            "    <div><div class='label'>Country club</div><div class='value'>" +
+            escapeHtml(group.customer_club) +
+            "</div></div>";
         if (group.customer_email)
           html +=
             "    <div><div class='label'>Email</div><div class='value'>" +
@@ -3360,6 +3429,7 @@
         var headers = [
           "created_at",
           "customer_name",
+          "customer_club",
           "customer_email",
           "customer_phone",
           "style_code",
@@ -3376,6 +3446,7 @@
           rows.push([
             o.created_at || "",
             o.customer_name || "",
+            o.customer_club || "",
             o.customer_email || "",
             o.customer_phone || "",
             o.style_code || "",
@@ -3401,7 +3472,8 @@
 
       function downloadCSV(orders, filename) {
         var csv = buildOrdersCSV(orders);
-        var blob = new Blob([csv], {
+        var bom = new Uint8Array([0xef, 0xbb, 0xbf]);
+        var blob = new Blob([bom, csv], {
           type: "text/csv;charset=utf-8;",
         });
         var url = URL.createObjectURL(blob);
@@ -4010,7 +4082,6 @@
         signatureCanvasEl.addEventListener("pointermove", continueSignatureDraw);
         signatureCanvasEl.addEventListener("pointerup", endSignatureDraw);
         signatureCanvasEl.addEventListener("pointerleave", endSignatureDraw);
-        attachSignatureTouchBlockers();
       }
 
       if ($("signatureSaveBtn")) $("signatureSaveBtn").onclick = saveSignature;
