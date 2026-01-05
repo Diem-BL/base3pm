@@ -839,6 +839,7 @@
         background: var(--panel-strong);
         overflow: hidden;
         height: 190px;
+        touch-action: none;
       }
 
       .signature-box canvas,
@@ -846,6 +847,8 @@
         width: 100%;
         height: 100%;
         display: block;
+        touch-action: none;
+        user-select: none;
       }
 
       .signature-placeholder {
@@ -1495,6 +1498,8 @@
       var signatureHasDrawing = false;
       var signatureDrawing = false;
       var signatureCtx = null;
+      var signatureTouchBlockersAttached = false;
+      var signatureScrollBlockerAttached = false;
       function $(id) {
         return document.getElementById(id);
       }
@@ -2747,10 +2752,53 @@
         }
       }
 
+      function attachSignatureTouchBlockers() {
+        if (signatureTouchBlockersAttached) return;
+        var canvas = $("signatureCanvas");
+        var box = $("signatureBox");
+        if (!canvas || !box) return;
+
+        var blockTouch = function (e) {
+          if (e.cancelable) e.preventDefault();
+        };
+
+        ["touchstart", "touchmove", "touchend", "touchcancel"].forEach(
+          function (evt) {
+            canvas.addEventListener(evt, blockTouch, { passive: false });
+            box.addEventListener(evt, blockTouch, { passive: false });
+          }
+        );
+
+        signatureTouchBlockersAttached = true;
+      }
+
+      function attachSignatureScrollBlocker() {
+        if (signatureScrollBlockerAttached) return;
+        var block = function (e) {
+          if (signatureDrawing && e.cancelable) e.preventDefault();
+        };
+        document.addEventListener("touchmove", block, { passive: false });
+        document.addEventListener("touchstart", block, { passive: false });
+        signatureScrollBlockerAttached = true;
+        attachSignatureScrollBlocker._handler = block;
+      }
+
+      function detachSignatureScrollBlocker() {
+        if (!signatureScrollBlockerAttached) return;
+        var block = attachSignatureScrollBlocker._handler;
+        if (block) {
+          document.removeEventListener("touchmove", block, { passive: false });
+          document.removeEventListener("touchstart", block, { passive: false });
+        }
+        signatureScrollBlockerAttached = false;
+      }
+
       function startSignatureDraw(e) {
         if (signatureMode !== "edit") return;
         if (!signatureCtx) resizeSignatureCanvas();
         if (!signatureCtx) return;
+        if (e.preventDefault) e.preventDefault();
+        attachSignatureScrollBlocker();
         signatureDrawing = true;
         signatureHasDrawing = true;
         var rect = $("signatureCanvas").getBoundingClientRect();
@@ -2762,7 +2810,7 @@
       function continueSignatureDraw(e) {
         if (!signatureDrawing || signatureMode !== "edit") return;
         if (!signatureCtx) return;
-        e.preventDefault();
+        if (e.preventDefault) e.preventDefault();
         var rect = $("signatureCanvas").getBoundingClientRect();
         signatureCtx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
         signatureCtx.stroke();
@@ -2771,6 +2819,7 @@
       function endSignatureDraw() {
         if (!signatureDrawing) return;
         signatureDrawing = false;
+        detachSignatureScrollBlocker();
       }
 
       function saveSignature() {
@@ -4082,6 +4131,7 @@
         signatureCanvasEl.addEventListener("pointermove", continueSignatureDraw);
         signatureCanvasEl.addEventListener("pointerup", endSignatureDraw);
         signatureCanvasEl.addEventListener("pointerleave", endSignatureDraw);
+        attachSignatureTouchBlockers();
       }
 
       if ($("signatureSaveBtn")) $("signatureSaveBtn").onclick = saveSignature;
