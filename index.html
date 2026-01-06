@@ -1886,7 +1886,9 @@
       // ---------- DASHBOARD ----------
       function updateDashboard() {
         var orders = getOrders();
-        $("stat-orders").innerHTML = String(orders.length);
+        var groupedOrders = groupOrdersByTimestamp(orders);
+        var orderCount = groupedOrders.keys.length;
+        $("stat-orders").innerHTML = String(orderCount);
 
         var styleMap = {};
         for (var i = 0; i < catalog.length; i++) {
@@ -1899,11 +1901,12 @@
         }
         $("stat-styles").innerHTML = String(styleCount);
 
-        if (!orders.length) {
+        if (!orderCount) {
           $("stat-last").innerHTML = "—";
           $("lastActivity").innerHTML = "No orders yet";
         } else {
-          var last = orders[orders.length - 1];
+          var lastKey = groupedOrders.keys[groupedOrders.keys.length - 1];
+          var last = groupedOrders.map[lastKey];
           var ts = new Date(last.created_at).toLocaleString();
           $("stat-last").innerHTML = ts;
           $("lastActivity").innerHTML = "Last order: " + ts;
