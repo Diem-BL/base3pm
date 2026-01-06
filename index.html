@@ -878,23 +878,76 @@
       .edit-lines {
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: 10px;
       }
 
       .edit-line {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-        gap: 8px;
-        padding: 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
         border-radius: 10px;
         border: 1px solid var(--border);
         background: var(--panel);
       }
 
+      .edit-line-header {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+        gap: 8px;
+      }
+
+      .edit-line label {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+        display: block;
+        margin-bottom: 4px;
+      }
+
+      .edit-line .sizes-grid {
+        margin-top: 2px;
+      }
+
+      .edit-line-label {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+      }
+
+      .edit-size-chip {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .size-chip input[type="text"] {
+        width: 100%;
+        padding: 6px 8px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: var(--panel);
+        color: var(--text);
+        font-size: 11px;
+      }
+
+      .size-chip input[type="text"]:focus {
+        outline: none;
+        border-color: var(--accent);
+      }
+
       .edit-line-actions {
         display: flex;
-        align-items: flex-end;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .edit-size-actions {
+        display: flex;
         justify-content: flex-end;
+        gap: 6px;
       }
     </style>
   </head>
@@ -2847,52 +2900,156 @@
         var row = document.createElement("div");
         row.className = "edit-line";
 
-        var styleName = document.createElement("input");
-        styleName.placeholder = "Style name";
-        styleName.value = (line && line.style_name) || "";
-        styleName.setAttribute("data-field", "style-name");
+        var header = document.createElement("div");
+        header.className = "edit-line-header";
 
-        var styleCode = document.createElement("input");
-        styleCode.placeholder = "Style code";
-        styleCode.value = (line && line.style_code) || "";
-        styleCode.setAttribute("data-field", "style-code");
+        function buildField(label, placeholder, field, value) {
+          var wrap = document.createElement("div");
+          var lab = document.createElement("label");
+          lab.innerHTML = label;
+          var input = document.createElement("input");
+          input.placeholder = placeholder;
+          input.value = value || "";
+          input.setAttribute("data-field", field);
+          wrap.appendChild(lab);
+          wrap.appendChild(input);
+          return { wrap: wrap, input: input };
+        }
 
-        var color = document.createElement("input");
-        color.placeholder = "Color";
-        color.value = (line && line.color) || "";
-        color.setAttribute("data-field", "color");
+        var styleNameField = buildField(
+          "Product name",
+          "Product name",
+          "style-name",
+          (line && line.style_name) || ""
+        );
+        var styleCodeField = buildField(
+          "Style code (optional)",
+          "Code",
+          "style-code",
+          (line && line.style_code) || ""
+        );
+        var colorField = buildField(
+          "Color",
+          "Color",
+          "color",
+          (line && line.color) || ""
+        );
 
-        var size = document.createElement("input");
-        size.placeholder = "Size";
-        size.value = (line && line.size) || "";
-        size.setAttribute("data-field", "size");
+        header.appendChild(styleNameField.wrap);
+        header.appendChild(styleCodeField.wrap);
+        header.appendChild(colorField.wrap);
 
-        var qty = document.createElement("input");
-        qty.type = "number";
-        qty.min = "0";
-        qty.step = "1";
-        qty.placeholder = "Qty";
-        qty.value = line && line.qty ? line.qty : "";
-        qty.setAttribute("data-field", "qty");
+        row.appendChild(header);
+
+        var sizesLabel = document.createElement("div");
+        sizesLabel.className = "edit-line-label";
+        sizesLabel.innerHTML = "Sizes & qty";
+        row.appendChild(sizesLabel);
+
+        var sizeGrid = document.createElement("div");
+        sizeGrid.className = "sizes-grid";
+
+        function addSizeChip(sizeVal, qtyVal) {
+          var chip = document.createElement("div");
+          chip.className = "size-chip edit-size-chip";
+
+          var sizeInput = document.createElement("input");
+          sizeInput.type = "text";
+          sizeInput.placeholder = "Size";
+          sizeInput.value = sizeVal || "";
+          sizeInput.setAttribute("data-field", "size");
+          chip.appendChild(sizeInput);
+
+          var qtyInput = document.createElement("input");
+          qtyInput.type = "number";
+          qtyInput.min = "0";
+          qtyInput.step = "1";
+          qtyInput.placeholder = "Qty";
+          qtyInput.value = qtyVal > 0 ? qtyVal : "";
+          qtyInput.setAttribute("data-field", "qty");
+          chip.appendChild(qtyInput);
+
+          sizeGrid.appendChild(chip);
+        }
+
+        var sizeMap = (line && line.sizes) || {};
+        var sizeNames = [];
+        for (var sz in sizeMap) {
+          if (!sizeMap.hasOwnProperty(sz)) continue;
+          sizeNames.push(sz);
+        }
+
+        var styleKey = styleKeyFromParts(
+          (line && line.style_code) || "",
+          (line && line.style_name) || ""
+        );
+        var orderedSizes = sizeNames.length
+          ? orderSizesByPreference(styleKey, sizeNames)
+          : [];
+
+        if (!orderedSizes.length) orderedSizes.push("");
+
+        for (var idx = 0; idx < orderedSizes.length; idx++) {
+          var szKey = orderedSizes[idx];
+          addSizeChip(szKey, sizeMap[szKey] || 0);
+        }
+
+        row.appendChild(sizeGrid);
+
+        var lineActions = document.createElement("div");
+        lineActions.className = "edit-line-actions";
+
+        var sizeActions = document.createElement("div");
+        sizeActions.className = "edit-size-actions";
+        var addSizeBtn = document.createElement("button");
+        addSizeBtn.className = "secondary small";
+        addSizeBtn.innerHTML = "+ Add size";
+        addSizeBtn.onclick = function () {
+          addSizeChip("", "");
+        };
+        sizeActions.appendChild(addSizeBtn);
 
         var actions = document.createElement("div");
-        actions.className = "edit-line-actions";
         var removeBtn = document.createElement("button");
         removeBtn.className = "secondary small";
-        removeBtn.innerHTML = "Remove";
+        removeBtn.innerHTML = "Remove product";
         removeBtn.onclick = function () {
           container.removeChild(row);
         };
         actions.appendChild(removeBtn);
 
-        row.appendChild(styleName);
-        row.appendChild(styleCode);
-        row.appendChild(color);
-        row.appendChild(size);
-        row.appendChild(qty);
-        row.appendChild(actions);
+        lineActions.appendChild(sizeActions);
+        lineActions.appendChild(actions);
+
+        row.appendChild(lineActions);
 
         container.appendChild(row);
+      }
+
+      function groupLinesForEditor(lines) {
+        var groups = [];
+        var map = {};
+        for (var i = 0; i < lines.length; i++) {
+          var ln = lines[i];
+          var key =
+            styleKeyFromParts(ln.style_code || "", ln.style_name || "") +
+            "::" +
+            (ln.color || "");
+          if (!map[key]) {
+            map[key] = {
+              style_name: ln.style_name || "",
+              style_code: ln.style_code || "",
+              color: ln.color || "",
+              sizes: {},
+            };
+            groups.push(map[key]);
+          }
+          var sizeKey = ln.size || "";
+          var qtyVal = Number(ln.qty || 0);
+          if (!map[key].sizes[sizeKey]) map[key].sizes[sizeKey] = 0;
+          map[key].sizes[sizeKey] += qtyVal;
+        }
+        return groups;
       }
 
       function openOrderEditor(ts) {
@@ -2911,10 +3068,12 @@
 
         var container = $("orderEditLines");
         container.innerHTML = "";
-        for (var i = 0; i < g.lines.length; i++) {
-          addOrderEditLineRow(g.lines[i]);
-        }
-        if (!g.lines.length) {
+        var groupedLines = groupLinesForEditor(g.lines || []);
+        if (groupedLines.length) {
+          for (var i = 0; i < groupedLines.length; i++) {
+            addOrderEditLineRow(groupedLines[i]);
+          }
+        } else {
           addOrderEditLineRow();
         }
 
@@ -2961,17 +3120,25 @@
           var styleName = (r.querySelector('[data-field=\"style-name\"]').value || "").trim();
           var styleCode = (r.querySelector('[data-field=\"style-code\"]').value || "").trim();
           var color = (r.querySelector('[data-field=\"color\"]').value || "").trim();
-          var size = (r.querySelector('[data-field=\"size\"]').value || "").trim();
-          var qtyVal = Number(r.querySelector('[data-field=\"qty\"]').value || 0);
-          if (!(qtyVal > 0)) continue;
-          if (!styleName && !styleCode) continue;
-          newLines.push({
-            style_name: styleName,
-            style_code: styleCode,
-            color: color,
-            size: size,
-            qty: qtyVal,
-          });
+          var sizeChips = r.getElementsByClassName("edit-size-chip");
+
+          for (var sIdx = 0; sIdx < sizeChips.length; sIdx++) {
+            var chip = sizeChips[sIdx];
+            var sizeInput = chip.querySelector('[data-field=\"size\"]');
+            var qtyInput = chip.querySelector('[data-field=\"qty\"]');
+            if (!sizeInput || !qtyInput) continue;
+            var size = (sizeInput.value || "").trim();
+            var qtyVal = Number(qtyInput.value || 0);
+            if (!(qtyVal > 0)) continue;
+            if (!styleName && !styleCode) continue;
+            newLines.push({
+              style_name: styleName,
+              style_code: styleCode,
+              color: color,
+              size: size,
+              qty: qtyVal,
+            });
+          }
         }
 
         if (!newLines.length) {
