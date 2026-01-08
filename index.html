@@ -3738,14 +3738,18 @@
         }
 
         updateSyncOrdersStatus("Syncing...");
-        fetch(webhookUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
+        var form = new FormData();
+        form.append(
+          "payload",
+          JSON.stringify({
             synced_at: new Date().toISOString(),
             source: "blanco-orders",
             orders: orders,
-          }),
+          })
+        );
+        fetch(webhookUrl, {
+          method: "POST",
+          body: form,
         })
           .then(function (response) {
             if (!response.ok) {
