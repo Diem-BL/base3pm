@@ -601,6 +601,26 @@
         padding: 4px 9px;
       }
 
+      .products-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 6px;
+      }
+
+      .products-controls {
+        display: flex;
+        align-items: flex-end;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .products-sort {
+        min-width: 180px;
+      }
+
       .chip-row {
         display: flex;
         flex-wrap: wrap;
@@ -1361,9 +1381,7 @@
       <!-- PRODUCTS -->
       <div id="view-products" class="view">
         <section class="card">
-          <div
-            style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;"
-          >
+          <div class="products-header">
             <div>
               <h2>Products</h2>
               <p class="subtext">
@@ -1371,7 +1389,20 @@
                 this device.
               </p>
             </div>
-            <button id="addStyleBtn" class="small">+ Add style</button>
+            <div class="products-controls">
+              <div class="products-sort">
+                <label for="productSort">Arrange by</label>
+                <select id="productSort">
+                  <option value="name-asc">Name (A–Z)</option>
+                  <option value="name-desc">Name (Z–A)</option>
+                  <option value="code-asc">Style code</option>
+                  <option value="price-asc">Price (low → high)</option>
+                  <option value="price-desc">Price (high → low)</option>
+                  <option value="category-asc">Category</option>
+                </select>
+              </div>
+              <button id="addStyleBtn" class="small">+ Add style</button>
+            </div>
           </div>
 
           <div id="productsEmpty" class="empty">
@@ -1522,6 +1553,7 @@
       var ORDERS_KEY = "blanco_orders_v1";
       var CATALOG_KEY = "blanco_catalog_v1";
       var STYLE_META_KEY = "blanco_style_meta_v1";
+      var PRODUCT_SORT_KEY = "blanco_product_sort_v1";
       var EMAIL_OPTS_KEY = "blanco_email_opts_v1";
       var ORDER_SIGNATURES_KEY = "blanco_order_signatures_v1";
 
@@ -1529,6 +1561,7 @@
       var styleMeta = {}; // styleKey -> {desc, category, imageDataUrl, in_stock}
       var selectedStyles = []; // array of styleKeys
       var selectedColors = {}; // styleKey -> { color: true }
+      var productSort = "name-asc";
       var currentStep = 1;
       var emailOpts = {
         includeTotalQty: true,
@@ -1624,6 +1657,22 @@
       function saveStyleMeta() {
         try {
           localStorage.setItem(STYLE_META_KEY, JSON.stringify(styleMeta));
+        } catch (e) {}
+      }
+
+      function loadProductSort() {
+        try {
+          var raw = localStorage.getItem(PRODUCT_SORT_KEY);
+          if (raw) productSort = raw;
+        } catch (e) {}
+        if ($("productSort")) {
+          $("productSort").value = productSort;
+        }
+      }
+
+      function saveProductSort() {
+        try {
+          localStorage.setItem(PRODUCT_SORT_KEY, productSort);
         } catch (e) {}
       }
 
@@ -3780,20 +3829,99 @@
         return map;
       }
 
+      function compareText(a, b) {
+        var aVal = (a || "").toLowerCase();
+        var bVal = (b || "").toLowerCase();
+        if (aVal < bVal) return -1;
+        if (aVal > bVal) return 1;
+        return 0;
+      }
+
+      function comparePrice(a, b) {
+        var aVal = parseFloat(a);
+        var bVal = parseFloat(b);
+        if (isNaN(aVal)) aVal = Number.POSITIVE_INFINITY;
+        if (isNaN(bVal)) bVal = Number.POSITIVE_INFINITY;
+        if (aVal < bVal) return -1;
+        if (aVal > bVal) return 1;
+        return 0;
+      }
+
       function renderProductsGrid() {
         var grid = $("productsGrid");
         var empty = $("productsEmpty");
         grid.innerHTML = "";
 
         var stylesMap = buildStylesIndexForProducts();
-        var any = false;
-
+        var stylesList = [];
         for (var key in stylesMap) {
           if (!stylesMap.hasOwnProperty(key)) continue;
-          any = true;
-          var meta = stylesMap[key];
+          stylesList.push({
+            key: key,
+            meta: stylesMap[key],
+            extra: styleMeta[key] || {},
+          });
+        }
 
-          var metaExtra = styleMeta[key] || {};
+        stylesList.sort(function (a, b) {
+          var sortMode = productSort || "name-asc";
+          if (sortMode === "name-desc") {
+            return (
+              compareText(
+                b.meta.name || b.meta.code,
+                a.meta.name || a.meta.code
+              ) || compareText(a.key, b.key)
+            );
+          }
+          if (sortMode === "code-asc") {
+            return (
+              compareText(
+                a.meta.code || a.meta.name,
+                b.meta.code || b.meta.name
+              ) || compareText(a.key, b.key)
+            );
+          }
+          if (sortMode === "price-asc") {
+            return (
+              comparePrice(a.meta.price, b.meta.price) ||
+              compareText(
+                a.meta.name || a.meta.code,
+                b.meta.name || b.meta.code
+              )
+            );
+          }
+          if (sortMode === "price-desc") {
+            return (
+              comparePrice(b.meta.price, a.meta.price) ||
+              compareText(
+                a.meta.name || a.meta.code,
+                b.meta.name || b.meta.code
+              )
+            );
+          }
+          if (sortMode === "category-asc") {
+            return (
+              compareText(a.extra.category, b.extra.category) ||
+              compareText(
+                a.meta.name || a.meta.code,
+                b.meta.name || b.meta.code
+              )
+            );
+          }
+          return (
+            compareText(
+              a.meta.name || a.meta.code,
+              b.meta.name || b.meta.code
+            ) || compareText(a.key, b.key)
+          );
+        });
+
+        var any = stylesList.length > 0;
+
+        for (var idx = 0; idx < stylesList.length; idx++) {
+          var entry = stylesList[idx];
+          var meta = entry.meta;
+          var metaExtra = entry.extra;
           var imgData = metaExtra.imageDataUrl || "";
 
           var colorCount = 0;
@@ -4368,7 +4496,14 @@
       (function init() {
         catalog = getCatalog();
         loadStyleMeta();
+        loadProductSort();
         loadEmailOpts();
+        if ($("productSort"))
+          $("productSort").onchange = function () {
+            productSort = this.value;
+            saveProductSort();
+            renderProductsGrid();
+          };
         if ($("emailToggleTotalQty"))
           $("emailToggleTotalQty").onclick = function () {
             toggleButton("emailToggleTotalQty");
