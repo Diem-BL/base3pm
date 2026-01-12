@@ -2517,6 +2517,9 @@
             "<button class='secondary small' data-ts='" +
             g.created_at +
             "' data-action='email'>Email</button>" +
+            " <button class='danger small' data-ts='" +
+            g.created_at +
+            "' data-action='delete'>Delete</button>" +
             "</td>";
 
           body.appendChild(tr);
@@ -2540,8 +2543,41 @@
           duplicateOrder(ts);
         } else if (action === "email") {
           emailOrder(ts);
+        } else if (action === "delete") {
+          deleteOrder(ts);
         }
       };
+
+      function deleteOrder(ts) {
+        var orders = getOrders();
+        var grouped = groupOrdersByTimestamp(orders);
+        var group = grouped.map[ts];
+        if (!group) return;
+
+        var label = group.customer_name
+          ? " for " + group.customer_name
+          : "";
+        var ok = confirm(
+          "Delete this order" + label + "? This cannot be undone."
+        );
+        if (!ok) return;
+
+        var remaining = [];
+        for (var i = 0; i < orders.length; i++) {
+          if (orders[i].created_at !== ts) {
+            remaining.push(orders[i]);
+          }
+        }
+
+        saveOrdersList(remaining);
+        var signatures = getOrderSignatures();
+        if (signatures && signatures[ts]) {
+          delete signatures[ts];
+          saveOrderSignatures(signatures);
+        }
+
+        renderOrders();
+      }
 
       function duplicateOrder(ts) {
         var orders = getOrders();
