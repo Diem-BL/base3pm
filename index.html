@@ -3980,21 +3980,21 @@
           var editBtn = document.createElement("button");
           editBtn.className = "secondary small";
           editBtn.innerHTML = "Edit";
-          editBtn.setAttribute("data-style-key", key);
+          editBtn.setAttribute("data-style-key", entry.key);
           editBtn.setAttribute("data-action", "edit");
           actions.appendChild(editBtn);
 
           var dupBtn = document.createElement("button");
           dupBtn.className = "secondary small";
           dupBtn.innerHTML = "Duplicate";
-          dupBtn.setAttribute("data-style-key", key);
+          dupBtn.setAttribute("data-style-key", entry.key);
           dupBtn.setAttribute("data-action", "duplicate");
           actions.appendChild(dupBtn);
 
           var delBtn = document.createElement("button");
           delBtn.className = "danger small";
           delBtn.innerHTML = "Delete";
-          delBtn.setAttribute("data-style-key", key);
+          delBtn.setAttribute("data-style-key", entry.key);
           delBtn.setAttribute("data-action", "delete");
           actions.appendChild(delBtn);
 
