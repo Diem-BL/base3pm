@@ -1378,7 +1378,20 @@
                 this device.
               </p>
             </div>
-            <button id="addStyleBtn" class="small">+ Add style</button>
+            <div class="products-controls">
+              <div class="products-sort">
+                <label for="productSort">Arrange by</label>
+                <select id="productSort">
+                  <option value="name-asc">Name (A–Z)</option>
+                  <option value="name-desc">Name (Z–A)</option>
+                  <option value="code-asc">Style code</option>
+                  <option value="price-asc">Price (low → high)</option>
+                  <option value="price-desc">Price (high → low)</option>
+                  <option value="category-asc">Category</option>
+                </select>
+              </div>
+              <button id="addStyleBtn" class="small">+ Add style</button>
+            </div>
           </div>
 
           <div id="productsEmpty" class="empty">
@@ -1529,6 +1542,7 @@
       var ORDERS_KEY = "blanco_orders_v1";
       var CATALOG_KEY = "blanco_catalog_v1";
       var STYLE_META_KEY = "blanco_style_meta_v1";
+      var PRODUCT_SORT_KEY = "blanco_product_sort_v1";
       var EMAIL_OPTS_KEY = "blanco_email_opts_v1";
       var ORDER_SIGNATURES_KEY = "blanco_order_signatures_v1";
 
@@ -1536,6 +1550,7 @@
       var styleMeta = {}; // styleKey -> {desc, category, imageDataUrl, in_stock}
       var selectedStyles = []; // array of styleKeys
       var selectedColors = {}; // styleKey -> { color: true }
+      var productSort = "name-asc";
       var currentStep = 1;
       var emailOpts = {
         includeTotalQty: true,
@@ -1631,6 +1646,22 @@
       function saveStyleMeta() {
         try {
           localStorage.setItem(STYLE_META_KEY, JSON.stringify(styleMeta));
+        } catch (e) {}
+      }
+
+      function loadProductSort() {
+        try {
+          var raw = localStorage.getItem(PRODUCT_SORT_KEY);
+          if (raw) productSort = raw;
+        } catch (e) {}
+        if ($("productSort")) {
+          $("productSort").value = productSort;
+        }
+      }
+
+      function saveProductSort() {
+        try {
+          localStorage.setItem(PRODUCT_SORT_KEY, productSort);
         } catch (e) {}
       }
 
@@ -4400,7 +4431,14 @@
       (function init() {
         catalog = getCatalog();
         loadStyleMeta();
+        loadProductSort();
         loadEmailOpts();
+        if ($("productSort"))
+          $("productSort").onchange = function () {
+            productSort = this.value;
+            saveProductSort();
+            renderProductsGrid();
+          };
         if ($("emailToggleTotalQty"))
           $("emailToggleTotalQty").onclick = function () {
             toggleButton("emailToggleTotalQty");
