@@ -1529,7 +1529,6 @@
       var ORDERS_KEY = "blanco_orders_v1";
       var CATALOG_KEY = "blanco_catalog_v1";
       var STYLE_META_KEY = "blanco_style_meta_v1";
-      var PRODUCT_ORDER_KEY = "blanco_product_order_v1";
       var EMAIL_OPTS_KEY = "blanco_email_opts_v1";
       var ORDER_SIGNATURES_KEY = "blanco_order_signatures_v1";
 
@@ -1537,7 +1536,6 @@
       var styleMeta = {}; // styleKey -> {desc, category, imageDataUrl, in_stock}
       var selectedStyles = []; // array of styleKeys
       var selectedColors = {}; // styleKey -> { color: true }
-      var productOrder = [];
       var currentStep = 1;
       var emailOpts = {
         includeTotalQty: true,
@@ -1633,25 +1631,6 @@
       function saveStyleMeta() {
         try {
           localStorage.setItem(STYLE_META_KEY, JSON.stringify(styleMeta));
-        } catch (e) {}
-      }
-
-      function loadProductOrder() {
-        try {
-          var raw = localStorage.getItem(PRODUCT_ORDER_KEY);
-          productOrder = raw ? JSON.parse(raw) : [];
-        } catch (e) {
-          productOrder = [];
-        }
-        if (!productOrder || !productOrder.length) productOrder = [];
-      }
-
-      function saveProductOrder() {
-        try {
-          localStorage.setItem(
-            PRODUCT_ORDER_KEY,
-            JSON.stringify(productOrder)
-          );
         } catch (e) {}
       }
 
@@ -3816,44 +3795,6 @@
         return 0;
       }
 
-      function ensureProductOrder(stylesList) {
-        if (!productOrder || !productOrder.length) productOrder = [];
-        var existing = {};
-        var i;
-        for (i = 0; i < productOrder.length; i++) {
-          existing[productOrder[i]] = true;
-        }
-
-        var available = {};
-        for (i = 0; i < stylesList.length; i++) {
-          available[stylesList[i].key] = true;
-        }
-
-        var nextOrder = [];
-        for (i = 0; i < productOrder.length; i++) {
-          var key = productOrder[i];
-          if (available[key]) nextOrder.push(key);
-        }
-
-        var missing = [];
-        for (i = 0; i < stylesList.length; i++) {
-          var entry = stylesList[i];
-          if (!existing[entry.key]) missing.push(entry);
-        }
-        missing.sort(function (a, b) {
-          return compareText(
-            a.meta.name || a.meta.code,
-            b.meta.name || b.meta.code
-          );
-        });
-        for (i = 0; i < missing.length; i++) {
-          nextOrder.push(missing[i].key);
-        }
-
-        productOrder = nextOrder;
-        saveProductOrder();
-      }
-
       function renderProductsGrid() {
         var grid = $("productsGrid");
         var empty = $("productsEmpty");
@@ -3870,22 +3811,12 @@
           });
         }
 
-        ensureProductOrder(stylesList);
-
-        var orderIndex = {};
-        for (var o = 0; o < productOrder.length; o++) {
-          orderIndex[productOrder[o]] = o;
-        }
-
         stylesList.sort(function (a, b) {
-          var aIndex = orderIndex.hasOwnProperty(a.key)
-            ? orderIndex[a.key]
-            : Number.POSITIVE_INFINITY;
-          var bIndex = orderIndex.hasOwnProperty(b.key)
-            ? orderIndex[b.key]
-            : Number.POSITIVE_INFINITY;
           return (
-            aIndex - bIndex || compareText(a.key, b.key)
+            compareText(
+              a.meta.name || a.meta.code,
+              b.meta.name || b.meta.code
+            ) || compareText(a.key, b.key)
           );
         });
 
@@ -3963,20 +3894,6 @@
           dupBtn.setAttribute("data-style-key", key);
           dupBtn.setAttribute("data-action", "duplicate");
           actions.appendChild(dupBtn);
-
-          var upBtn = document.createElement("button");
-          upBtn.className = "secondary small";
-          upBtn.innerHTML = "Move up";
-          upBtn.setAttribute("data-style-key", key);
-          upBtn.setAttribute("data-action", "move-up");
-          actions.appendChild(upBtn);
-
-          var downBtn = document.createElement("button");
-          downBtn.className = "secondary small";
-          downBtn.innerHTML = "Move down";
-          downBtn.setAttribute("data-style-key", key);
-          downBtn.setAttribute("data-action", "move-down");
-          actions.appendChild(downBtn);
 
           var delBtn = document.createElement("button");
           delBtn.className = "danger small";
@@ -4298,21 +4215,6 @@
           openStyleModal(key, false);
         } else if (action === "duplicate") {
           openStyleModal(key, true);
-        } else if (action === "move-up" || action === "move-down") {
-          var index = productOrder.indexOf(key);
-          if (index === -1) {
-            productOrder.push(key);
-          } else {
-            var targetIndex =
-              action === "move-up" ? index - 1 : index + 1;
-            if (targetIndex < 0 || targetIndex >= productOrder.length)
-              return;
-            var temp = productOrder[targetIndex];
-            productOrder[targetIndex] = productOrder[index];
-            productOrder[index] = temp;
-          }
-          saveProductOrder();
-          renderProductsGrid();
         } else if (action === "delete") {
           if (!confirm("Delete this style from catalog?")) return;
           var newCatalog = [];
@@ -4329,14 +4231,6 @@
           saveCatalog(catalog);
           delete styleMeta[key];
           saveStyleMeta();
-          if (productOrder && productOrder.length) {
-            var nextOrder = [];
-            for (var j = 0; j < productOrder.length; j++) {
-              if (productOrder[j] !== key) nextOrder.push(productOrder[j]);
-            }
-            productOrder = nextOrder;
-            saveProductOrder();
-          }
           renderProductsGrid();
           renderStylesGrid();
           updateDashboard();
@@ -4506,7 +4400,6 @@
       (function init() {
         catalog = getCatalog();
         loadStyleMeta();
-        loadProductOrder();
         loadEmailOpts();
         if ($("emailToggleTotalQty"))
           $("emailToggleTotalQty").onclick = function () {
